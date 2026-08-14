@@ -1,4 +1,4 @@
-# Manual — project-mentor
+# Manual — technical-learning-mentor
 
 Manual de uso. Escrito em português porque é lido por você, pela mesma razão do `progress.md`. Todo o resto da skill está em inglês.
 
