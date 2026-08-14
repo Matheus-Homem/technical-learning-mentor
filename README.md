@@ -48,13 +48,13 @@ Day-to-day usage details are in [`MANUAL.md`](MANUAL.md) (written in Portuguese,
 
 ## Install
 
-```bash
-# from your project root
-mkdir -p .claude/skills .claude/commands
+From the root of the project you want the skill in:
 
-git clone https://github.com/<you>/technical-learning-mentor .claude/skills/technical-learning-mentor
-cp .claude/skills/technical-learning-mentor/install/commands/*.md .claude/commands/
+```bash
+curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash
 ```
+
+This clones the skill into `.claude/skills/technical-learning-mentor` and copies the `mentor-*` commands into `.claude/commands/`. Running it again updates both. Requires `git`.
 
 On the first `/mentor-map`, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
 
@@ -120,12 +120,12 @@ technical-learning-mentor/
 ├── SKILL.md              core: rules and routing
 ├── MANUAL.md             usage manual (pt-BR)
 ├── README.md
-├── commands/             procedure for each command
+├── install.sh            curl | bash installer
+├── commands/             thin slash commands, copied into .claude/commands/
 ├── references/           knowledge-model · evidence-log · judging
 │                         teaching · retention · code-policy
-├── templates/            profile · knowledge · feature-map
-│                         progress · report
-└── install/commands/     thin slash commands for .claude/commands/
+└── templates/            profile · knowledge · feature-map
+                          progress · report
 ```
 
 State generated in your project:
