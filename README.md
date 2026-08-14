@@ -1,4 +1,4 @@
-# project-mentor
+# technical-learning-mentor
 
 A Claude Code skill that **stops Claude from writing your code** and instead helps you learn what you need in order to build it yourself — while keeping an auditable record of what you've mastered, what's shaky, and what needs to come back.
 
@@ -52,8 +52,8 @@ Day-to-day usage details are in [`MANUAL.md`](MANUAL.md) (written in Portuguese,
 # from your project root
 mkdir -p .claude/skills .claude/commands
 
-git clone https://github.com/<you>/project-mentor .claude/skills/project-mentor
-cp .claude/skills/project-mentor/install/commands/*.md .claude/commands/
+git clone https://github.com/<you>/technical-learning-mentor .claude/skills/technical-learning-mentor
+cp .claude/skills/technical-learning-mentor/install/commands/*.md .claude/commands/
 ```
 
 On the first `/mentor-map`, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
@@ -116,7 +116,7 @@ Multiple choice has a ~25% floor from guessing and **never** promotes anything t
 ## Layout
 
 ```
-project-mentor/
+technical-learning-mentor/
 ├── SKILL.md              core: rules and routing
 ├── MANUAL.md             usage manual (pt-BR)
 ├── README.md
