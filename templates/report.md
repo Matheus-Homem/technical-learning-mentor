@@ -1,0 +1,51 @@
+# Close report — <slug>
+
+<!-- Written in English by /mentor-close. This file replaces evidence.jsonl as
+     the durable record: after it is written, the feature's log is never read
+     again. Everything a future feature needs must survive here or in
+     knowledge.md. -->
+
+- **Feature**: <slug>
+- **Open**: <date> → **Closed**: <date>
+- **Evidence entries**: <n>
+
+## Transitions
+
+| id | statement | from | to | evidence that moved it |
+|---|---|---|---|---|
+| K-04 | <...> | explains | decides | E-018 — justified partition choice in own code |
+
+## Still below target
+
+| id | statement | target | state | why it stalled |
+|---|---|---|---|---|
+
+## Misconceptions
+
+**Closed this feature**
+
+- `K-02` — believed <wrong model>; corrected by <what>, confirmed at <evidence id>
+
+**Still open**
+
+- `K-07` — <wrong model>. Carries into the next feature.
+
+## Calibration
+
+<!-- High-confidence errors and where they clustered. Low-confidence correct
+     answers, which usually mean a retention gap rather than a knowledge gap. -->
+
+## Feynman notes
+
+<!-- What the user could and could not explain unaided about their own feature.
+     Objectives in the map that never came up in the explanation. -->
+
+## Carried forward
+
+<!-- What the next /mentor-map should treat as already-known context: fragile
+     objectives, open misconceptions, objectives approaching fluent and the date
+     they become eligible, anything the user asked to postpone. -->
+
+## Archived in this cycle
+
+<!-- Objectives dropped because the project pivoted, with the reason. -->
