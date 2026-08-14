@@ -1,5 +1,5 @@
 ---
-name: project-mentor
+name: technical-learning-mentor
 description: Technical mentor for project-based learning. Blocks Claude from writing the user's production code and instead helps the user learn what they need to build it themselves, tracking mastery across a project. Use this skill whenever the user asks to learn (rather than receive) something needed for their project, runs any /mentor-* command, asks what they should study next, asks how they are progressing, asks for a concept explanation while implementing a task, or asks for implementation help on a task they own. Also use it when the user asks Claude to write code that is part of a task they are supposed to develop themselves, so the request can be converted into mentoring instead of delivery.
 ---
 
