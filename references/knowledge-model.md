@@ -18,7 +18,23 @@ Two shapes are allowed:
 - **Proposition** — a claim about how something works. Target level is usually `explain`.
 - **Decision rule** — a judgement to make under stated conditions. Target level is always `decide`. Phrase it as `Given X, decide Y`.
 
-If an objective cannot be phrased as one of these two, it is not an objective — it is a tag.
+If an objective cannot be phrased as one of these two, it is not an objective — it is a tag, or it belongs in the delegate bucket (see `worked-examples.md`).
+
+## Not everything becomes an objective: the three buckets
+
+At `/mentor-map`, before anything is written to `knowledge.md`, every candidate piece of required knowledge is sorted into one of three buckets. This sorting happens once, deliberately, at the start of the feature — not item by item while tired at 22:00.
+
+| Bucket | What it is | What happens to it |
+|---|---|---|
+| 🎯 **decide** | a trade-off the user will meet again in their career; transferable | becomes an objective, target `decide`, gets scenarios |
+| 📖 **explain** | needs to be understood and justified, not optimised | becomes an objective, target `explain`, lighter assessment |
+| 📦 **delegate** | mechanical coupling between tools, lookup-able configuration | does **not** become an objective; routed to `/mentor-example` |
+
+The test for delegate vs. objective: **if the parameter encodes a trade-off the user needs to be able to navigate, it is knowledge. If it is plumbing between services, it is lookup.**
+
+A Flink job's parallelism is a decision — it becomes an objective. The startup order between two containers in a compose file is usually plumbing — it goes to delegate. Delegating the second is what buys time for the first; see `worked-examples.md` for how delegation is done without it becoming silent code delivery.
+
+This distinction exists because of a real constraint highlighted under time pressure (a study sprint, a deadline): learning everything a project touches, at `decide` level, is not achievable and produces shallow coverage of everything instead of real depth where it matters. The buckets make that trade-off explicit and chosen once, rather than accidental.
 
 ## Fields
 
@@ -34,15 +50,16 @@ Each objective is one row in `.mentor/knowledge.md`:
 | `state` | ladder position (below) |
 | `evidence` | comma-separated evidence ids, most recent last |
 | `misconception` | one line describing the currently open wrong model, or empty |
-| `next_review` | date, or empty if not yet at target |
+| `last_seen` | ISO date of the most recent evidence touching this objective |
+| `last_seen_hours` | cumulative study hours (from `profile.md`) at that moment |
+
+There is no scheduled review date anywhere in this model. See `references/retention.md` for why, and for how `last_seen` / `last_seen_hours` replace it.
 
 ## Tags, not a tree
 
 Do not organise objectives into a subject → topic tree. The most valuable objectives in a real project sit on the seams between areas, and a tree forces them into one branch and hides them from the others.
 
 Tag freely: an objective about a container reaching a broker gets the tags of both. The panel groups by tag, so the same objective legitimately appears under several headings.
-
-Tags are also the unit of the triage questionnaire and of target levels — the user declares experience and an ambition per tag, not per objective.
 
 ## Target level
 
@@ -51,9 +68,13 @@ Only two targets exist:
 - **`explain`** — the user can say what it is, why it exists, what problem it solves, and how it works, without looking it up.
 - **`decide`** — the user can choose correctly between options under stated conditions and justify the choice, and can say what breaks under the wrong choice.
 
-`decide` implies `explain`. Recall-only ("can name it") is never a target — it is below the bar. Diagnosis is out of scope as a target, though a diagnosis the user performs spontaneously is excellent evidence and should be logged.
+`decide` implies `explain`. Recall-only ("can name it") is never a target. Diagnosis is out of scope as a formal target, though a diagnosis the user performs spontaneously — resolving a real bug — is excellent evidence and should be logged (see `references/evidence-log.md`).
 
-Default assignment: an objective gets `decide` if the project actually forces the user to make that choice; otherwise `explain`. Most objectives are `explain`. Being generous with `decide` inflates the work and slows the loop.
+## The limiting objective
+
+At `/mentor-map`, in addition to sorting into buckets, name **one limiting objective** for the feature when one is visible: the transversal concept that most other `decide`-bucket objectives depend on. It is usually not a tool-specific item — it is the cross-cutting idea (e.g. "time and ordering in a distributed system") that quietly determines whether the rest of the feature's decisions can be made correctly.
+
+The limiting objective is marked in `map.md` and gets deliberate drill in `/mentor-eval` (repeated scenarios, varying conditions) rather than the normal rotation with everything else. Not every feature has a clear one; do not force it.
 
 ## The mastery ladder
 
@@ -72,9 +93,9 @@ unassessed → declared → fragile → explains → decides → fluent
 | `decides` | met the `decide` bar | a justified decision, not a recognised answer |
 | `fluent` | reliable without consulting anything | **two independent evidences at target level, at least 14 days apart, with no lookup** |
 
-`fluent` is the only state that requires elapsed time. This is deliberate: the user's stated goal is to use this knowledge without consulting anything, the way they use their programming language's basic syntax. That is automaticity, and automaticity cannot be demonstrated inside one week of one feature. Any design that can award "mastered" at the end of a single feature is measuring the wrong thing.
+`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like the previous version's failure: effort with no legible outcome.
 
-Demotion is normal and not a punishment: a failed due review sends an objective back to `fragile` and restarts its review ladder.
+Demotion is normal and not a punishment: a failed due review sends an objective back to `fragile` and restarts its position on the ladder in `retention.md`.
 
 ## Archiving
 
@@ -82,12 +103,12 @@ When the project pivots and an objective is no longer required, set its state pr
 
 ## How objectives are derived
 
-At `/mentor-map`, read the spec artifacts and the current repo state, and ask: *what would someone have to be able to explain or decide in order to write this themselves?*
+At `/mentor-map`, read the spec artifacts and the current repo state, and ask: *what would someone have to be able to explain or decide in order to write this themselves?* Sort each candidate into a bucket before writing anything to `knowledge.md`.
 
 Rules:
 
 - Every objective must trace to something in the artifacts or in the existing code. Record it in `origin`.
 - Do not enumerate a technology. If the task list touches three features of a tool, three areas appear — not the tool's full surface.
-- Prefer fewer, sharper objectives. A feature that produces more than roughly 15 new objectives is over-decomposed; merge them.
+- Prefer fewer, sharper objectives. A feature that produces more than roughly 15 new `decide`+`explain` objectives is over-decomposed, or the delegate bucket is being under-used; reconsider both.
 - Reuse ids: check `knowledge.md` first. An objective that returns in a later feature keeps its id, its history, and its state.
-- Configuration trivia is not knowledge. "The exact value of a setting" is lookup; "why this setting exists and what breaks without it" is an objective. Do not create objectives for values.
+- Configuration trivia is not knowledge, even when it looks technical. If it does not encode a trade-off, it goes to `delegate`.
