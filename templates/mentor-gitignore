@@ -1,0 +1,8 @@
+# Placed at .mentor/.gitignore during first-run bootstrap by /mentor-map.
+# Everything else in .mentor/ is intentionally version-controlled — it's
+# the durable record this skill exists to keep, backed up like any other
+# project state. Only the derived panel and session-only worked-example
+# output are excluded.
+
+progress.html
+features/*/examples/

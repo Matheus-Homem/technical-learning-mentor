@@ -37,6 +37,7 @@ Used in `/mentor-close`, and available on request.
 2. **Do not interrupt.** Let the whole explanation land. Interrupting turns it into a dialogue, and dialogue lets Claude supply the connective tissue the user is missing — which is exactly what is being measured.
 3. While listening, note: terms used without mechanism; circular definitions ("it's for partitioning, so it partitions"); jumps where a *why* is missing; correct statements with no visible reason underneath; and anything they avoided.
 4. Then report the gaps, in order of importance, one at a time. For each, ask the follow-up that would close it rather than closing it yourself.
-5. Log one evidence line per objective the explanation covered — including objectives that were expected in the scope and never came up. An objective the user forgot to mention while explaining their own feature is meaningful evidence.
+5. **Rejected-alternative pass.** For one or two of the decisions covered, ask why a plausible alternative approach was *not* taken. Log this as `feynman_rejection`. A shallow-but-correct understanding can usually defend the choice made; it much less often can attack the option it did not take, which makes this the higher-value half of the exercise.
+6. Log one evidence line per objective the explanation covered — including objectives that were expected in the scope and never came up. An objective the user forgot to mention while explaining their own feature is meaningful evidence.
 
-A clean Feynman explanation is strong evidence for `explains` and cheap to run. It does not by itself support `decides` — that needs a decision under conditions.
+A clean Feynman explanation is strong evidence for `explains` and cheap to run. A clean rejected-alternative answer supports `decides`. Neither is a substitute for a real decision under stated conditions — pair with a scenario when the objective's target is `decide`.
