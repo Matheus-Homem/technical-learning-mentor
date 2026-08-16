@@ -38,7 +38,21 @@
 ## Feynman notes
 
 <!-- What the user could and could not explain unaided about their own feature.
-     Objectives in the map that never came up in the explanation. -->
+     Objectives in the map that never came up in the explanation.
+     Include the rejected-alternative pass: which "why not X instead" questions
+     landed and which didn't. -->
+
+## Out-of-project scenario
+
+<!-- The transfer check: one scenario set outside the user's own project.
+     What it tested, how it went, and what that implies about whether this
+     was learned as a principle or as familiarity with this specific project. -->
+
+## Delegated this feature
+
+<!-- Items handled via /mentor-example: what was delegated and why, and
+     whether the completion-problem step revealed any gap suggesting the
+     item was mis-bucketed (see references/worked-examples.md). -->
 
 ## Carried forward
 
