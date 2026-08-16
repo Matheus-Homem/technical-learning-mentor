@@ -1,15 +1,21 @@
 # Mentor profile
 
 <!-- Written in English. Created on first /mentor-map. Edited only by /mentor-map,
-     or by the user directly. Delete a tag row to be re-asked about it. -->
+     the commands that log time, or by the user directly. Delete a tag row to be
+     re-asked about it. -->
 
 ## Config
 
 - `spec_artifacts`: <path or glob to the plan/design/tasks produced by the planning skill>
 - `default_eval_budget`: 15
 - `active_feature`: <slug>
-- `panel_language`: pt-BR
-- `last_panel_render`: <ISO timestamp>
+- `study_hours_total`: 0
+
+<!-- study_hours_total is a running counter, never reset. Every command that can
+     surface a review (mentor-eval, mentor-close) asks "how long have you studied
+     since last time?" and adds it here before computing anything. This is what
+     drives the exposure clock in references/retention.md — it is read, not
+     estimated. -->
 
 ## Tags
 
