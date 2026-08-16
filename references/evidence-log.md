@@ -15,7 +15,7 @@ Read the active feature's log in full at the start of any command. Never read a 
   "id": "E-014",
   "ts": "2026-08-12T14:30:00Z",
   "objective": "K-07",
-  "kind": "mcq | short_answer | scenario | prediction | code_review | feynman | question_asked | debug",
+  "kind": "mcq | short_answer | scenario | out_of_project_scenario | prediction | code_review | feynman | feynman_rejection | question_asked | debug | example",
   "prompt": "what was asked, or what situation produced the evidence",
   "response": "what the user said or did, summarised faithfully",
   "verdict": "correct | partial | incorrect | n/a",
@@ -25,9 +25,12 @@ Read the active feature's log in full at the start of any command. Never read a 
   "consulted": false,
   "misconception": "the wrong model this revealed, or empty",
   "note": "why this verdict, in one line — the audit trail",
-  "state_after": "fragile"
+  "state_after": "fragile",
+  "study_hours_total": 34.5
 }
 ```
+
+`study_hours_total` is the value of `profile.md`'s cumulative counter at the moment this evidence was logged. It is what lets `knowledge.md`'s `last_seen_hours` field be set correctly, and it is what the dual-clock retention model in `references/retention.md` runs on. Always populate it — asking the user "how long have you studied since last time?" at the start of a command and adding it to the running total is a required step, not optional bookkeeping.
 
 Field notes:
 
@@ -50,8 +53,12 @@ From weakest to strongest:
 | `prediction` correct before running | medium | `explains` |
 | `feynman` explanation with no gaps | strong | `explains` |
 | `scenario` decision correctly justified | strong | `decides` |
+| `out_of_project_scenario` — decision correctly justified under conditions unlike the user's own project | strong | `decides`, and is the strongest available signal of transfer rather than familiarity with the project's specific instance |
 | `code_review` — decision justified in the user's own code | strong | `decides` |
-| `debug` — user diagnosed a real failure themselves | strong | `decides` |
+| `code_review`, rejected-alternative form — user explains why the option *not* chosen would have been worse | strong | `decides` |
+| `debug` — user diagnosed a real failure themselves, and can state what mental model was wrong beforehand | strong | `decides` |
+| `feynman_rejection` — user explains, unaided, why a plausible alternative approach would have been worse | strong | `decides` |
+| `example` — a `/mentor-example` interaction | n/a for mastery | never promotes an objective; see `worked-examples.md` |
 
 Rules that follow from this:
 
@@ -67,11 +74,13 @@ After appending evidence, recompute the objective's state:
 
 1. Any `incorrect` in this evidence → `fragile`, open the misconception, restart the review ladder.
 2. `partial` → keep the current state, but open or keep the misconception, and shorten the next review.
-3. `correct` at strength sufficient for the target → promote to `explains` or `decides` and schedule the first review.
-4. Already at target, and this is a **due review** answered correctly, unaided, unconsulted, and at least 14 days after the evidence that first reached target → `fluent`.
+3. `correct` at strength sufficient for the target → promote to `explains` or `decides`.
+4. Already at target, and this is a **due review** (per `references/retention.md`) answered correctly, unaided, unconsulted, and at least 14 days after the evidence that first reached target → `fluent`.
 5. `fluent` objectives keep reviewing, at the longest interval. A miss demotes them like any other.
 
-Write `state_after` in the evidence line and update the row in `knowledge.md` in the same step. These two must never diverge.
+Write `state_after` and `study_hours_total` in the evidence line, and update `state`, `evidence`, `last_seen`, and `last_seen_hours` on the row in `knowledge.md` in the same step. These must never diverge — `knowledge.md`'s `last_seen`/`last_seen_hours` should always equal the timestamp and `study_hours_total` of the most recent evidence line referenced in its `evidence` column.
+
+There is no review date to schedule here — see `references/retention.md`. Promotion writes state and last-seen facts only; due-ness is always computed fresh, never stored.
 
 ## Closing a feature
 
@@ -79,5 +88,5 @@ At `/mentor-close`, after the final assessment:
 
 1. Summarise the log into `report.md`: objectives touched, state transitions, misconceptions opened and closed, calibration summary.
 2. Update all affected rows in `knowledge.md`.
-3. Regenerate `progress.md`.
+3. Regenerate `progress.html`.
 4. Stop reading `evidence.jsonl` from that feature ever again.
