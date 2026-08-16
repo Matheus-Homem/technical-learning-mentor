@@ -7,26 +7,41 @@
 - **Closed**: <date or "open">
 - **Spec source**: <path to the artifacts this was derived from>
 - **Last review point**: <git ref or commit sha used by /mentor-review>
+- **study_hours_total at open**: <value copied from profile.md>
 
-## Required objectives
+## Bucket sort
 
-| id | statement | target | state at open | origin |
-|---|---|---|---|---|
-| K-07 | <...> | decide | fragile | task 3.2 |
+<!-- Every candidate piece of required knowledge, sorted once at open.
+     See references/knowledge-model.md for the test. -->
 
-<!-- Includes returning objectives from earlier features, with the state they
-     carried in. That "state at open" column is what makes the close report able
-     to show movement rather than just a final position. -->
+### 🎯 Decide — becomes objectives, target `decide`
+
+| id | statement |
+|---|---|
+
+### 📖 Explain — becomes objectives, target `explain`
+
+| id | statement |
+|---|---|
+
+### 📦 Delegate — routed to /mentor-example, no objective created
+
+| item | why it's delegate |
+|---|---|
+
+## Limiting objective
+
+<!-- The transversal concept most of this feature's `decide` objectives depend
+     on, if one is visible. Gets deliberate drill in /mentor-eval instead of
+     the normal rotation. Leave empty if none is clear — do not force it. -->
+
+- **id**: <K-xx or empty>
+- **why**: <one or two lines>
 
 ## Carried in
 
 <!-- Objectives arriving already fragile or with an open misconception, and what
      that misconception is. These get priority in the first assessment round. -->
-
-## Hardest thing here
-
-<!-- One or two lines: what in this feature is most likely to be the real
-     obstacle, and why. Written at map time, checked at close. -->
 
 ## Notes during the feature
 
