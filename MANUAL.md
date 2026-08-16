@@ -1,100 +1,94 @@
-# Manual — technical-learning-mentor
+# Manual — technical-learning-mentor v2.1
 
-Manual de uso. Escrito em português porque é lido por você, pela mesma razão do `progress.md`. Todo o resto da skill está em inglês.
+Manual de uso. Escrito em português porque é lido por você, pela mesma razão do painel. Todo o resto da skill está em inglês.
 
 ## O que essa skill faz
 
-Ela impede o Claude de desenvolver o seu código e, no lugar disso, te ajuda a aprender o que é necessário para você mesmo desenvolver — registrando, de forma auditável, o que você já domina, o que está frágil e o que precisa voltar.
+Ela impede a IA de desenvolver o seu código e, no lugar disso, te ajuda a aprender o que é necessário para você mesmo desenvolver — registrando, de forma auditável, o que você domina, o que está frágil e o que precisa voltar.
 
-O problema que ela existe para resolver não é "o Claude escolhe mal os tópicos". É **falta de visibilidade**: na V1 você respondia, era corrigido, e não sobrava nada que dissesse o que tinha evoluído. Por isso o entregável central aqui é o painel, não a avaliação.
+O problema que ela resolve não é "a IA escolhe mal os tópicos". É **falta de visibilidade**: você responde, é corrigido, e não sobra nada que diga o que evoluiu.
 
-Ela é agnóstica de tecnologia. O que você precisa aprender é derivado das suas specs e do seu código, nunca do conhecimento genérico do Claude sobre uma ferramenta.
+É agnóstica de tecnologia e funciona em Claude Code, Cursor e Codex CLI. O que você precisa aprender é derivado das suas specs e do seu código, nunca do conhecimento genérico do modelo sobre uma ferramenta.
 
-## O ciclo
+## Os três baldes
 
-```
-skill de spec-driven gera plan → design → tasks
-        ↓
-/mentor-map          antes de escrever código        ~5 min
-        ↓
-você desenvolve      (predições, dúvidas, dicas)     custo ~zero
-        ↓
-/mentor-review       depois do primeiro código       ~5 min
-        ↓
-/mentor-eval         opcional, quando quiser         5 / 15 / 30 min
-        ↓
-/mentor-close        quando a atividade termina      ~10-15 min
-        ↓
-próxima feature
-```
+A decisão mais importante da skill, e acontece uma vez, no início de cada feature, no `/mentor-map`.
 
-## Quando usar cada comando
+| Balde | O que é | O que acontece |
+|---|---|---|
+| 🎯 **decidir** | trade-offs que você vai reencontrar na carreira | vira objetivo, recebe cenários, é onde suas horas devem ir |
+| 📖 **explicar** | precisa entender e justificar, não otimizar | vira objetivo, avaliação mais leve |
+| 📦 **delegar** | acoplamento mecânico, valores consultáveis | vai para `/mentor-example`, não vira objetivo |
+
+O critério: **se o parâmetro codifica um trade-off que você precisa saber navegar, é aprendizado. Se é encanamento entre serviços, é consulta.**
+
+O paralelismo de um job não é boilerplate — é uma decisão. A ordem em que os containers sobem geralmente é. Delegar o segundo é o que compra tempo para o primeiro.
+
+## Os comandos
 
 ### `/mentor-map`
-**Quando**: assim que a skill de spec-driven gerar as tasks, antes de escrever qualquer código.
-**Para**: descobrir o que essa atividade exige que você saiba e onde você já está.
-**O que acontece**: o Claude lê suas specs, deriva os objetivos de aprendizado, faz o questionário de triagem só para tags novas, e te mostra o painel.
-**O que você recebe**: a lista do que essa feature exige, o que já está no alvo, o que voltou frágil de features anteriores e o que está atrasado para revisão.
+**Quando**: assim que a skill de spec-driven gerar as tasks, antes de escrever código.
+**Duração**: ~5-10 min.
 
-Na primeira execução no repositório ele vai te pedir o caminho dos artefatos da spec-driven. Ele guarda isso e não pergunta de novo.
+Lê suas specs, deriva os conhecimentos exigidos, classifica cada um nos três baldes e marca **o objetivo limitante** — o conceito transversal que trava mais coisas nessa feature.
 
-### `/mentor-review`
-**Quando**: depois de escrever uma parte significativa do código. Uma ou duas vezes por feature.
-**Para**: transformar o código que você já escreveu na evidência mais forte que existe.
-**O que acontece**: o Claude lê o diff e pergunta *por que* você decidiu daquele jeito. Não é code review de estilo.
-**Importante**: é o único caminho barato para o nível `decide`. Uma decisão justificada no seu próprio código vale mais que qualquer prova.
+Na primeira execução no repositório, cria `.mentor/` (incluindo o `.gitignore` interno), pede o caminho dos artefatos da spec-driven e guarda. Também faz o questionário de triagem, só para tags novas.
 
-Ele vai perguntar de onde veio um trecho quando o código parecer mais seguro que a sua explicação. Responder "copiei do doc" não é problema — é informação, e evita que o painel te credite algo que você não tem.
+Você sai daqui sabendo o que essa atividade exige, onde já está, e o que vai delegar.
 
-### `/mentor-eval`
-**Quando**: quando quiser uma rodada avulsa. Não é obrigatório todo ciclo.
-**Para**: cobrir lacunas e puxar revisões vencidas.
-**Como**: `/mentor-eval --time 5`, `--time 15` ou `--time 30`. Sem argumento, usa o padrão do `profile.md`.
+### `/mentor-example <o que>`
+**Quando**: para qualquer coisa que caiu no balde delegar, ou para conteúdo genuinamente novo antes de você praticar sozinho.
+**Duração**: ~15 min.
 
-Múltipla escolha aqui é instrumento barato de revisão, não o eixo principal — ela nunca promove nada para `decide`.
+Três passos, nessa ordem:
+1. O modelo entrega o artefato **anotado** — cada decisão não-óbvia com uma linha de porquê.
+2. Ele te faz 4-5 perguntas sobre decisões isoladas: "se essa linha sumisse, o que quebraria e quando?"
+3. Ele te devolve a mesma coisa com 2-3 valores apagados. Você preenche.
+
+O passo 3 é o que fecha o ciclo — é onde você descobre que achou que tinha entendido. Receber só o passo 1 não ensina nada; por isso o comando existe separado de simplesmente pedir o arquivo.
+
+Os artefatos gerados ficam em `.mentor/features/<slug>/examples/` — não versionados, é conveniência de sessão.
+
+### `/mentor-review [path]`
+**Quando**: depois de cada bloco de trabalho. Várias vezes por dia num sprint.
+**Duração**: ~5-10 min.
+
+O comando mais importante da skill, porque é o mais direto: prática que se parece com o uso real. Lê seu diff e pergunta **por que** você decidiu daquilo. Não é code review de estilo.
+
+Perguntas que ele tenta sempre incluir:
+- por que aqui e não ali?
+- **por que a alternativa que você descartou é pior?**
+- se `<condição>` mudasse, o que mudaria aqui?
+
+A segunda é a que mais separa entender de reconhecer. Compreensão rasa justifica a escolha feita; raramente ataca a rejeitada.
+
+Também é aqui que **bug resolvido vira evidência**: quando você conserta algo, o modelo registra qual era seu modelo mental antes do conserto e o que ele revelou de errado. É a evidência mais forte que a skill produz.
+
+### `/mentor-eval [--time 5|15|30]`
+**Quando**: no início de uma sessão, ou quando quiser revisar.
+**Duração**: o que você pedir.
+
+Não é prova de conteúdo novo. É **revisão espaçada**: traz de volta o que você não vê há tempo — em dias e em horas de estudo — misturado com o que for necessário.
+
+Múltipla escolha vive aqui, e só aqui. Barata, serve para checar o que já foi aprendido em outro formato. Nunca promove nada para "decide".
+
+Quando houver um objetivo limitante em aberto, ele vira **drill**: cenários repetidos sobre o mesmo conceito, variando as condições.
 
 ### `/mentor-close`
-**Quando**: quando você considerar a atividade concluída, antes de gerar a próxima spec.
-**Para**: consolidar e fechar a feature.
-**O que acontece**: você explica o que construiu no formato Feynman (sem interrupção), responde 2-3 cenários de decisão, e o Claude fecha o ciclo escrevendo o relatório.
-**O que você recebe**: a resposta para "o que eu aprendi aqui" — o que subiu de nível e com base em qual evidência, o que continua frágil, quais equívocos foram fechados, e o que está perto de virar fluente.
+**Quando**: ao concluir a atividade, antes da próxima spec.
+**Duração**: ~10-20 min.
 
-É o comando mais importante do ciclo. Se faltar tempo, corte os cenários, nunca o fechamento.
+1. **Feynman** — você explica o que construiu, sem interrupção.
+2. **Por que não do outro jeito** — para uma ou duas decisões, por que a alternativa plausível seria pior.
+3. **Cenários de decisão**, incluindo **pelo menos um fora do seu projeto** — "num sistema com requisito oposto, o que você faria diferente?". É o único teste real de transferência: mostra se você aprendeu o princípio ou só a sua instância aqui.
+4. Fecha a feature, escreve o relatório, atualiza o painel.
 
-### `/mentor-progress`
-**Quando**: a qualquer momento.
-**Para**: ver onde você está. Não faz nenhuma pergunta.
-**Variações**: `--all` mostra tudo sem colapsar, `--tag <tag>` filtra por assunto.
+Se faltar tempo, corte cenários. **Nunca corte o fechamento.**
 
-## Fora dos comandos
+### `/mentor-progress [--all|--tag X]`
+**Quando**: a qualquer momento. Não faz perguntas.
 
-Enquanto você trabalha:
-
-- **Dúvida sobre um conceito** → o Claude responde. Não devolve pergunta, não transforma em quiz. Ele registra que você perguntou, porque perguntar duas vezes sobre a mesma coisa é sinal.
-- **Você trava** → a ajuda escala com o número de tentativas que você relatar. Primeira vez: uma pergunta que te reorienta. Depois de tentar bastante: explicação completa. Diga quantas vezes já tentou — ele não adivinha.
-- **Você anuncia que vai rodar/subir algo** → ele pergunta uma vez o que você espera que aconteça, e depois te deixa rodar. Se você ignorar, ele não insiste. É a avaliação mais barata que existe e a que melhor mede modelo mental.
-- **Você pede o código pronto** → ele não entrega, mas te dá a estrutura e a dica que destrava. Se você disser explicitamente que quer aquilo delegado (é boilerplate, está fora do escopo de aprendizado, é prazo), ele faz — a ideia é que delegar seja uma escolha consciente, não o caminho mais fácil.
-
-## Os arquivos
-
-Tudo em `.mentor/`, versionado no git. O histórico do git vira, de graça, o registro de quando cada coisa evoluiu.
-
-| Arquivo | O que é | Quem escreve | Você lê? |
-|---|---|---|---|
-| `profile.md` | seu perfil: experiência e alvo por tag, configuração | `/mentor-map` | raramente |
-| `knowledge.md` | registro de todos os objetivos do projeto e seus estados | todos os comandos | quando quiser auditar |
-| `progress.md` | **o painel** — em português, derivado, descartável | `/mentor-progress` | **sempre** |
-| `features/<slug>/map.md` | o que esta feature exige e de onde veio | `/mentor-map` | no início da feature |
-| `features/<slug>/evidence.jsonl` | log append-only de tudo que foi avaliado | todos os comandos | quase nunca |
-| `features/<slug>/report.md` | o que aconteceu nesta feature | `/mentor-close` | ao fechar |
-
-Regras que valem a pena conhecer:
-
-- **`evidence.jsonl` só cresce.** Nunca é reescrito. Correção é linha nova, não edição.
-- **Log de feature fechada nunca mais é lido.** O `report.md` e as linhas do `knowledge.md` carregam tudo adiante. É isso que impede o contexto de explodir no mês 3.
-- **`progress.md` nunca é fonte de verdade.** Pode apagar; `/mentor-progress` regenera.
-- **Nada é deletado.** Objetivo que deixou de ser necessário vira `archived:` e mantém histórico. Se voltar numa feature futura, volta com o histórico.
-- Você pode editar qualquer arquivo à mão. Se discordar de um estado, mude — mas o caminho recomendado é contestar na conversa: aí o Claude agenda uma nova sondagem em vez de simplesmente reescrever o estado.
+Gera `.mentor/progress.html` e te avisa para abrir. Não é versionado — pode apagar a qualquer momento, ele regenera. Se apagar, você só perde a comparação "o que mudou" na próxima vez que rodar (o Claude avisa e mostra o estado atual mesmo assim).
 
 ## Como ler os estados
 
@@ -102,40 +96,90 @@ Regras que valem a pena conhecer:
 não avaliado → declarado → frágil → explica → decide → fluente
 ```
 
-- **declarado** — você disse que tem experiência no questionário. É evidência fraca de propósito.
-- **frágil** — há evidência de lacuna ou um equívoco em aberto.
-- **explica** — sabe dizer o que é, por que existe e como funciona, sem consultar.
-- **decide** — sabe escolher sob condições e justificar, e sabe o que quebra na escolha errada.
-- **fluente** — **duas evidências no alvo, sem consulta, separadas por pelo menos 14 dias.**
+- **declarado** — você disse que tem experiência. Evidência fraca de propósito.
+- **frágil** — há lacuna ou um equívoco em aberto.
+- **explica** — sabe o que é, por que existe, como funciona. Sem consultar.
+- **decide** — escolhe sob condições, justifica, sabe o que quebra na escolha errada.
+- **fluente** — duas evidências no alvo, sem consulta, **separadas por pelo menos 14 dias**.
 
-`fluente` é o único estado que exige tempo passado, e é de propósito. Seu objetivo é usar o conhecimento sem consultar, como você usa `class` e `self` — isso é automatismo, e automatismo não se demonstra dentro de uma feature de uma semana. Qualquer sistema que te dá "dominado" no fim de um ciclo está medindo outra coisa.
+`fluente` é o único estado que exige tempo passado, e isso não muda nem num sprint intenso. Prática concentrada produz ganho aparente rápido e decaimento rápido: você vai terminar duas semanas de estudo *sentindo* que domina, e não vai — só o reencontro depois de um intervalo prova o contrário. O painel tem uma seção **⏳ aguardando confirmação de fluência**, com a data em que cada coisa fica elegível, exatamente para isso não parecer um buraco.
 
-Cair de nível é normal e não é punição: revisão errada volta para `frágil` e reinicia a escada.
+Cair de nível é normal. Revisão errada volta para frágil.
 
-## Revisão espaçada
+## Como a revisão funciona
 
-Objetivo que chega no alvo entra numa escada fixa: **3 dias → 7 dias → 21 dias → 60 dias**. No vencimento ele aparece em "Volta para revisão" e entra na próxima rodada, misturado com o conteúdo novo.
+Não existe data agendada em lugar nenhum. Cada objetivo guarda dois fatos observados: quando foi visto pela última vez (`last_seen`) e quantas horas de estudo acumuladas você tinha naquele momento (`last_seen_hours`).
 
-Isso puxa objetivos de features antigas para dentro das novas. É o único mecanismo que leva de `decide` para `fluente`, e a razão pela qual conhecimento de dois meses atrás não evapora.
+No início de qualquer comando que possa revisar algo, ele pergunta quanto tempo você estudou desde a última vez. Uma pergunta, dois segundos. Com isso ele calcula dois deltas — em dias e em horas — e o que vencer primeiro dispara a revisão.
 
-Não existe "não repetir". Voltar ao mesmo objetivo é o mecanismo; o que a skill evita é repetir a *mesma pergunta com as mesmas palavras* em intervalo curto.
+Por que dois relógios:
 
-## Calibração
+- **Num sprint intenso**, 3 dias são 24 horas de trabalho. O relógio de horas dispara primeiro, e você revisa de manhã o que viu na véspera.
+- **Numa rotina de 1h/dia**, 3 dias são 3 horas. O relógio de calendário dispara primeiro, porque aí o risco é esquecer, não diluir.
 
-Antes de te mostrar qualquer correção, o Claude pergunta sua confiança (alta/média/baixa).
+A mesma tabela se comporta certo nos dois regimes, e na transição entre eles, sem você configurar nada.
 
-O que interessa é **confiança alta + erro**. É o sinal mais valioso do sistema, porque marca conhecimento que você não sabe que não tem — e é invisível sem esse passo. Aparece no painel quando se concentra em alguma tag.
+Referência aproximada (julgamento, não regra fixa — confiança alta com erro encurta; acerto tranquilo alonga):
+
+| Posição na escada | Horas de estudo | Ou calendário |
+|---|---|---|
+| 1ª revisão | ~3h | ~3 dias |
+| 2ª revisão | ~10h | ~7 dias |
+| 3ª revisão | ~30h | ~21 dias |
+| 4ª+ revisão | ~80h | ~60 dias |
+
+## Fora dos comandos
+
+- **Dúvida sobre um conceito** → o modelo responde. Não devolve pergunta, não vira quiz. Registra que você perguntou.
+- **Você trava** → a ajuda escala com quantas vezes você já tentou. Diga o número; ele não adivinha.
+- **Você anuncia que vai rodar algo** → pergunta uma vez o que você espera. Se ignorar, não insiste.
+- **Você pede algo do balde delegar** → é encaminhado para `/mentor-example`, não entregue direto.
+- **Você pede o código pronto de algo que é sua task** → ele não entrega, dá a estrutura e a dica.
+
+## Os arquivos
+
+Tudo em `.mentor/`, na raiz do projeto — fora de qualquer pasta específica de ferramenta (`.claude/`, `.cursor/`, `.codex/`), para funcionar igual em qualquer cliente.
+
+| Arquivo | O que é | Versionado? | Você lê? |
+|---|---|---|---|
+| `.gitignore` | ignora `progress.html` e `features/*/examples/` | — | nunca |
+| `profile.md` | experiência, alvo por tag, horas acumuladas, config | sim | raramente |
+| `knowledge.md` | todos os objetivos, estados, quando cada um foi visto | sim | ao auditar |
+| `progress.html` | **o painel** — conteúdo em português, derivado | não | sempre |
+| `features/<slug>/map.md` | o que a feature exige, os três baldes, o limitante | sim | no início |
+| `features/<slug>/evidence.jsonl` | log append-only | sim | quase nunca |
+| `features/<slug>/examples/` | artefatos do `/mentor-example` | não | ao consultar depois |
+| `features/<slug>/report.md` | o que aconteceu na feature | sim | ao fechar |
+
+Regras que valem conhecer:
+
+- **`evidence.jsonl` só cresce.** Correção é linha nova, nunca edição.
+- **Log de feature fechada nunca mais é lido.** O relatório carrega adiante.
+- **`progress.html` nunca é fonte de verdade** e nunca é versionado. Apagar é seguro.
+- **`examples/` também não é versionado.** É conveniência de sessão — se quiser guardar algo dali, copie manualmente.
+- **Nada em `knowledge.md`/`evidence.jsonl`/`report.md` é deletado.** Objetivo que deixou de ser necessário vira `archived:` e mantém histórico.
+- Você pode editar tudo à mão. Se discordar de um estado, o caminho melhor é contestar na conversa — o modelo agenda uma nova sondagem em vez de reescrever.
+
+## Instalação
+
+```bash
+git clone https://github.com/<voce>/technical-learning-mentor /tmp/technical-learning-mentor
+cd /caminho/do/seu/projeto
+/tmp/technical-learning-mentor/install/install.sh claude   # ou: cursor | codex
+```
+
+No Claude Code a skill é reconhecida automaticamente. No Cursor e no Codex CLI, o instalador acrescenta um apontador (`.cursor/rules/` ou `AGENTS.md`) porque essas ferramentas não têm descoberta automática de skill — sem isso, o modelo não saberia que ela existe.
 
 ## Orçamento de tempo
 
-Por feature, contando tudo: cerca de **20 minutos**, concentrados no `/mentor-map` e no `/mentor-close`. O meio do desenvolvimento é quase de graça — predições e review acontecem dentro do trabalho que você já faria.
+Proporcional, não fixo — cerca de **10-20% do tempo de estudo** em mentoria, mais alto num sprint denso (o `/mentor-review` acontece várias vezes ao dia) e mais baixo numa rotina de 1h/dia (predominam revisões curtas de 5 min).
 
-Se precisar cortar, corte nesta ordem: `/mentor-eval` avulso → cenários do close → `/mentor-review`. **Nunca corte o fechamento** — sem ele a feature não deixa registro, que é exatamente o problema da V1.
+Se precisar cortar: `/mentor-eval` avulso → cenários do close → frequência do review. **Nunca corte o fechamento.**
 
 ## Se algo der errado
 
-- **O painel está estranho ou desatualizado** → `/mentor-progress` regenera do zero.
-- **Um objetivo está com estado que você acha errado** → conteste na conversa. O Claude agenda uma nova sondagem em vez de reescrever.
-- **O caminho das specs mudou** → rode `/mentor-map`; ele pergunta de novo e atualiza o `profile.md`.
-- **Você quer parar de ser testado numa tag** → responda `skip` na triagem, ou anote em `profile.md` → Notes.
-- **Está avaliando demais / de menos** → ajuste `default_eval_budget` no `profile.md` e pule o `/mentor-eval` avulso.
+- **Painel estranho** → `/mentor-progress` regenera do zero.
+- **Estado que você acha errado** → conteste na conversa; ele agenda nova sondagem.
+- **Caminho das specs mudou** → rode `/mentor-map`, ele pergunta de novo.
+- **Não quer ser testado numa tag** → responda `skip` na triagem ou anote em `profile.md` → Notes.
+- **Está avaliando demais** → diga. O orçamento é ajustável a qualquer momento.
