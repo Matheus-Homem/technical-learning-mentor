@@ -1,8 +1,8 @@
 # technical-learning-mentor
 
-A Claude Code skill that **stops Claude from writing your code** and instead helps you learn what you need in order to build it yourself — while keeping an auditable record of what you've mastered, what's shaky, and what needs to come back.
+A skill that **stops the AI from writing your code** and instead helps you learn what you need in order to build it yourself — while keeping an auditable record of what you've mastered, what's shaky, and what needs to come back.
 
-Technology-agnostic. The curriculum is derived from your own specs and your own code, never from Claude's generic knowledge of a tool.
+Technology-agnostic. The curriculum is derived from your own specs and your own code, never from generic knowledge of a tool. Works with Claude Code, Cursor, and Codex CLI.
 
 ---
 
@@ -19,46 +19,51 @@ Built to sit alongside a spec-driven development skill, but tied to none in part
 ```
 spec-driven produces plan → design → tasks
         ↓
-/mentor-map          before writing any code          ~5 min
+/mentor-map          before writing any code — sorts knowledge into
+                      decide / explain / delegate, ~5-10 min
         ↓
-you develop          (predictions, questions, hints)  ~free
+you develop           /mentor-example for delegated items, ~15 min each
+                       /mentor-review after each block of code, ~5-10 min
         ↓
-/mentor-review       after the first code lands       ~5 min
+/mentor-eval          optional, whenever — spaced retrieval, 5/15/30 min
         ↓
-/mentor-eval         optional, whenever               5 / 15 / 30 min
-        ↓
-/mentor-close        when the activity is done        ~10-15 min
+/mentor-close          when the activity is done, ~10-20 min
         ↓
 next feature
 ```
 
-Roughly **20 minutes per feature**, concentrated in the map and the close. The middle of development is nearly free: predictions and code review happen inside work you were doing anyway.
+The pace this runs at adapts on its own — see "the dual clock" below. A dense study block and a routine of an hour a day produce very different rhythms of these commands without any configuration change.
 
 ## Commands
 
 | Command | When | What for |
 |---|---|---|
-| `/mentor-map` | as soon as the tasks are generated | find out what this activity requires you to know |
-| `/mentor-review [path]` | after writing code | turn your own code into the strongest evidence available |
-| `/mentor-eval [--time 5\|15\|30]` | whenever you want | cover gaps and pull in due reviews |
-| `/mentor-close` | when the activity is finished | Feynman explanation + decision scenarios + close the cycle |
+| `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept |
+| `/mentor-example <what>` | for anything sorted into delegate, or genuinely new material | annotated artifact → questions → completion problem |
+| `/mentor-review [path]` | after writing code — the default checkpoint | turn your own code into the strongest evidence available |
+| `/mentor-eval [--time 5\|15\|30]` | whenever you want, esp. session start | spaced retrieval — resurface what's due |
+| `/mentor-close` | when the activity is finished | Feynman + rejected-alternative + decision scenarios (incl. one outside the project) + close the cycle |
 | `/mentor-progress [--all\|--tag X]` | any time | see where you stand |
 
 Day-to-day usage details are in [`MANUAL.md`](MANUAL.md) (written in Portuguese, like the progress panel — both are read by the user).
 
 ## Install
 
-From the root of the project you want the skill in:
-
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash
+cd /path/to/your/project
+curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash -s -- claude   # or: cursor
 ```
 
-This clones the skill into `.claude/skills/technical-learning-mentor` and copies the `mentor-*` commands into `.claude/commands/`. Running it again updates both. Requires `git`.
+What the installer does, and why it differs by tool:
 
-On the first `/mentor-map`, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
+- **Claude Code** auto-discovers a skill placed at `.claude/skills/technical-learning-mentor/SKILL.md` from its frontmatter — no extra step. The installer clones the skill there and copies the six `/mentor-*` commands into `.claude/commands/`.
+- **Cursor** has no native skill-folder auto-discovery. The installer clones the same skill content into `.cursor/skills/technical-learning-mentor/`, copies the six commands into `.cursor/commands/`, and adds an `alwaysApply` rule at `.cursor/rules/technical-learning-mentor.md` that points the model at the skill — that rule is what makes Cursor aware it exists.
 
-State (`.mentor/`) lives at the project root, versioned in git, **outside** `.claude/`. That way updating the skill never touches your learning history, and `git log` on `.mentor/knowledge.md` gives you a timeline of your progress for free.
+The skill content itself — `SKILL.md`, `commands/`, `references/`, `templates/` — is identical across both. Only where it's placed, and how much the host tool notices it without being told, differs. Re-running the installer updates an existing install in place (`git pull --ff-only`).
+
+On the first `/mentor-map` in a repo, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
+
+State (`.mentor/`) lives at the project root, outside any tool-specific folder, and is versioned in git — with two narrow exceptions (see below).
 
 ## How knowledge is modelled
 
@@ -72,6 +77,16 @@ good  → given a new external dependency, decide whether it needs a new port
 
 Objectives carry free-form **tags**, not a tree. The most valuable knowledge in a real project lives on the seams between areas, and a hierarchy forces every objective into a single branch, hiding it from the others.
 
+### Not everything becomes an objective
+
+At `/mentor-map`, every candidate is sorted once, deliberately, into one of three buckets:
+
+- 🎯 **decide** — a transferable trade-off you'll meet again in your career. Becomes an objective, gets scenarios.
+- 📖 **explain** — needs to be understood and justified, not optimised. Becomes an objective, lighter assessment.
+- 📦 **delegate** — mechanical coupling, lookup-able configuration. Never becomes an objective — handled by `/mentor-example` instead, which delegates the artifact but still extracts learning from it (annotated → questioned → a completion problem to fill in), rather than just handing it over.
+
+The test: if the parameter encodes a trade-off you need to be able to navigate, it's learning. If it's plumbing between services, it's lookup. Learning everything a real project touches at decision-level depth isn't achievable under any real time budget — this makes that trade-off explicit and chosen once, instead of accidental.
+
 ### The mastery ladder
 
 ```
@@ -83,9 +98,15 @@ unassessed → declared → fragile → explains → decides → fluent
 - **decides** — can choose under stated conditions, justify the choice, and say what breaks under the wrong one.
 - **fluent** — two independent evidences at target level, without lookup, **at least 14 days apart**.
 
-`fluent` is the only state that requires elapsed time, and that's deliberate. The real goal is using the knowledge without searching, the way you use your language's basic syntax — that's automaticity, and automaticity can't be demonstrated inside a one-week feature. Any system that hands out "mastered" at the end of a cycle is measuring something else.
+`fluent` is the only state that requires elapsed time, and that's deliberate — including during a dense study block. Massed practice produces fast apparent gains and fast decay; nothing learned inside a short intensive stretch can be marked `fluent` within it. The panel says this plainly rather than leaving it looking like a gap.
 
 Nothing is ever reported as a percentage. State plus named evidence, always.
+
+### No scheduled review date — the dual clock
+
+There's no predicted "next review" date stored anywhere. Predicting a date bakes in an assumed pace, and the moment that pace changes — an intensive week, then a routine of an hour a day — the stored date is silently wrong.
+
+Instead, each objective stores two observed facts: when it was last touched (`last_seen`) and how many cumulative study hours had passed at that point (`last_seen_hours`). Every command that can trigger a review asks how long you've studied since last time, and computes due-ness fresh from both a calendar delta and a study-hours delta — whichever threshold is crossed first wins. In a dense session the hours clock fires first, correctly resurfacing this morning's material this afternoon. In a routine of an hour a day, the calendar clock fires first, because there forgetting — not dilution — is the risk. Same table, both regimes, no configuration.
 
 ### Evidence strength
 
@@ -94,62 +115,60 @@ Not every correct answer is worth the same:
 ```
 self-report  <  multiple choice  <  short answer
              <  prediction before running  <  Feynman explanation
-             <  a decision justified in your own code
+             <  a decision justified in your own code, or why the rejected
+                alternative would have been worse, or a real bug diagnosed
 ```
 
-Multiple choice has a ~25% floor from guessing and **never** promotes anything to `decides`. Weak evidence doesn't accumulate into strong evidence: two correct MCQs are not one justified decision.
+Multiple choice has a ~25% floor from guessing and **never** promotes anything to `decides`. It lives in `/mentor-eval` as a cheap way to check material already learned through a stronger format — never the backbone.
 
 ## Design decisions
 
-**Spaced repetition instead of "don't repeat".** Returning to the same objective *is* the consolidation mechanism. A fixed 3 → 7 → 21 → 60 day ladder, interleaved with new material. What's avoided is re-asking an identical item in a short window.
+**Directness first.** Practice should resemble how the knowledge will actually be used. A prepared quiz is the most indirect format available; a decision justified in your own code, or a prediction made right before you run something, is the most direct. The command weighting reflects this — `/mentor-review` is the default checkpoint, `/mentor-eval` is for spaced retrieval, not new content.
 
-**Calibration.** Before any correction is revealed, you state your confidence. **High confidence + wrong** is the most valuable signal the system produces: it marks knowledge you don't know you lack, and it's invisible without this step.
+**Delegation with a toll, not a ban.** For dense, mostly non-conceptual configuration, studying a worked example beats producing one from scratch — search for the right shape of the answer consumes the attention that would otherwise form the pattern. `/mentor-example` delivers the artifact, but only alongside annotation, targeted questions, and a completion problem. Passive delivery without those steps isn't covered by this exception.
 
-**Contesting doesn't overwrite state.** Disagreeing with a verdict schedules a fresh probe rather than rewriting the record. State is a belief backed by evidence; it changes when new evidence arrives, not when the argument gets uncomfortable.
+**Transfer is checked explicitly.** A project teaches the project, not always the underlying domain. Every close includes at least one decision scenario set outside the user's own project — the only reliable way to tell whether a principle was learned or just its one instance here.
 
-**Judgement is auditable.** Every verdict records the criterion applied. A right conclusion with wrong reasoning is `partial`, not `correct` — that's how tracking systems silently inflate.
+**Calibration.** Before any correction is revealed, you state your confidence. **High confidence + wrong** is the most valuable signal the system produces: it marks knowledge you don't know you lack.
 
-**Append-only log, bounded context.** A feature's evidence log is never rewritten, only appended to. At close it becomes `report.md` and is never read again. Only `knowledge.md` grows across the project, one row per objective — that's what keeps context from blowing up in month three.
+**Contesting doesn't overwrite state.** Disagreeing with a verdict schedules a fresh probe rather than rewriting the record.
 
-**Authorship, not exposure.** Claude doesn't write what you owe. It can read and critique your code, and it can show minimal external surface where pseudocode would destroy the meaning. If you genuinely want something delegated, just say so — the point is to make delegation a deliberate choice, not the path of least resistance.
+**Judgement is auditable.** Every verdict records the criterion applied. A right conclusion with wrong reasoning is `partial`, not `correct`.
+
+**Append-only log, bounded context.** A feature's evidence log is never rewritten, only appended to. At close it becomes `report.md` and is never read again. Only `knowledge.md` grows across the project, one row per objective.
+
+**Authorship, not exposure.** Claude/the model doesn't write what you owe as your task. It can read and critique your code, and — narrowly, and dependent on where an objective sits on the ladder — show a worked example for genuinely new material or delegate-bucket configuration. The exception shrinks automatically as you advance.
 
 ## Layout
 
 ```
 technical-learning-mentor/
 ├── SKILL.md              core: rules and routing
-├── MANUAL.md             usage manual (pt-BR)
+├── MANUAL.md              usage manual (pt-BR)
 ├── README.md
-├── install.sh            curl | bash installer
-├── commands/             thin slash commands, copied into .claude/commands/
-├── references/           knowledge-model · evidence-log · judging
-│                         teaching · retention · code-policy
-└── templates/            profile · knowledge · feature-map
-                          progress · report
+├── commands/              procedure for each command
+├── references/            knowledge-model · evidence-log · judging
+│                          teaching · retention · worked-examples · code-policy
+├── templates/             profile · knowledge · feature-map · report
+│                          progress.html · mentor-gitignore
+└── install/
+    ├── install.sh          copies the skill + commands for claude/cursor/codex
+    └── commands/           the six thin slash-command trigger files
 ```
 
 State generated in your project:
 
 ```
 .mentor/
-├── profile.md            experience and target level per tag, config
-├── knowledge.md          every objective in the project and its state
-├── progress.md           the panel — pt-BR, derived, disposable
+├── .gitignore             ignores progress.html and features/*/examples/
+├── profile.md              experience/target per tag, study_hours_total, config — versioned
+├── knowledge.md             every objective, its state, and last_seen / last_seen_hours — versioned
+├── progress.html            the panel — Portuguese content, derived — NOT versioned
 └── features/<slug>/
-    ├── map.md            what the feature requires and where it came from
-    ├── evidence.jsonl    append-only log
-    └── report.md         written at close
+    ├── map.md                bucket sort, limiting objective, requirements — versioned
+    ├── evidence.jsonl          append-only log — versioned
+    ├── examples/                /mentor-example output — NOT versioned
+    └── report.md                 written at close — versioned
 ```
 
-## Status
-
-V2. V1 worked but left no trace — this version exists to fix that.
-
-Two things still being calibrated, adjustable in `references/` without touching the architecture:
-
-- whether `/mentor-map` produces well-formed objectives or slides back into topic lists;
-- whether the ~20 min per feature budget holds up in real use.
-
-## License
-
-MIT
+Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The two exceptions are purely derived or session-scoped output that would otherwise add diff noise without adding record.
