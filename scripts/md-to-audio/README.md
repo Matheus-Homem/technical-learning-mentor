@@ -17,5 +17,9 @@ who lands in this directory first knows where to go.
 - `prepare_narration.py` — strips markdown, expands abbreviations, applies the
   glossary, splits em-dash asides.
 - `generate_audio.py` — synthesizes with `edge-tts` (needs internet).
-- `narration_glossary.json` — pronunciation substitutions. **Extend this file**
-  per source document rather than hardcoding terms into the script.
+- `narration_glossary.json` — ships **empty**. Do not add project-specific
+  terms here: this file is versioned as part of the skill and is copied into
+  every project that installs it. Real glossary entries go in
+  `.mentor/narration_glossary.json` inside the project being mentored — not
+  version-controlled there either, but scoped to that project instead of
+  leaking into every install. See `references/audio.md`.
