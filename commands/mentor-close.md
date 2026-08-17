@@ -32,7 +32,7 @@ Inject anything due from `references/retention.md`, interleaved rather than bloc
 **7. Judge and record.** Evidence lines for everything, per `references/evidence-log.md`, `study_hours_total` set on each.
 
 **8. Close the feature.**
-- Write `report.md` from the template: objectives touched, transitions, misconceptions opened and closed, calibration summary, Feynman notes including the rejected-alternative pass, the out-of-project scenario result, what was delegated via `/mentor-example` this feature, what carries into the next feature.
+- Write `report.md` from the template: objectives touched, transitions, misconceptions opened and closed, calibration summary, Feynman notes including the rejected-alternative pass, the out-of-project scenario result, what was delegated via `/mentor-class` this feature, what carries into the next feature.
 - Update every affected row in `knowledge.md`, including `last_seen` / `last_seen_hours`.
 - Regenerate `progress.html`.
 - Mark the feature closed in `map.md`. From here, its `evidence.jsonl` is never read again.
