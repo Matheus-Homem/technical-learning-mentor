@@ -55,6 +55,10 @@ else
 fi
 
 echo "linking commands into $COMMANDS_DIR..."
+# Remove stale mentor-* commands first. A plain copy would leave behind any
+# command that was renamed or dropped upstream, as a slash command pointing at
+# a procedure that no longer exists.
+rm -f "$COMMANDS_DIR"/mentor-*.md
 cp "$SKILL_DIR"/commands/*.md "$COMMANDS_DIR"/
 
 if [[ "$TOOL" == "cursor" ]]; then

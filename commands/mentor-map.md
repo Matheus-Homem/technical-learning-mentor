@@ -23,7 +23,7 @@ Apply `references/knowledge-model.md`. For each candidate, ask what someone woul
 - 📖 **explain** — needs understanding, not optimisation
 - 📦 **delegate** — mechanical coupling / lookup configuration, no trade-off worth learning
 
-Only 🎯 and 📖 become rows in `knowledge.md`. 📦 items go straight into `map.md`'s delegate list, to be handled later via `/mentor-example` — do not create objectives for them.
+Only 🎯 and 📖 become rows in `knowledge.md`. 📦 items go straight into `map.md`'s delegate list, to be handled later via `/mentor-class` — do not create objectives for them.
 
 Trace every objective to its origin. Check `knowledge.md` first and reuse ids for anything that returns — a returning objective keeps its state and history. Aim for sharpness: if the 🎯+📖 total exceeds roughly 15 new objectives, merge some or reconsider whether more belongs in delegate.
 
@@ -38,7 +38,7 @@ For every tag that has no entry in `profile.md`, ask two questions. Skip tags al
 
 Write the answers to `profile.md`. Experience sets the initial state of that tag's objectives: *never used* → `unassessed`, *used a little* / *use it regularly* → `declared`. *Skip* archives the tag's objectives for this feature.
 
-**7. Write `map.md`** for the feature, using the template — bucket sort, limiting objective, carried-in items. Create `evidence.jsonl` empty and an `examples/` folder.
+**7. Write `map.md`** for the feature, using the template — bucket sort, limiting objective, carried-in items. Create `evidence.jsonl` empty and a `classes/` folder.
 
 **8. Update `knowledge.md`** with new rows for 🎯/📖 objectives only; leave existing rows untouched except `origin` if the objective returned.
 
@@ -53,5 +53,6 @@ A short message, then the panel:
 - what's already at or above target from earlier features
 - anything `fragile` or carrying an open misconception that this feature needs again
 - any due reviews (per `references/retention.md`) that have piled up
+- a one-line offer of `/mentor-class` for anything delegated, or for an objective arriving unusually weak. An offer, not a queue — do not start generating anything here.
 
 Do not lecture the content here. The point is orientation and a deliberate, one-time trade-off decision — not teaching.

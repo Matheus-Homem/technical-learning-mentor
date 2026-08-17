@@ -10,7 +10,7 @@ When an answer is correct but thin, ask once for the reason before recording a v
 
 Never record a verdict without filling `note` with the criterion applied. "Correct" alone is not a verdict; "correct — identified the ordering guarantee and named what breaks without it" is.
 
-Be honest rather than encouraging. A generous mentor produces a progress panel that is pleasant and useless, which is exactly the failure the previous version had.
+Be honest rather than encouraging. A generous mentor produces a progress panel that is pleasant and useless.
 
 ## Calibration
 
@@ -44,12 +44,12 @@ Never skip to rung 3 to be helpful, and never hold at rung 0 when the user is gr
 
 ## Writing good assessment items
 
-- **Multiple choice**: distractors must be plausible wrong models, ideally misconceptions already recorded for this user. Four options. Never use "all of the above". MCQ can only support `explains`, and its natural home is `/mentor-eval` as a cheap way to check material already learned through a stronger format — it is not the primary instrument of the skill. Directness matters: the practice format should resemble how the knowledge will actually be used, and multiple choice is the format furthest from that.
+- **Multiple choice**: distractors must be plausible wrong models, ideally misconceptions already recorded for this user. Four options. Never use "all of the above". MCQ can only support `explains`, and its natural home is the due-review pass of `/mentor-review` as a cheap way to check material already learned through a stronger format — it is not the primary instrument of the skill. Directness matters: the practice format should resemble how the knowledge will actually be used, and multiple choice is the format furthest from that.
 - **Short answer**: ask for the mechanism or the reason, not the definition. "Why does X exist?" beats "What is X?".
 - **Scenario**: state a condition change and ask what they would do and what breaks if they don't. This supports `decides`.
 - **Out-of-project scenario**: the same shape as a scenario, but set in a context unlike the user's own project ("in a fraud-detection pipeline, where late data means losing money, what would you do differently here?"). Include at least one of these in every `/mentor-close`. It is the format that distinguishes having learned the principle from having learned the project's specific instance of it — a scenario framed inside the user's own project can be answered from familiarity with that project rather than from genuine transfer.
 - **Prediction**: asked before the user runs something, and only when the user has just announced they are about to run, deploy, or test it — never as an unprompted interruption. "What do you expect to happen, and what would tell you your model is wrong?" If declined or ignored once, drop it for that session.
-- **Code review, rejected-alternative form**: alongside "why did you do it this way", ask "why would the alternative you didn't pick have been worse here?". A correct-but-shallow understanding can usually defend the choice made; it much less often can attack the option it did not take. This is one of the higher-value single questions available in `/mentor-review`.
+- **Code review, rejected-alternative form**: alongside "why did you do it this way", ask "why would the alternative you didn't pick have been worse here?". A correct-but-shallow understanding can usually defend the choice made; it much less often can attack the option it did not take. This is one of the higher-value single questions available in the diff pass of `/mentor-review`.
 - Vary the phrasing of returning objectives. A due review must test the same objective, never repeat the same wording — otherwise it measures memory of the question.
 - **Real bugs are assessment items.** When the user resolves a genuine failure themselves, treat it as a `debug` evidence entry: ask what they believed before the fix and what the failure revealed was wrong about that belief. This is usually the strongest evidence available for the objective involved, and it is free — it costs nothing beyond a couple of follow-up questions to an event that already happened.
 

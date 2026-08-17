@@ -18,7 +18,7 @@ Two shapes are allowed:
 - **Proposition** — a claim about how something works. Target level is usually `explain`.
 - **Decision rule** — a judgement to make under stated conditions. Target level is always `decide`. Phrase it as `Given X, decide Y`.
 
-If an objective cannot be phrased as one of these two, it is not an objective — it is a tag, or it belongs in the delegate bucket (see `worked-examples.md`).
+If an objective cannot be phrased as one of these two, it is not an objective — it is a tag, or it belongs in the delegate bucket (see `classes.md`).
 
 ## Not everything becomes an objective: the three buckets
 
@@ -28,11 +28,11 @@ At `/mentor-map`, before anything is written to `knowledge.md`, every candidate 
 |---|---|---|
 | 🎯 **decide** | a trade-off the user will meet again in their career; transferable | becomes an objective, target `decide`, gets scenarios |
 | 📖 **explain** | needs to be understood and justified, not optimised | becomes an objective, target `explain`, lighter assessment |
-| 📦 **delegate** | mechanical coupling between tools, lookup-able configuration | does **not** become an objective; routed to `/mentor-example` |
+| 📦 **delegate** | mechanical coupling between tools, lookup-able configuration | does **not** become an objective; routed to `/mentor-class` |
 
 The test for delegate vs. objective: **if the parameter encodes a trade-off the user needs to be able to navigate, it is knowledge. If it is plumbing between services, it is lookup.**
 
-A Flink job's parallelism is a decision — it becomes an objective. The startup order between two containers in a compose file is usually plumbing — it goes to delegate. Delegating the second is what buys time for the first; see `worked-examples.md` for how delegation is done without it becoming silent code delivery.
+A Flink job's parallelism is a decision — it becomes an objective. The startup order between two containers in a compose file is usually plumbing — it goes to delegate. Delegating the second is what buys time for the first; see `classes.md` for how delegation is done without it becoming silent code delivery.
 
 This distinction exists because of a real constraint highlighted under time pressure (a study sprint, a deadline): learning everything a project touches, at `decide` level, is not achievable and produces shallow coverage of everything instead of real depth where it matters. The buckets make that trade-off explicit and chosen once, rather than accidental.
 
@@ -74,7 +74,7 @@ Only two targets exist:
 
 At `/mentor-map`, in addition to sorting into buckets, name **one limiting objective** for the feature when one is visible: the transversal concept that most other `decide`-bucket objectives depend on. It is usually not a tool-specific item — it is the cross-cutting idea (e.g. "time and ordering in a distributed system") that quietly determines whether the rest of the feature's decisions can be made correctly.
 
-The limiting objective is marked in `map.md` and gets deliberate drill in `/mentor-eval` (repeated scenarios, varying conditions) rather than the normal rotation with everything else. Not every feature has a clear one; do not force it.
+The limiting objective is marked in `map.md` and gets deliberate drill in the due-review pass of `/mentor-review` (repeated scenarios, varying conditions) rather than the normal rotation with everything else. Not every feature has a clear one; do not force it.
 
 ## The mastery ladder
 
@@ -93,7 +93,7 @@ unassessed → declared → fragile → explains → decides → fluent
 | `decides` | met the `decide` bar | a justified decision, not a recognised answer |
 | `fluent` | reliable without consulting anything | **two independent evidences at target level, at least 14 days apart, with no lookup** |
 
-`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like the previous version's failure: effort with no legible outcome.
+`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like effort with no legible outcome.
 
 Demotion is normal and not a punishment: a failed due review sends an objective back to `fragile` and restarts its position on the ladder in `retention.md`.
 

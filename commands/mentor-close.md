@@ -32,12 +32,42 @@ Inject anything due from `references/retention.md`, interleaved rather than bloc
 **7. Judge and record.** Evidence lines for everything, per `references/evidence-log.md`, `study_hours_total` set on each.
 
 **8. Close the feature.**
-- Write `report.md` from the template: objectives touched, transitions, misconceptions opened and closed, calibration summary, Feynman notes including the rejected-alternative pass, the out-of-project scenario result, what was delegated via `/mentor-example` this feature, what carries into the next feature.
+- Write `report.md` from the template: objectives touched, transitions, misconceptions opened and closed, calibration summary, Feynman notes including the rejected-alternative pass, the out-of-project scenario result, what was delegated via `/mentor-class` this feature, what carries into the next feature.
 - Update every affected row in `knowledge.md`, including `last_seen` / `last_seen_hours`.
 - Regenerate `progress.html`.
 - Mark the feature closed in `map.md`. From here, its `evidence.jsonl` is never read again.
 
 **9. Handle a pivot.** If the project direction changed and objectives are no longer required, archive them (`archived:` prefix). Keep evidence and history. Never delete a row.
+
+**10. If `prune_closed_features_on_close` is `true` in `profile.md`**, untrack this feature's scratch files from git. Off by default — it fits one specific workflow (feature branches merge into `main` only after `/mentor-close`, always via a real merge commit, never squash) and is not a general-purpose default. If enabled:
+
+a. **Commit the feature's final state first.** `report.md` was just written and has never been committed before this point — it must be captured in git history at least once before being untracked, or its content never actually enters the object database.
+
+   ```
+   git add .mentor/features/<slug>/
+   git commit -m "chore(mentor): close <slug>
+
+   Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+   ```
+
+b. **Untrack the feature's scratch files.** Content stays on disk and stays recoverable via `git log -- <path>` from this commit backward — contingent on the eventual merge into `main` being a real merge, not a squash.
+
+   ```
+   git rm -r --cached .mentor/features/<slug>/map.md .mentor/features/<slug>/evidence.jsonl .mentor/features/<slug>/report.md
+   ```
+
+c. **Append `features/<slug>/` to `.mentor/.gitignore`**, scoped to this feature only — never a blanket `features/**`, which would block normal tracking during the *next* open feature.
+
+d. **Commit the prune.**
+
+   ```
+   git add .mentor/.gitignore
+   git commit -m "chore(mentor): stop tracking <slug> scratch files
+
+   Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+   ```
+
+Tell the user both commits ran, and that only `profile.md` and `knowledge.md` will carry this feature's `.mentor/` content forward once the branch merges into `main`.
 
 ## Closing message
 
@@ -50,4 +80,4 @@ Show the user:
 - how the out-of-project scenario went, and what that implies about transfer vs. familiarity
 - the calibration line if high-confidence errors clustered anywhere
 
-This message is the answer to the question that broke the previous version: *what did I actually learn here?*
+This message is the answer to *what did I actually learn here?*

@@ -7,7 +7,7 @@
      See references/knowledge-model.md before adding rows.
 
      Items sorted into the `delegate` bucket at /mentor-map do NOT get a row
-     here — they are not learning objectives. See references/worked-examples.md. -->
+     here — they are not learning objectives. See references/classes.md. -->
 
 | id | statement | tags | target | state | evidence | misconception | last_seen | last_seen_hours |
 |---|---|---|---|---|---|---|---|---|

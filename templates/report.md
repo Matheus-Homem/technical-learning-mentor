@@ -50,9 +50,10 @@
 
 ## Delegated this feature
 
-<!-- Items handled via /mentor-example: what was delegated and why, and
-     whether the completion-problem step revealed any gap suggesting the
-     item was mis-bucketed (see references/worked-examples.md). -->
+<!-- Items handled via /mentor-class: what was delegated and why, which
+     format each class used, and whether the questioning or completion step
+     revealed any gap suggesting the item was mis-bucketed (see
+     references/classes.md). -->
 
 ## Carried forward
 

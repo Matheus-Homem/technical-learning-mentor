@@ -17,7 +17,7 @@ Nothing is predicted. Everything is measured after the fact, and the decision of
 
 ## The dual clock
 
-At the start of any command that might review something (`/mentor-eval`, `/mentor-close`), ask the user how much they have studied since the last session, and add it to `study_hours_total` in `profile.md`. One question, a few seconds.
+At the start of any command that might review something (`/mentor-map`, `/mentor-review`, `/mentor-close`), ask the user how much they have studied since the last session, and add it to `study_hours_total` in `profile.md`. One question, a few seconds.
 
 Then, for each objective, compute two deltas:
 
@@ -41,9 +41,11 @@ These numbers are a **default for judgement, not a rule to execute mechanically*
 
 ## Injecting due reviews
 
-At the start of `/mentor-eval` and `/mentor-close`, compute both deltas for every active (non-archived) objective in the project — not just the active feature. Reviews from older, closed features are the whole point of this mechanism; that is why `knowledge.md`, unlike the per-feature evidence logs, is read across the whole project.
+In the due-review pass of `/mentor-review` (Part B) and at `/mentor-close`, compute both deltas for every active (non-archived) objective in the project — not just the active feature. Reviews from older, closed features are the whole point of this mechanism; that is why `knowledge.md`, unlike the per-feature evidence logs, is read across the whole project.
 
 Mix due reviews into the round rather than grouping them at the end. Interleaving new and old material is harder in the moment and retains better; a block of "review questions" tacked onto the end lets the user pattern-match their way through instead of actually retrieving.
+
+`/mentor-review`'s two-part shape is not an exception to this. Part A is anchored to code just written and has to come first; it is a different format, not a block of new items the retrieval questions are being appended to. What makes the interleaving work there is that an objective the diff pass already exercised is **dropped from the Part B queue**, not re-asked — the due review was satisfied by the strongest evidence available for it, in the most direct format there is. Interleave within the Part B queue itself, and at `/mentor-close`, where new and old items genuinely share a round.
 
 Sequencing under a time budget, in priority order:
 
@@ -59,4 +61,4 @@ If the budget cannot cover the queue, cut from the bottom and say so explicitly 
 ## What does not get scheduled
 
 - Objects with no evidence yet have no review to compute — they are covered by priority 4, not by this mechanism.
-- Delegate-bucket items (see `worked-examples.md`) are not objectives and are never scheduled for review.
+- Delegate-bucket items (see `classes.md`) are not objectives and are never scheduled for review.

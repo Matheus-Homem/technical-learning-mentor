@@ -6,9 +6,9 @@ Regenerates `.mentor/progress.html` from `knowledge.md` plus the active feature'
 
 `progress.html` is a rendering, never a source of truth, and is not version-controlled (see `.mentor/.gitignore`). If it is missing or stale, overwrite it without asking.
 
-## Computing the delta without a stored previous render
+## Computing the delta
 
-There is no `progress.md` to diff against anymore. Instead:
+The delta is computed from the previous render's own metadata, not from a stored copy of it:
 
 1. Read the `<mentor-meta rendered_at="..." study_hours_total="..." feature="..." />` comment at the top of the existing `progress.html`, if the file exists.
 2. Treat everything in `knowledge.md` with `last_seen` after that timestamp as "changed since last time" — state transitions, new evidence, new misconceptions opened or closed.
@@ -22,7 +22,7 @@ There is no `progress.md` to diff against anymore. Instead:
 - The "Mudou desde a última interação" section is the most important part of the file.
 - Group by tag where it helps (`<details>` per tag), but an objective with several tags appears under each.
 - Show overdue reviews with how overdue they are, on whichever clock (calendar or exposure) triggered it. Never hide the backlog.
-- Always render the "⏳ Aguardando confirmação de fluência" section when anything qualifies — it's what keeps a study sprint from ending with the same invisibility problem the previous version had.
+- Always render the "⏳ Aguardando confirmação de fluência" section when anything qualifies — it's what keeps a study sprint from ending with nothing legible to show for it.
 - Show the calibration section only when a real pattern exists.
 - Keep it scannable. If the project has grown large, show fragile + due + recently changed in full, and collapse the rest into per-tag counts inside `<details>`.
 
