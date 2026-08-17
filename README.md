@@ -22,10 +22,9 @@ spec-driven produces plan → design → tasks
 /mentor-map          before writing any code — sorts knowledge into
                       decide / explain / delegate, ~5-10 min
         ↓
-you develop           /mentor-example for delegated items, ~15 min each
-                       /mentor-review after each block of code, ~5-10 min
-        ↓
-/mentor-eval          optional, whenever — spaced retrieval, 5/15/30 min
+you develop           /mentor-class when something is blocking you, ~15 min each
+                       /mentor-review after each block of code, and at session
+                       start — your diff, then whatever is due, ~5-15 min
         ↓
 /mentor-close          when the activity is done, ~10-20 min
         ↓
@@ -39,9 +38,8 @@ The pace this runs at adapts on its own — see "the dual clock" below. A dense 
 | Command | When | What for |
 |---|---|---|
 | `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept |
-| `/mentor-example <what>` | for anything sorted into delegate, or genuinely new material | annotated artifact → questions → completion problem |
-| `/mentor-review [path]` | after writing code — the default checkpoint | turn your own code into the strongest evidence available |
-| `/mentor-eval [--time 5\|15\|30]` | whenever you want, esp. session start | spaced retrieval — resurface what's due |
+| `/mentor-class <topic>` | when something is blocking you: a delegated item, new material, a topic you're about to start | teaching material in the format that fits the difficulty — explanation, audio, diagram, notebook |
+| `/mentor-review [path] [--time 5\|15\|30]` | after writing code — the default checkpoint — and at session start | your own code as the strongest evidence available, then spaced retrieval of whatever is due |
 | `/mentor-close` | when the activity is finished | Feynman + rejected-alternative + decision scenarios (incl. one outside the project) + close the cycle |
 | `/mentor-progress [--all\|--tag X]` | any time | see where you stand |
 
@@ -56,10 +54,10 @@ curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-me
 
 What the installer does, and why it differs by tool:
 
-- **Claude Code** auto-discovers a skill placed at `.claude/skills/technical-learning-mentor/SKILL.md` from its frontmatter — no extra step. The installer clones the skill there and copies the six `/mentor-*` commands into `.claude/commands/`.
-- **Cursor** has no native skill-folder auto-discovery. The installer clones the same skill content into `.cursor/skills/technical-learning-mentor/`, copies the six commands into `.cursor/commands/`, and adds an `alwaysApply` rule at `.cursor/rules/technical-learning-mentor.md` that points the model at the skill — that rule is what makes Cursor aware it exists.
+- **Claude Code** auto-discovers a skill placed at `.claude/skills/technical-learning-mentor/SKILL.md` from its frontmatter — no extra step. The installer clones the skill there and copies the five `/mentor-*` commands into `.claude/commands/`.
+- **Cursor** has no native skill-folder auto-discovery. The installer clones the same skill content into `.cursor/skills/technical-learning-mentor/`, copies the five commands into `.cursor/commands/`, and adds an `alwaysApply` rule at `.cursor/rules/technical-learning-mentor.md` that points the model at the skill — that rule is what makes Cursor aware it exists.
 
-The skill content itself — `SKILL.md`, `commands/`, `references/`, `templates/` — is identical across both. Only where it's placed, and how much the host tool notices it without being told, differs. Re-running the installer updates an existing install in place (`git pull --ff-only`).
+The skill content itself — `SKILL.md`, `commands/`, `references/`, `templates/`, `scripts/` — is identical across both. Only where it's placed, and how much the host tool notices it without being told, differs. Re-running the installer updates an existing install in place (`git pull --ff-only`).
 
 On the first `/mentor-map` in a repo, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
 
@@ -83,7 +81,7 @@ At `/mentor-map`, every candidate is sorted once, deliberately, into one of thre
 
 - 🎯 **decide** — a transferable trade-off you'll meet again in your career. Becomes an objective, gets scenarios.
 - 📖 **explain** — needs to be understood and justified, not optimised. Becomes an objective, lighter assessment.
-- 📦 **delegate** — mechanical coupling, lookup-able configuration. Never becomes an objective — handled by `/mentor-example` instead, which delegates the artifact but still extracts learning from it (annotated → questioned → a completion problem to fill in), rather than just handing it over.
+- 📦 **delegate** — mechanical coupling, lookup-able configuration. Never becomes an objective — handled by `/mentor-class` instead, which delegates the artifact but still extracts learning from it (annotated → questioned → a completion problem to fill in), rather than just handing it over.
 
 The test: if the parameter encodes a trade-off you need to be able to navigate, it's learning. If it's plumbing between services, it's lookup. Learning everything a real project touches at decision-level depth isn't achievable under any real time budget — this makes that trade-off explicit and chosen once, instead of accidental.
 
@@ -119,13 +117,15 @@ self-report  <  multiple choice  <  short answer
                 alternative would have been worse, or a real bug diagnosed
 ```
 
-Multiple choice has a ~25% floor from guessing and **never** promotes anything to `decides`. It lives in `/mentor-eval` as a cheap way to check material already learned through a stronger format — never the backbone.
+Multiple choice has a ~25% floor from guessing and **never** promotes anything to `decides`. It lives in `/mentor-review`'s due-review pass as a cheap way to check material already learned through a stronger format — never the backbone.
 
 ## Design decisions
 
-**Directness first.** Practice should resemble how the knowledge will actually be used. A prepared quiz is the most indirect format available; a decision justified in your own code, or a prediction made right before you run something, is the most direct. The command weighting reflects this — `/mentor-review` is the default checkpoint, `/mentor-eval` is for spaced retrieval, not new content.
+**Directness first.** Practice should resemble how the knowledge will actually be used. A prepared quiz is the most indirect format available; a decision justified in your own code, or a prediction made right before you run something, is the most direct. `/mentor-review` puts both in one call and orders them accordingly: the diff pass always runs in full, because the code already exists and evaluating it is nearly free; the spaced-retrieval pass takes whatever time is left. An objective your diff already exercised doesn't get re-asked as a quiz item — it was just answered in the strongest format there is.
 
-**Delegation with a toll, not a ban.** For dense, mostly non-conceptual configuration, studying a worked example beats producing one from scratch — search for the right shape of the answer consumes the attention that would otherwise form the pattern. `/mentor-example` delivers the artifact, but only alongside annotation, targeted questions, and a completion problem. Passive delivery without those steps isn't covered by this exception.
+**Delegation with a toll, not a ban.** For dense, mostly non-conceptual configuration, studying a worked example beats producing one from scratch — search for the right shape of the answer consumes the attention that would otherwise form the pattern. `/mentor-class` delivers the artifact, but only alongside annotation and targeted questions — and, whenever the artifact carries code, a completion problem you have to fill in. Passive delivery without those steps isn't covered by this exception.
+
+**One artifact, chosen — not four, generated.** A class picks its format from the shape of the difficulty: prose plus audio when a concept hasn't landed, a Mermaid walkthrough when it's the order of steps, a scratch notebook when you can't get the first line of code to run, a self-contained HTML diagram when it's how several components relate. Producing all of them "to be safe" buries the one that would have helped. And one diagnosis produces no artifact at all: if you already understand it and are just slow, that's a retention problem, and generating an explanation is pure cost.
 
 **Transfer is checked explicitly.** A project teaches the project, not always the underlying domain. Every close includes at least one decision scenario set outside the user's own project — the only reliable way to tell whether a principle was learned or just its one instance here.
 
@@ -137,7 +137,7 @@ Multiple choice has a ~25% floor from guessing and **never** promotes anything t
 
 **Append-only log, bounded context.** A feature's evidence log is never rewritten, only appended to. At close it becomes `report.md` and is never read again. Only `knowledge.md` grows across the project, one row per objective.
 
-**Authorship, not exposure.** Claude/the model doesn't write what you owe as your task. It can read and critique your code, and — narrowly, and dependent on where an objective sits on the ladder — show a worked example for genuinely new material or delegate-bucket configuration. The exception shrinks automatically as you advance.
+**Authorship, not exposure.** Claude/the model doesn't write what you owe as your task. It can read and critique your code, and — narrowly, and dependent on where an objective sits on the ladder — produce a class for genuinely new material or delegate-bucket configuration. The exception shrinks automatically as you advance, and of the four class formats only the scratch notebook contains runnable code at all: it exists so you can poke at an unfamiliar library and see what comes back, never so your task arrives in cells.
 
 ## Layout
 
@@ -147,27 +147,30 @@ technical-learning-mentor/
 ├── MANUAL.md              usage manual (pt-BR)
 ├── README.md
 ├── commands/              procedure for each command
-├── references/            knowledge-model · evidence-log · judging
-│                          teaching · retention · worked-examples · code-policy
+├── references/            knowledge-model · evidence-log · judging · teaching
+│                          retention · classes · audio · class-diagrams
+│                          code-policy
 ├── templates/             profile · knowledge · feature-map · report
 │                          progress.html · mentor-gitignore
-└── install/
-    ├── install.sh          copies the skill + commands for claude/cursor/codex
-    └── commands/           the six thin slash-command trigger files
+├── scripts/
+│   └── md-to-audio/        prepare_narration.py · generate_audio.py
+│                            narration_glossary.json — the /mentor-class
+│                            narration pipeline (see references/audio.md)
+└── install.sh             copies the skill + commands for claude/cursor
 ```
 
 State generated in your project:
 
 ```
 .mentor/
-├── .gitignore             ignores progress.html and features/*/examples/
+├── .gitignore             ignores progress.html and features/*/classes/
 ├── profile.md              experience/target per tag, study_hours_total, config — versioned
 ├── knowledge.md             every objective, its state, and last_seen / last_seen_hours — versioned
 ├── progress.html            the panel — Portuguese content, derived — NOT versioned
 └── features/<slug>/
     ├── map.md                bucket sort, limiting objective, requirements — versioned
     ├── evidence.jsonl          append-only log — versioned
-    ├── examples/                /mentor-example output — NOT versioned
+    ├── classes/<topic-slug>/     /mentor-class output — NOT versioned
     └── report.md                 written at close — versioned
 ```
 
