@@ -1,8 +1,15 @@
 # Placed at .mentor/.gitignore during first-run bootstrap by /mentor-map.
 # Everything else in .mentor/ is intentionally version-controlled — it's
 # the durable record this skill exists to keep, backed up like any other
-# project state. Only the derived panel and session-only worked-example
-# output are excluded.
+# project state. Excluded: the derived panel, session-only /mentor-class
+# output, and the narration pronunciation glossary (production trivia for
+# TTS, not part of the learning record — see references/audio.md).
+#
+# If `prune_closed_features_on_close` is enabled in profile.md, /mentor-close
+# appends one `features/<slug>/` line below per closed feature — never a
+# blanket `features/**`, which would block normal tracking of the next open
+# feature's map.md/evidence.jsonl/report.md. See commands/mentor-close.md.
 
 progress.html
-features/*/examples/
+features/*/classes/
+narration_glossary.json
