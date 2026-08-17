@@ -67,8 +67,8 @@ def expand_abbreviations(text: str) -> str:
 
 
 def resolve_glossary_path(explicit: Path | None) -> Path:
-    """Explicit --glossary wins; otherwise prefer the per-project glossary
-    under .mentor/, falling back to this script's own (ships empty)."""
+    """Explicit --glossary wins, then the per-project glossary, then this
+    script's own."""
     if explicit is not None:
         return explicit
     if PROJECT_GLOSSARY_PATH.exists():
@@ -77,11 +77,7 @@ def resolve_glossary_path(explicit: Path | None) -> Path:
 
 
 def apply_glossary(text: str, glossary_path: Path) -> str:
-    """Swap technical tokens for how they should be pronounced. Extend the
-    per-project glossary (.mentor/narration_glossary.json) as new source
-    documents surface new bad-sounding terms — never this script's own
-    narration_glossary.json, which is shared across every project that
-    installs this skill and must stay empty."""
+    """Swap technical tokens for how they should be pronounced."""
     if not glossary_path.exists():
         return text
     glossary = json.loads(glossary_path.read_text(encoding="utf-8"))
