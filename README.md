@@ -153,10 +153,9 @@ technical-learning-mentor/
 ├── templates/             profile · knowledge · feature-map · report
 │                          progress.html · mentor-gitignore
 ├── scripts/
-│   └── md-to-audio/        prepare_narration.py · generate_audio.py
-│                            narration_glossary.json (ships empty) — the
-│                            /mentor-class narration pipeline (see
-│                            references/audio.md)
+│   └── md-to-audio/        the /mentor-class narration pipeline —
+│                            prepare_narration.py · generate_audio.py
+│                            narration_glossary.json (ships empty)
 └── install.sh             copies the skill + commands for claude/cursor
 ```
 
@@ -177,4 +176,4 @@ State generated in your project:
     └── report.md                 written at close — versioned
 ```
 
-Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The exceptions are purely derived or session-scoped output, and one deliberate carve-out — the narration glossary is production trivia for TTS pronunciation, not evidence of learning, so it isn't judged worth carrying in git history.
+Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The exceptions are purely derived or session-scoped output, plus the narration glossary — production trivia for TTS pronunciation, not evidence of learning.

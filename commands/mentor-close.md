@@ -80,4 +80,4 @@ Show the user:
 - how the out-of-project scenario went, and what that implies about transfer vs. familiarity
 - the calibration line if high-confidence errors clustered anywhere
 
-This message is the answer to the question that broke the previous version: *what did I actually learn here?*
+This message is the answer to *what did I actually learn here?*

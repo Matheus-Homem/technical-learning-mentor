@@ -93,7 +93,7 @@ unassessed → declared → fragile → explains → decides → fluent
 | `decides` | met the `decide` bar | a justified decision, not a recognised answer |
 | `fluent` | reliable without consulting anything | **two independent evidences at target level, at least 14 days apart, with no lookup** |
 
-`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like the previous version's failure: effort with no legible outcome.
+`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like effort with no legible outcome.
 
 Demotion is normal and not a punishment: a failed due review sends an objective back to `fragile` and restarts its position on the ladder in `retention.md`.
 

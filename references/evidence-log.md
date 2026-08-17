@@ -15,7 +15,7 @@ Read the active feature's log in full at the start of any command. Never read a 
   "id": "E-014",
   "ts": "2026-08-12T14:30:00Z",
   "objective": "K-07",
-  "kind": "mcq | short_answer | scenario | out_of_project_scenario | prediction | code_review | feynman | feynman_rejection | question_asked | debug | example",
+  "kind": "mcq | short_answer | scenario | out_of_project_scenario | prediction | code_review | feynman | feynman_rejection | question_asked | debug | class",
   "prompt": "what was asked, or what situation produced the evidence",
   "response": "what the user said or did, summarised faithfully",
   "verdict": "correct | partial | incorrect | n/a",
@@ -58,7 +58,7 @@ From weakest to strongest:
 | `code_review`, rejected-alternative form — user explains why the option *not* chosen would have been worse | strong | `decides` |
 | `debug` — user diagnosed a real failure themselves, and can state what mental model was wrong beforehand | strong | `decides` |
 | `feynman_rejection` — user explains, unaided, why a plausible alternative approach would have been worse | strong | `decides` |
-| `example` — a `/mentor-class` interaction | n/a for mastery | never promotes an objective; see `classes.md`. The kind name is historical and kept unchanged so existing logs stay valid. |
+| `class` — a `/mentor-class` interaction | n/a for mastery | never promotes an objective; see `classes.md` |
 
 Rules that follow from this:
 

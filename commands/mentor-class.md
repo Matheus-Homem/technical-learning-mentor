@@ -68,7 +68,7 @@ This step is what bounds the code-policy exception. Handing over a code-bearing 
 
 **6. Log and store.**
 
-- Append one `kind: "example"` evidence entry to the feature's `evidence.jsonl`, `study_hours_total` set, referencing any adjacent tags or objectives. This does not promote anything and does not create a `knowledge.md` row. (The kind name is historical; it covers every `/mentor-class` interaction.)
+- Append one `kind: "class"` evidence entry to the feature's `evidence.jsonl`, `study_hours_total` set, referencing any adjacent tags or objectives. This does not promote anything and does not create a `knowledge.md` row.
 - A wrong answer during step 5 is ordinary `incorrect` evidence on whatever objective it touched, and opens a misconception like any other.
 - Save everything to `.mentor/features/<slug>/classes/<topic-slug>/`. Mention once that this folder is not version-controlled — session-derived output, regenerable; they can move or commit a copy manually if they want to keep it.
 

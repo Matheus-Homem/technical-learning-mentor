@@ -17,7 +17,7 @@ Run it only for the written format. A Mermaid walkthrough, a scratch notebook, a
 <slug>.md  →  [1] prepare_narration.py  →  [2] MANUAL REVIEW  →  [3] generate_audio.py  →  <slug>.mp3
 ```
 
-Do not skip step 2. TTS reads text literally: markdown syntax, numbered-list markers, em dashes, abbreviations, and inline code identifiers all need adapting before synthesis or the audio comes out garbled or mispronounced. This was learned the hard way — the first raw attempt on unprepared text was reported as "barely understandable".
+Do not skip step 2. TTS reads text literally: markdown syntax, numbered-list markers, em dashes, abbreviations, and inline code identifiers all need adapting before synthesis. Synthesised straight from unprepared text, the result is barely understandable.
 
 ### Step 1 — `prepare_narration.py`
 
@@ -42,11 +42,11 @@ What it does automatically:
 2. `.mentor/narration_glossary.json` under the current working directory, if it exists.
 3. `scripts/md-to-audio/narration_glossary.json` next to the script — **ships empty, and must stay empty**.
 
-Add terms to `.mentor/narration_glossary.json` in the project being mentored, not to the copy shipped with the skill. That file lives in `scripts/md-to-audio/` because it is versioned as part of the skill and gets copied into `.claude/skills/technical-learning-mentor/` (or the Cursor equivalent) on every install — anything written there ships to every project that installs or updates this skill next. A project's topic names, field names, and tool invocations belong to that project alone.
+Add terms to `.mentor/narration_glossary.json` in the project being mentored, never to the copy shipped with the skill: that copy is reinstalled into every project that installs or updates this skill, so anything written there leaks one project's vocabulary into all the others.
 
-`.mentor/narration_glossary.json` is **not** version-controlled (see `.mentor/.gitignore`) — unlike `profile.md`/`knowledge.md`, it is not treated as part of the durable learning record, by deliberate choice: it is production trivia for making TTS sound right, not evidence of anything the user learned. This means it does not survive a fresh clone and has to be rebuilt (or copied over manually) if the user wants it on another machine — accepted cost of keeping it out of history.
+`.mentor/narration_glossary.json` is not version-controlled (see `.mentor/.gitignore`) — it is production trivia for making TTS sound right, not part of the learning record. It does not survive a fresh clone and has to be rebuilt on another machine.
 
-If `.mentor/narration_glossary.json` does not exist yet, create it the first time a term needs an entry — an empty `{}` is fine to start from, same shape as the skill's own template:
+If it does not exist yet, create it the first time a term needs an entry — an empty `{}` is fine to start from:
 
 ```json
 {
@@ -56,7 +56,7 @@ If `.mentor/narration_glossary.json` does not exist yet, create it the first tim
 }
 ```
 
-**Extend this per-project file** as new source documents surface bad-sounding terms — never hardcode one-off terms into `prepare_narration.py` itself, and never add project-specific entries to the skill's own copy.
+**Extend this per-project file** as new source documents surface bad-sounding terms — never hardcode one-off terms into `prepare_narration.py` itself.
 
 ### Step 2 — manual review, no script
 
@@ -83,11 +83,11 @@ python3 scripts/md-to-audio/generate_audio.py \
 
 - `--voice`: pick from `edge-tts --list-voices | grep pt-BR` (or the target language's filter). Known-good pt-BR options: `pt-BR-AntonioNeural` (male), `pt-BR-FranciscaNeural` (female). Ask the user for a voice preference rather than assuming, and record it in `profile.md` → Notes if they state one.
 - `--rate`: speed delta, e.g. `-8%`. Slightly slower than default reads more clearly for technical content; a reasonable starting default, not a hard rule.
-- Output is MP3 directly, no post-processing needed for a single file. There is **no chunking/concatenation step**: a single `Communicate(...).save()` call handles the tested document sizes fine. If a source document is long enough that one edge-tts call becomes unreliable, chunk by paragraph and concatenate raw MP3 bytes (same-encoder CBR streams concatenate losslessly) rather than pulling in `pydub`/`ffmpeg` as a new dependency — this has not been needed yet, so do not add the complexity preemptively.
+- Output is MP3 directly, no post-processing needed for a single file. There is **no chunking/concatenation step**: one `Communicate(...).save()` call handles a class-sized document. Do not add chunking preemptively. If a source document is long enough that a single edge-tts call becomes unreliable, chunk by paragraph and concatenate raw MP3 bytes (same-encoder CBR streams concatenate losslessly) rather than pulling in `pydub`/`ffmpeg` as a new dependency.
 
 ## Critical pitfall: do not check a backgrounded run too early
 
-`generate_audio.py` can take over 120 seconds for a medium document, which auto-backgrounds the command in some harnesses. **Do not read the output file as "done" just because it exists and has bytes** — a partially written MP3 will play and cut off mid-sentence. This happened during development.
+`generate_audio.py` can take over 120 seconds for a medium document, which auto-backgrounds the command in some harnesses. **Do not read the output file as "done" just because it exists and has bytes** — a partially written MP3 will play and cut off mid-sentence.
 
 Wait for the actual completion signal: the task notification, or a foreground run with a long enough timeout. `generate_audio.py` prints `wrote <path> (<n> bytes)` and exits 0 only on real completion — use that, not file existence, as the done signal.
 

@@ -9,9 +9,9 @@ Help the user **learn the knowledge a project demands**, instead of building the
 
 This skill is technology-agnostic. Never assume a stack. Everything about *what* must be learned is derived from the user's own planning artifacts and code, never from generic knowledge of a technology.
 
-## The failure this skill exists to prevent
+## The primary deliverable
 
-The previous version assessed the user but left no trace: they answered questions, got corrected, and afterwards could not say what they had learned, what had stuck, or what needed more work. **Visibility of progress is the primary deliverable of this skill, not the assessments.** Assessments exist to feed the progress record. If a session produces judgement but does not update `.mentor/`, the session failed.
+**Visibility of progress is the primary deliverable of this skill, not the assessments.** Assessments that leave no trace are worthless: the user answers, gets corrected, and afterwards cannot say what they learned, what stuck, or what needs more work. Assessments exist to feed the progress record. If a session produces judgement but does not update `.mentor/`, the session failed.
 
 ## Core rules
 
@@ -50,16 +50,16 @@ Read/write rules that matter:
 - `knowledge.md` is the only file that grows across the whole project: one row per objective, and it is read in full by `/mentor-review` and `/mentor-close` (due reviews come from the whole project, not just the active feature).
 - `progress.html` is never a source of truth and is never version-controlled. It is safe to delete at any time; `/mentor-progress` regenerates it. Deleting it only costs the "what changed since last time" comparison for one subsequent render — see `commands/mentor-progress.md`.
 - `features/*/classes/` is never version-controlled — it's session-derived output from `/mentor-class`, regenerable, not a permanent record. Classes are always nested inside a feature; there is no class outside one.
-- `.mentor/narration_glossary.json` is **not** version-controlled — a deliberate choice: pronunciation fixes for a project's topic/field/tool names are useful locally but not judged worth carrying in git history. It never lives inside `scripts/md-to-audio/` either way — that copy ships with the skill itself and must stay generic across every project that installs it. See `references/audio.md`.
+- `.mentor/narration_glossary.json` is **not** version-controlled, and project-specific terms never go in the skill's own copy under `scripts/md-to-audio/`. See `references/audio.md`.
 - Everything in `.mentor/` is written in English **except the visible content of `progress.html`**, which is Portuguese because it is what the user reads. The HTML scaffolding and the `<mentor-meta>` comment stay in English for consistency with the rest of the state.
 - `profile.md`'s `study_hours_total` is a running counter. Any command that can surface a review (`/mentor-map`, `/mentor-review`, `/mentor-close`) asks how long the user has studied since last time and adds it before doing anything else.
-- **Optional, off by default**: if `profile.md`'s `prune_closed_features_on_close` is `true`, `/mentor-close` commits a feature's final state and then untracks `map.md`/`evidence.jsonl`/`report.md` from git — content stays on disk, stops being carried onto `main`. This is the one command that runs `git commit`, and only when this flag is on. See `commands/mentor-close.md`.
+- **Optional, off by default**: if `profile.md`'s `prune_closed_features_on_close` is `true`, `/mentor-close` untracks a closed feature's scratch files from git. This is the one command that runs `git commit`, and only when this flag is on. Procedure and its workflow prerequisite in `commands/mentor-close.md`.
 
 Templates for each file are in `templates/`. Read the template before creating a file for the first time.
 
 ## Scripts
 
-`scripts/md-to-audio/` holds the narration pipeline used by `/mentor-class` when the chosen format includes audio: `prepare_narration.py`, `generate_audio.py`, and an empty `narration_glossary.json` template. These are version-controlled as part of the skill; the project's own glossary (`.mentor/narration_glossary.json`) and every audio artifact produced are not. The procedure, the prerequisites, and two warnings worth reading before the first run are in `references/audio.md`.
+`scripts/md-to-audio/` holds the narration pipeline used by `/mentor-class` when the chosen format includes audio: `prepare_narration.py`, `generate_audio.py`, and an empty `narration_glossary.json` template. These are version-controlled as part of the skill; the audio artifacts produced are not. The procedure, the prerequisites, and two warnings worth reading before the first run are in `references/audio.md`.
 
 ## Commands
 

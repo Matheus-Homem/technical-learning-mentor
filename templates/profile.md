@@ -22,14 +22,10 @@
      anything. This is what drives the exposure clock in
      references/retention.md — it is read, not estimated.
 
-     prune_closed_features_on_close: false by default. When true, /mentor-close's
-     last step commits the feature's final state, then untracks
-     features/<slug>/{map.md,evidence.jsonl,report.md} from git (content stays
-     on disk and stays recoverable via `git log`, just stops being carried
-     forward). Only turn this on if your workflow merges a feature's branch
-     into main via a real merge commit — never squash — and only after
-     /mentor-close, never mid-feature; otherwise the content this is meant to
-     keep recoverable can be lost for real. See commands/mentor-close.md. -->
+     prune_closed_features_on_close: false by default. When true, /mentor-close
+     untracks a closed feature's scratch files from git. Requires a workflow
+     that merges feature branches into main with a real merge commit, never a
+     squash — read commands/mentor-close.md before turning it on. -->
 
 ## Tags
 

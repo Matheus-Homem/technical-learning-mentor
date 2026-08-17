@@ -74,7 +74,7 @@ This directory is **not** version-controlled (see `.mentor/.gitignore`). It is s
 
 Delegated items do **not** become rows in `knowledge.md` — they are not learning objectives. But the interaction is still evidence-worthy:
 
-- Log one `kind: "example"` entry per class in the feature's `evidence.jsonl`, referencing the objective(s) it is adjacent to if any (e.g. an annotated compose file might touch the `docker-networking` tag without itself being an objective). The kind name is historical; it covers every `/mentor-class` interaction. It never promotes an objective.
+- Log one `kind: "class"` entry per class in the feature's `evidence.jsonl`, referencing the objective(s) it is adjacent to if any (e.g. an annotated compose file might touch the `docker-networking` tag without itself being an objective). It never promotes an objective.
 - If the class was generated for an existing objective (new material, or a topic the user is about to start), the class itself is still not promoting evidence — but a wrong answer during the questioning step is ordinary `incorrect` evidence and opens a misconception like any other.
 - If the completion step reveals a real gap (the user could not fill in a blank that reflects a genuine trade-off, not just syntax), that is a signal the item was mis-sorted — it likely belongs in `explain` or `decide`, not `delegate`. Say so, and offer to add it to `knowledge.md`.
 

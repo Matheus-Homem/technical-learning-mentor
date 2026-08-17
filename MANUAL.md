@@ -1,4 +1,4 @@
-# Manual — technical-learning-mentor v2.1
+# Manual — technical-learning-mentor
 
 Manual de uso. Escrito em português porque é lido por você, pela mesma razão do painel. Todo o resto da skill está em inglês.
 
@@ -161,10 +161,11 @@ Tudo em `.mentor/`, na raiz do projeto — fora de qualquer pasta específica de
 
 | Arquivo | O que é | Versionado? | Você lê? |
 |---|---|---|---|
-| `.gitignore` | ignora `progress.html` e `features/*/classes/` | — | nunca |
+| `.gitignore` | ignora `progress.html`, `narration_glossary.json` e `features/*/classes/` | — | nunca |
 | `profile.md` | experiência, alvo por tag, horas acumuladas, config | sim | raramente |
 | `knowledge.md` | todos os objetivos, estados, quando cada um foi visto | sim | ao auditar |
 | `progress.html` | **o painel** — conteúdo em português, derivado | não | sempre |
+| `narration_glossary.json` | pronúncias de termos técnicos para o TTS | não | ao ajustar áudio |
 | `features/<slug>/map.md` | o que a feature exige, os três baldes, o limitante | sim | no início |
 | `features/<slug>/evidence.jsonl` | log append-only | sim | quase nunca |
 | `features/<slug>/classes/<tópico>/` | artefatos do `/mentor-class` | não | ao consultar depois |
@@ -182,12 +183,13 @@ Regras que valem conhecer:
 ## Instalação
 
 ```bash
-git clone https://github.com/<voce>/technical-learning-mentor /tmp/technical-learning-mentor
 cd /caminho/do/seu/projeto
-/tmp/technical-learning-mentor/install/install.sh claude   # ou: cursor | codex
+curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash -s -- claude   # ou: cursor
 ```
 
-No Claude Code a skill é reconhecida automaticamente. No Cursor e no Codex CLI, o instalador acrescenta um apontador (`.cursor/rules/` ou `AGENTS.md`) porque essas ferramentas não têm descoberta automática de skill — sem isso, o modelo não saberia que ela existe.
+No Claude Code a skill é reconhecida automaticamente pelo frontmatter do `SKILL.md`. No Cursor, o instalador acrescenta um apontador em `.cursor/rules/` porque ele não tem descoberta automática de skill — sem isso, o modelo não saberia que ela existe.
+
+Rodar o instalador de novo atualiza uma instalação existente no lugar (`git pull --ff-only`).
 
 ## Orçamento de tempo
 

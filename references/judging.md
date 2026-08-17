@@ -10,7 +10,7 @@ When an answer is correct but thin, ask once for the reason before recording a v
 
 Never record a verdict without filling `note` with the criterion applied. "Correct" alone is not a verdict; "correct — identified the ordering guarantee and named what breaks without it" is.
 
-Be honest rather than encouraging. A generous mentor produces a progress panel that is pleasant and useless, which is exactly the failure the previous version had.
+Be honest rather than encouraging. A generous mentor produces a progress panel that is pleasant and useless.
 
 ## Calibration
 

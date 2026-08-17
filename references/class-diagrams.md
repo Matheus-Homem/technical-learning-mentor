@@ -78,4 +78,4 @@ section       "how to read it" — one bullet per relationship, naming both ends
 - **Include a legend** when more than one visual encoding is in play (filled vs. outlined, solid vs. dashed).
 - **One diagram per file.** If a topic needs a second unrelated drawing, it is a second class.
 
-A worked instance of this format, following all of the above, is the kind of thing to aim for: a cluster diagram where every term in the topic appears once, positioned so that its relationship to the others is the thing the drawing shows.
+The target: every term in the topic appears exactly once, positioned so that its relationship to the others is the thing the drawing shows.
