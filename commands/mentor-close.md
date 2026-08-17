@@ -39,6 +39,36 @@ Inject anything due from `references/retention.md`, interleaved rather than bloc
 
 **9. Handle a pivot.** If the project direction changed and objectives are no longer required, archive them (`archived:` prefix). Keep evidence and history. Never delete a row.
 
+**10. If `prune_closed_features_on_close` is `true` in `profile.md`**, untrack this feature's scratch files from git. Off by default — it fits one specific workflow (feature branches merge into `main` only after `/mentor-close`, always via a real merge commit, never squash) and is not a general-purpose default. If enabled:
+
+a. **Commit the feature's final state first.** `report.md` was just written and has never been committed before this point — it must be captured in git history at least once before being untracked, or its content never actually enters the object database.
+
+   ```
+   git add .mentor/features/<slug>/
+   git commit -m "chore(mentor): close <slug>
+
+   Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+   ```
+
+b. **Untrack the feature's scratch files.** Content stays on disk and stays recoverable via `git log -- <path>` from this commit backward — contingent on the eventual merge into `main` being a real merge, not a squash.
+
+   ```
+   git rm -r --cached .mentor/features/<slug>/map.md .mentor/features/<slug>/evidence.jsonl .mentor/features/<slug>/report.md
+   ```
+
+c. **Append `features/<slug>/` to `.mentor/.gitignore`**, scoped to this feature only — never a blanket `features/**`, which would block normal tracking during the *next* open feature.
+
+d. **Commit the prune.**
+
+   ```
+   git add .mentor/.gitignore
+   git commit -m "chore(mentor): stop tracking <slug> scratch files
+
+   Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+   ```
+
+Tell the user both commits ran, and that only `profile.md` and `knowledge.md` will carry this feature's `.mentor/` content forward once the branch merges into `main`.
+
 ## Closing message
 
 Show the user:
