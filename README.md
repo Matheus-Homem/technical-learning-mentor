@@ -154,8 +154,9 @@ technical-learning-mentor/
 │                          progress.html · mentor-gitignore
 ├── scripts/
 │   └── md-to-audio/        prepare_narration.py · generate_audio.py
-│                            narration_glossary.json — the /mentor-class
-│                            narration pipeline (see references/audio.md)
+│                            narration_glossary.json (ships empty) — the
+│                            /mentor-class narration pipeline (see
+│                            references/audio.md)
 └── install.sh             copies the skill + commands for claude/cursor
 ```
 
@@ -163,10 +164,12 @@ State generated in your project:
 
 ```
 .mentor/
-├── .gitignore             ignores progress.html and features/*/classes/
+├── .gitignore             ignores progress.html, narration_glossary.json,
+│                          and features/*/classes/
 ├── profile.md              experience/target per tag, study_hours_total, config — versioned
 ├── knowledge.md             every objective, its state, and last_seen / last_seen_hours — versioned
 ├── progress.html            the panel — Portuguese content, derived — NOT versioned
+├── narration_glossary.json  TTS pronunciation fixes, per project — NOT versioned
 └── features/<slug>/
     ├── map.md                bucket sort, limiting objective, requirements — versioned
     ├── evidence.jsonl          append-only log — versioned
@@ -174,4 +177,4 @@ State generated in your project:
     └── report.md                 written at close — versioned
 ```
 
-Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The two exceptions are purely derived or session-scoped output that would otherwise add diff noise without adding record.
+Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The exceptions are purely derived or session-scoped output, and one deliberate carve-out — the narration glossary is production trivia for TTS pronunciation, not evidence of learning, so it isn't judged worth carrying in git history.
