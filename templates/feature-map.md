@@ -6,7 +6,7 @@
 - **Opened**: <date>
 - **Closed**: <date or "open">
 - **Spec source**: <path to the artifacts this was derived from>
-- **Last review point**: <git ref or commit sha used by /mentor-review>
+- **Last review point**: <git ref or commit sha — where the next /mentor-review diff pass starts from>
 - **study_hours_total at open**: <value copied from profile.md>
 
 ## Bucket sort
@@ -24,7 +24,7 @@
 | id | statement |
 |---|---|
 
-### 📦 Delegate — routed to /mentor-example, no objective created
+### 📦 Delegate — routed to /mentor-class, no objective created
 
 | item | why it's delegate |
 |---|---|
@@ -32,8 +32,9 @@
 ## Limiting objective
 
 <!-- The transversal concept most of this feature's `decide` objectives depend
-     on, if one is visible. Gets deliberate drill in /mentor-eval instead of
-     the normal rotation. Leave empty if none is clear — do not force it. -->
+     on, if one is visible. Gets deliberate drill in the due-review pass of
+     /mentor-review instead of the normal rotation. Leave empty if none is
+     clear — do not force it. -->
 
 - **id**: <K-xx or empty>
 - **why**: <one or two lines>
