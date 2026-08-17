@@ -58,7 +58,7 @@ From weakest to strongest:
 | `code_review`, rejected-alternative form — user explains why the option *not* chosen would have been worse | strong | `decides` |
 | `debug` — user diagnosed a real failure themselves, and can state what mental model was wrong beforehand | strong | `decides` |
 | `feynman_rejection` — user explains, unaided, why a plausible alternative approach would have been worse | strong | `decides` |
-| `example` — a `/mentor-example` interaction | n/a for mastery | never promotes an objective; see `worked-examples.md` |
+| `example` — a `/mentor-class` interaction | n/a for mastery | never promotes an objective; see `classes.md`. The kind name is historical and kept unchanged so existing logs stay valid. |
 
 Rules that follow from this:
 
