@@ -10,6 +10,7 @@
 - `default_review_budget`: 15
 - `active_feature`: <slug>
 - `study_hours_total`: 0
+- `prune_closed_features_on_close`: false
 
 <!-- default_review_budget is the time budget, in minutes, for the due-review
      pass of /mentor-review (its diff pass is never timeboxed). Overridden per
@@ -19,7 +20,16 @@
      surface a review (mentor-map, mentor-review, mentor-close) asks "how long
      have you studied since last time?" and adds it here before computing
      anything. This is what drives the exposure clock in
-     references/retention.md — it is read, not estimated. -->
+     references/retention.md — it is read, not estimated.
+
+     prune_closed_features_on_close: false by default. When true, /mentor-close's
+     last step commits the feature's final state, then untracks
+     features/<slug>/{map.md,evidence.jsonl,report.md} from git (content stays
+     on disk and stays recoverable via `git log`, just stops being carried
+     forward). Only turn this on if your workflow merges a feature's branch
+     into main via a real merge commit — never squash — and only after
+     /mentor-close, never mid-feature; otherwise the content this is meant to
+     keep recoverable can be lost for real. See commands/mentor-close.md. -->
 
 ## Tags
 
