@@ -101,6 +101,8 @@ Se não houver diff pendente, ele pula direto para a Parte B. Se não houver dif
 
 Se faltar tempo, corte cenários. **Nunca corte o fechamento.**
 
+**Opcional — `prune_closed_features_on_close: true` em `profile.md`**: se o seu fluxo é nunca mergear na `main` durante o desenvolvimento e só mergear depois do close, o `/mentor-close` pode, como último passo, commitar o estado final da feature e depois destrackear `map.md`/`evidence.jsonl`/`report.md` do git — ficam no disco, saem de circulação, `main` só carrega `profile.md` e `knowledge.md` daquela feature em diante. O conteúdo continua recuperável pelo histórico do git (`git log`), desde que o merge pra `main` seja merge de verdade, nunca squash. Desligado por padrão — é uma escolha de workflow, não um comportamento universal.
+
 ### `/mentor-progress [--all|--tag X]`
 **Quando**: a qualquer momento. Não faz perguntas.
 
