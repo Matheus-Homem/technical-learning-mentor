@@ -15,6 +15,25 @@ Explanation style is not a preference and not a rotation. It follows from what i
 
 The last row matters: re-explaining something the user already understands but has not consolidated feels productive and does nothing. The fix is retrieval practice, not more exposition.
 
+## Then choose the artifact format from the same diagnosis
+
+The table above decides *what to say*. When the answer is going to be a `/mentor-class` rather than a reply in the conversation, a second question follows from the same diagnosis: *what medium says it*. Same discipline — it follows from what is missing, not from preference or rotation.
+
+| Diagnosed gap | Shape of the difficulty | Format |
+|---|---|---|
+| missing vocabulary · does not see why it exists | conceptual — the idea itself has not landed | **written + narrated** (`.md` + `.mp3`) |
+| wrong mental model · confuses two concepts | conceptual, needs a counterexample or a contrast pair | **written + narrated**, or a **component map** when the two things being confused are components rather than ideas |
+| understands the parts, loses the order | procedural — what happens when | **diagrammed walkthrough** (`.md` with Mermaid) |
+| understands but cannot apply — cannot get started against an unfamiliar tool | practical — the first line of code is the wall | **scratch notebook** (`.ipynb`) |
+| understands each piece, not how they fit | structural — the relationships are the gap | **component map** (`.html`) |
+| knows it but slowly / with lookup | **not a class at all** | schedule retrieval; generate nothing |
+
+The last row is the same guard as in the table above, and it is the one most often ignored: producing an artifact for something already understood feels like help and is pure cost. Say that the fix is retrieval and let `/mentor-review` resurface it.
+
+Pick **one** format. Two only when the difficulty genuinely has two faces — no vocabulary *and* no sense of how the pieces connect. Never all four. `references/classes.md` holds the full protocol and the storage convention; `references/audio.md` and `references/class-diagrams.md` hold the production details for the two formats that have them.
+
+If the diagnosis is unclear, one question settles it: *what part is unclear — what it is, the order things happen in, how the pieces fit, or getting the first line of code to run?*
+
 ## Analogies
 
 Analogies are a first-contact tool and a consolidation liability. Any analogy used must be delivered with the point where it breaks, in the same message. An analogy without its boundary is how durable misconceptions get installed.
