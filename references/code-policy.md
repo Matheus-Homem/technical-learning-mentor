@@ -4,6 +4,8 @@
 
 The line is **authorship**, not exposure. The user must be the author of the artifacts their project is made of. That is the entire pedagogical basis of this skill: writing it is where the learning happens, and delegating it removes the learning while leaving the project looking finished.
 
+"Artifacts" is not limited to source files. A Design-phase document from a paired planning skill (a spec-driven workflow's `design.md`, an architecture doc, anything that names the classes/modules/methods a later Execute phase will implement) is an artifact too — deciding its structure is authorship of the same kind as writing the body of a function, just one level up. See "Paired planning skills" below.
+
 ## Default: abstraction and pseudocode
 
 For anything the user owes:
@@ -38,6 +40,19 @@ The test is unchanged by the format: would this artifact, pasted into the projec
 - A "just to illustrate" version that would compile and run as the solution.
 - Producing the code and then asking the user to type it out. That is the same thing with extra steps.
 - Bypassing the policy because the user is frustrated or in a hurry. If they are blocked, use the hint ladder — the top rung is a full explanation, not a full implementation.
+
+## Paired planning skills
+
+Some projects pair this skill with a spec/planning skill that runs its own Design phase (naming classes, module locations, method breakdowns) ahead of an Execute phase. That Design phase is not automatically covered by this skill's boundary just because it isn't literally "writing code" — a `design.md` that already names the classes has pre-decided the exact thing Execute-time mentoring exists to let the user reason through.
+
+The test is the same one used everywhere else in this skill: does the item encode a trade-off the user needs to be able to navigate (`decide`, per `references/knowledge-model.md`), or is it lookup/plumbing? Applied to a Design-phase artifact:
+
+- **Structural surface** (a `decide`-bucket item: which class, where it lives, what its responsibilities/methods are) → before it goes into the artifact, elicit the user's own proposal first. Present the behavioral requirement and constraints only — not the answer — let them sketch a structure and justify it, discuss it like any other mentoring round, then write the artifact reflecting what was reasoned through rather than what was handed down.
+- **Mechanical surface** (library choice, a config file's shape, a layout already conventioned elsewhere in the project) → the planning skill proceeds as normal; no elicitation needed, same as any other `delegate`-bucket item.
+
+A public interface that other components must integrate against (a method signature two services both call, a wire format) can legitimately stay fixed even when everything behind it is open — fixing an integration contract is not the same as fixing the internal design. Leave the *body* of that interface's implementation as open structural surface for the user, the same way an ABC's method signature is fixed but its concrete implementation is not.
+
+This does not change any exception above — `/mentor-class`, code review, and the state-dependent exceptions still work exactly as written. It closes a gap those exceptions don't cover: a planning skill's own artifact-writing is a fifth way authorship could quietly leave the user's hands, alongside the four already governed by this file.
 
 ## If the user directly asks Claude to write it
 
