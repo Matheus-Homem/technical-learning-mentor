@@ -27,6 +27,13 @@ Only 🎯 and 📖 become rows in `knowledge.md`. 📦 items go straight into `m
 
 Trace every objective to its origin. Check `knowledge.md` first and reuse ids for anything that returns — a returning objective keeps its state and history. Aim for sharpness: if the 🎯+📖 total exceeds roughly 15 new objectives, merge some or reconsider whether more belongs in delegate.
 
+**4b. Assign an authorship level to every task.**
+Now switch axes: the bucket sort was about knowledge, this is about work. For each task in the task list, name the objectives it exercises, then derive its level (`own` / `paired` / `deliver`) by the rules in `references/code-policy.md`. Tasks that exercise nothing are `deliver` — that is a normal, healthy outcome, not a failure of the sort.
+
+Identify each task by the first of these that the task file actually offers, and record which one you used so a later remap can reconcile: an explicit id (`T14`, `TASK-3`); else the text of the heading the checkbox sits under; else the checkbox's own line, truncated. Never require the task file to carry a field of ours — this skill does not own that file, and assuming a format is how it stops being portable.
+
+If the whole list comes out `deliver`, say so before writing anything: the feature is a delivery feature. That may be exactly right, but the user should choose it knowingly.
+
 **5. Name the limiting objective, if one is visible.**
 The transversal concept most of this feature's `decide` objectives depend on — usually not a tool-specific item. Not every feature has a clear one; leave it empty rather than forcing it.
 
@@ -38,7 +45,7 @@ For every tag that has no entry in `profile.md`, ask two questions. Skip tags al
 
 Write the answers to `profile.md`. Experience sets the initial state of that tag's objectives: *never used* → `unassessed`, *used a little* / *use it regularly* → `declared`. *Skip* archives the tag's objectives for this feature.
 
-**7. Write `map.md`** for the feature, using the template — bucket sort, limiting objective, carried-in items. Create `evidence.jsonl` empty and a `classes/` folder.
+**7. Write `map.md`** for the feature, using the template — bucket sort, limiting objective, carried-in items, and the task authorship levels from step 4b. Create `evidence.jsonl` empty and a `classes/` folder.
 
 **8. Update `knowledge.md`** with new rows for 🎯/📖 objectives only; leave existing rows untouched except `origin` if the objective returned.
 
@@ -54,5 +61,19 @@ A short message, then the panel:
 - anything `fragile` or carrying an open misconception that this feature needs again
 - any due reviews (per `references/retention.md`) that have piled up
 - a one-line offer of `/mentor-class` for anything delegated, or for an objective arriving unusually weak. An offer, not a queue — do not start generating anything here.
+- the authorship split (`6 deliver, 4 paired, 1 own`), and which tasks came out `deliver` because their objectives are already at target — that is the mechanism paying out, and it should be visible
 
 Do not lecture the content here. The point is orientation and a deliberate, one-time trade-off decision — not teaching.
+
+## Remapping an existing feature
+
+Re-running this command on a feature that already has a `map.md` is expected, not an error — a task list that gets regenerated mid-feature (a design change, a scope revision) leaves the old levels stale, and stale levels are worse than none because they look authoritative.
+
+On a re-run:
+
+- **Objectives are preserved.** Ids, states, evidence, misconceptions and `last_seen` carry over untouched — step 4's "reuse ids for anything that returns" already governs this. A remap must never reset progress.
+- **Levels are recomputed**, not merely extended: add rows for new tasks, drop rows for tasks that no longer exist, and **re-derive levels whose objectives changed state since the last map**. This is the step that lets the gate close on its own — an objective that reached its target since the last run flips its tasks to `deliver` here.
+- **Manual overrides survive.** A level the user promoted by hand stays promoted; note it so the recompute does not silently undo their choice.
+- **Write a dated line** in `map.md`'s "Notes during the feature" saying what moved and why.
+
+If the task list changed and nobody remapped, the levels describe a plan that no longer exists. When `/mentor-next` finds tasks with no level row, that is the signal to run this.

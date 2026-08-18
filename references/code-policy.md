@@ -2,13 +2,53 @@
 
 ## The principle
 
-The line is **authorship**, not exposure. The user must be the author of the artifacts their project is made of. That is the entire pedagogical basis of this skill: writing it is where the learning happens, and delegating it removes the learning while leaving the project looking finished.
+The line is **authorship**, not exposure. The user must be the author of **the artifacts that carry knowledge they are still building**. That is the entire pedagogical basis of this skill: writing it is where the learning happens, and delegating it removes the learning while leaving the project looking finished.
+
+The qualifier matters, and it is not a loophole. Authorship of an artifact that carries no open objective buys no learning — it only costs hours. Those hours are not free: they are taken from the objectives that *are* open. A project where every line is hand-written and half the required knowledge sits at `unassessed` has not protected the learning, it has starved it. So the boundary is scoped by the knowledge state, and it **narrows on its own** as the user advances — the same way `/mentor-class` already narrows under exception (4) below, and for the same reason (expertise reversal).
+
+What the boundary must never become is a decision made in the moment, when the work looks tedious and the user is tired. It is decided once per task, in advance, at `/mentor-map`. See "Task authorship levels".
 
 "Artifacts" is not limited to source files. A Design-phase document from a paired planning skill (a spec-driven workflow's `design.md`, an architecture doc, anything that names the classes/modules/methods a later Execute phase will implement) is an artifact too — deciding its structure is authorship of the same kind as writing the body of a function, just one level up. See "Paired planning skills" below.
 
+## Task authorship levels
+
+Every task in the feature's task list gets exactly one level, assigned at `/mentor-map` and recorded in that feature's `map.md`.
+
+| level | when | who writes it |
+|---|---|---|
+| `own` | the task *is* the decision an open objective needs | the user writes production code and tests |
+| `paired` | the task carries an open objective, but most of its body is mechanical | the user makes and defends the decision; Claude writes the scaffolding around it afterwards |
+| `deliver` | no objective, or every objective at/above target and not due | Claude writes it; the user reviews |
+
+### Deriving the level
+
+For each task, list the objectives in `knowledge.md` it actually exercises — which may be none. Then:
+
+- **no objective** → `deliver`
+- **any objective with `state` below its `target`, or carrying an open `misconception`, or due by either clock in `references/retention.md`** → `own` or `paired`
+- **every objective at or above `target`, none due** → `deliver`
+
+Read `state` against `target`, never tag membership. An objective whose target is `explain` and whose state is `decides` is *done* — tasks resting on it are `deliver`, even though its tag is one the user cares about. Blocking a whole tag forever reproduces the exact failure this mechanism exists to fix.
+
+`own` versus `paired` is the only judgement call. The test: **if you removed the decision, would what remains be something the user could type without thinking?** If yes, it is `paired` — the decision is the learning, the rest is transcription. A task whose body *is* the reasoning is `own`.
+
+An item already sorted into the 📦 delegate bucket at `/mentor-map` appearing as the substance of a task is a strong signal for `deliver`; the bucket sort already judged it carries no trade-off worth learning.
+
+### Promotion is free, demotion is recorded
+
+The user may raise a level at any time, for any reason, with no ceremony — curiosity is not something to put friction in front of.
+
+Lowering a level mid-feature (`own` → `paired` → `deliver`) requires a dated line in `map.md` under "Notes during the feature", saying which task and why. This is deliberately asymmetric. Delegation decided in advance is a strategy; delegation decided at 22:00 on a task that turned out to be boring is the path of least resistance wearing a strategy's clothes, and the whole point of this file is to keep those two apart.
+
+### `deliver` work never becomes evidence
+
+Code Claude wrote is not evidence of what the user knows. Reviewing it, approving it, or catching a bug in it does not go into `evidence.jsonl` and never advances a state in `knowledge.md`. Without this rule, delegating work would inflate the mastery record — the exact inverse of what the record is for.
+
+A `paired` task's *decision round* is different: that is the user reasoning, unaided, before any code exists. Log it as `kind: "scenario"`, exactly as the Design-phase elicitation under "Paired planning skills" already does.
+
 ## Default: abstraction and pseudocode
 
-For anything the user owes:
+For anything at `own`, and for the decision half of a `paired` task:
 
 - structure and responsibilities ("this file holds X; it depends on Y; it must not know about Z")
 - pseudocode with real names but no working body
@@ -36,10 +76,11 @@ The test is unchanged by the format: would this artifact, pasted into the projec
 
 ## Never
 
-- A working implementation of anything on the user's task list, in any language, in any file, however small.
+- A working implementation of anything on an `own` task, in any language, in any file, however small. Same for the part of a `paired` task that carries its decision, before the user has made that decision.
 - A "just to illustrate" version that would compile and run as the solution.
 - Producing the code and then asking the user to type it out. That is the same thing with extra steps.
 - Bypassing the policy because the user is frustrated or in a hurry. If they are blocked, use the hint ladder — the top rung is a full explanation, not a full implementation.
+- Re-deriving a task's level in the moment because the recorded one is inconvenient. The level is read from `map.md`, not re-judged on the spot; if it is genuinely wrong, change it through the demotion path and leave the dated line.
 
 ## Paired planning skills
 
@@ -58,4 +99,6 @@ This does not change any exception above — `/mentor-class`, code review, and t
 
 Say what the skill is doing and offer the substitute in the same breath: the structure, the decision, and the specific hint that unblocks them. Do not lecture about it — one sentence, then help.
 
-If the user makes clear they want the code delivered and not mentored — for something outside the learning scope, boilerplate they have written a hundred times, or a genuine deadline — that is their call to make. Ask them to say so explicitly, note it, and do it. The skill's job is to make delegation a deliberate choice rather than the path of least resistance, not to make it impossible.
+If the user makes clear they want the code delivered and not mentored — for something outside the learning scope, boilerplate they have written a hundred times, or a genuine deadline — that is their call to make, and it always was. What changed is *when* the call gets made: the normal path is the level assigned in advance at `/mentor-map`, where the decision is strategic and cheap. This in-the-moment path still exists as the exception, for the case the map got wrong, and it is handled as a demotion: say what you are doing, do it, and write the dated line into `map.md`'s notes.
+
+The skill's job is to make delegation a deliberate choice rather than the path of least resistance, not to make it impossible. Deciding it up front is what makes it deliberate; the record is what keeps it honest.

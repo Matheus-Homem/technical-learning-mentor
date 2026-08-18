@@ -38,9 +38,11 @@ For every unchecked line found:
 
 1. Re-read the file after syncing.
 2. Render every task/section not fully closed, preserving the source file's own grouping and ordering/dependency notes.
-3. One line per open item: what it is, and its real status (not started / in progress with what's missing / blocked). Call out anything found broken or newly discovered during Step 1.
+3. One line per open item: what it is, its real status (not started / in progress with what's missing / blocked), and its **authorship level** from `map.md` (`own` / `paired` / `deliver`). Call out anything found broken or newly discovered during Step 1.
 4. Close with any accepted, deliberately-deferred debt still on the books, so it isn't forgotten.
-5. Do not pick a "do this one next" recommendation beyond what the source file already encodes — the point is the full picture, so the user chooses.
+5. Close with the authorship split across what's still open (`3 own, 1 paired, 4 deliver`). If the remaining work is overwhelmingly `deliver`, say it in one line — what's left is delivery, not learning, and the user should see that while they can still act on it.
+6. If any open task has no level row in `map.md`, list them and say that a remap is due (`commands/mentor-map.md`, "Remapping an existing feature"). Do not invent levels here — this command reports state, it does not decide authorship.
+7. Do not pick a "do this one next" recommendation beyond what the source file already encodes — the point is the full picture, so the user chooses.
 
 ## Boundary with /mentor-review
 
