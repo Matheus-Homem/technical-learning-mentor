@@ -68,6 +68,7 @@ Templates for each file are in `templates/`. Read the template before creating a
 | `/mentor-map` | right after the spec skill produces its task list | derives candidate knowledge, sorts it into decide/explain/delegate, names a limiting objective if visible, runs the triage questionnaire for new tags, writes `map.md` |
 | `/mentor-class <topic>` | for anything sorted into delegate, genuinely new material, or a topic the user is about to start | teaching material in 1–2 formats chosen from the diagnosed difficulty, per `references/classes.md` |
 | `/mentor-review [path] [--time 5\|15\|30]` | after writing code — the default checkpoint between blocks — and at session start | two passes in one call: the diff as evidence of decision-level understanding (never timeboxed), then due reviews across the whole project (timeboxed) |
+| `/mentor-next [feature-slug] [--all]` | any time you want the full remaining picture, or right after finishing something | verifies open task-file checkboxes against the real code and flips confirmed ones closed, then shows everything still open — a project-status utility, not an assessment |
 | `/mentor-close` | when the user considers the activity done | Feynman + rejected-alternative pass + decision scenarios incl. one out-of-project + due reviews, then closes the feature |
 | `/mentor-progress` | any time | regenerates and shows `progress.html` |
 

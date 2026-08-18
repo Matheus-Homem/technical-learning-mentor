@@ -25,6 +25,8 @@ spec-driven produces plan → design → tasks
 you develop           /mentor-class when something is blocking you, ~15 min each
                        /mentor-review after each block of code, and at session
                        start — your diff, then whatever is due, ~5-15 min
+                       /mentor-next any time you want the full remaining
+                       picture instead of chasing it turn by turn
         ↓
 /mentor-close          when the activity is done, ~10-20 min
         ↓
@@ -40,6 +42,7 @@ The pace this runs at adapts on its own — see "the dual clock" below. A dense 
 | `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept |
 | `/mentor-class <topic>` | when something is blocking you: a delegated item, new material, a topic you're about to start | teaching material in the format that fits the difficulty — explanation, audio, diagram, notebook |
 | `/mentor-review [path] [--time 5\|15\|30]` | after writing code — the default checkpoint — and at session start | your own code as the strongest evidence available, then spaced retrieval of whatever is due |
+| `/mentor-next [feature-slug] [--all]` | any time — especially right after finishing something | syncs the task file's checkboxes against the real code, then shows the full remaining scope, not just the next item |
 | `/mentor-close` | when the activity is finished | Feynman + rejected-alternative + decision scenarios (incl. one outside the project) + close the cycle |
 | `/mentor-progress [--all\|--tag X]` | any time | see where you stand |
 

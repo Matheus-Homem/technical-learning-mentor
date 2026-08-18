@@ -90,6 +90,18 @@ Objetivo que a Parte A já exercitou **não é perguntado de novo** na Parte B �
 
 Se não houver diff pendente, ele pula direto para a Parte B. Se não houver diff **nem** nada vencido, ele diz isso e para — não inventa pergunta para ter o que perguntar.
 
+### `/mentor-next [feature-slug] [--all]`
+**Quando**: a qualquer momento em que você quiser o panorama completo do que falta, especialmente logo depois de terminar algo. Não faz perguntas, não mexe em `study_hours_total`.
+
+Não é instrumento de avaliação — nunca julga se você entendeu algo, só se o código está de fato pronto. Não escreve em `knowledge.md`/`evidence.jsonl`; isso continua sendo função do `/mentor-review`.
+
+Faz duas coisas numa chamada só:
+
+1. **Sincroniza** — para cada checkbox aberto no arquivo de tasks da feature (localizado via `spec_artifacts`, sem assumir `tasks.md` nem o formato de nenhuma skill de spec específica), verifica de forma independente contra o código/testes reais se aquilo já está pronto, e só então marca como concluído. Nunca confia no que o próprio arquivo diz sem checar.
+2. **Mostra** — lista tudo que ainda está aberto, agrupado do jeito que o próprio arquivo já agrupa (fases, seções), com o status real de cada item — não só o próximo passo isolado.
+
+Se alguma coisa foi verificada como pronta e parece nunca ter passado por `/mentor-review`, ele avisa numa linha só, uma vez, sem bloquear.
+
 ### `/mentor-close`
 **Quando**: ao concluir a atividade, antes da próxima spec.
 **Duração**: ~10-20 min.
