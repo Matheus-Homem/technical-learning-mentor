@@ -93,8 +93,6 @@ Read these when the situation calls for them:
 
 This skill does not assume any particular spec/planning skill or file layout. On first run in a repo, ask the user for the path to the current plan/design/task artifacts and record it in `profile.md` under `spec_artifacts`. Accept a glob or a directory. On later runs, resolve the path from `profile.md`; if it no longer matches anything, ask again and update it rather than guessing.
 
-**Reading those artifacts, prefer a slice over the whole file.** When a command only needs part of a large spec/task/decision file (open items, one section, one entry), `grep` by the file's own structural anchors (a checkbox, a heading, an entry id) and `Read` with `offset`/`limit` on the matched region instead of the whole file - a maintained line-number index goes stale on every edit, a text anchor doesn't. Don't re-`Read` a file already read earlier in the session unless it may have changed. If the paired planning skill in use documents its own archived/historical files (e.g. a `tasks-archive.md`, a `STATE-history.md`) as read-on-demand rather than default context, follow that - they exist precisely so routine commands don't pay for them.
-
 ## Session behaviour outside the commands
 
 Most of the time the user is just working and asking things. Then:
