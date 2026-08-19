@@ -20,7 +20,8 @@ Built to sit alongside a spec-driven development skill, but tied to none in part
 spec-driven produces plan → design → tasks
         ↓
 /mentor-map          before writing any code — sorts knowledge into
-                      decide / explain / delegate, ~5-10 min
+                      decide / explain / delegate, then assigns each task
+                      own / paired / deliver, ~5-10 min
         ↓
 you develop           /mentor-class when something is blocking you, ~15 min each
                        /mentor-review after each block of code, and at session
@@ -39,7 +40,7 @@ The pace this runs at adapts on its own — see "the dual clock" below. A dense 
 
 | Command | When | What for |
 |---|---|---|
-| `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept |
+| `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept, assign each task its authorship level |
 | `/mentor-class <topic>` | when something is blocking you: a delegated item, new material, a topic you're about to start | teaching material in the format that fits the difficulty — explanation, audio, diagram, notebook |
 | `/mentor-review [path] [--time 5\|15\|30]` | after writing code — the default checkpoint — and at session start | your own code as the strongest evidence available, then spaced retrieval of whatever is due |
 | `/mentor-next [feature-slug] [--all]` | any time — especially right after finishing something | syncs the task file's checkboxes against the real code, then shows the full remaining scope, not just the next item |
@@ -140,7 +141,11 @@ Multiple choice has a ~25% floor from guessing and **never** promotes anything t
 
 **Append-only log, bounded context.** A feature's evidence log is never rewritten, only appended to. At close it becomes `report.md` and is never read again. Only `knowledge.md` grows across the project, one row per objective.
 
-**Authorship, not exposure.** Claude/the model doesn't write what you owe as your task. It can read and critique your code, and — narrowly, and dependent on where an objective sits on the ladder — produce a class for genuinely new material or delegate-bucket configuration. The exception shrinks automatically as you advance, and of the four class formats only the scratch notebook contains runnable code at all: it exists so you can poke at an unfamiliar library and see what comes back, never so your task arrives in cells.
+**Authorship, not exposure — scoped to what you're still learning.** Every task gets one of three levels at `/mentor-map`, derived from where its objectives sit on the ladder: `own` (you write it), `paired` (you make and defend the decision, the model writes the mechanical body around it), `deliver` (the model writes it, you review). A task whose objectives are all at target is `deliver` — the gate closes on its own as you advance, instead of charging you full manual price forever for things you've already proved you know. Hand-writing work that carries no open objective doesn't protect the learning; it just spends the hours the open objectives needed.
+
+Levels are decided once, up front, when the work still looks abstract — not in the moment it starts looking tedious. Raising one is free; lowering one mid-feature costs a dated line in `map.md`. And code the model wrote never enters the evidence log, so delegating can't inflate your record.
+
+Within an `own` or `paired` task the old boundary is unchanged: the model reads and critiques your code, and — narrowly, dependent on where an objective sits on the ladder — produces a class for genuinely new material or delegate-bucket configuration. Of the four class formats only the scratch notebook contains runnable code at all: it exists so you can poke at an unfamiliar library and see what comes back, never so your task arrives in cells.
 
 ## Layout
 
