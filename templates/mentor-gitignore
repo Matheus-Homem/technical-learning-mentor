@@ -2,7 +2,7 @@
 #
 # Everything in .mentor/ is version-controlled except session-derived output.
 # The state that matters — domain declarations, the node registry, the
-# NotebookLM snapshot, and the feature maps — is small, diffable, and is the
+# Gemini Notebook snapshot, and the feature maps — is small, diffable, and is the
 # audit trail for every verdict the skill produced. It belongs in git.
 
 # /mentor-class artifacts: regenerable session output, sometimes large

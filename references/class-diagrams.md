@@ -1,8 +1,8 @@
 # Component maps: the self-contained HTML class
 
-The **component map** format in `references/classes.md` — the one chosen when there are several components and how they relate is unclear. Output is a single `<topic-slug>.html` inside the class folder.
+One of the two output shapes of the **architectural** category in `references/classes.md` — the self-contained-HTML one, chosen when there are several components and how they relate is unclear. Output is a single `<topic-slug>.html` inside the class folder.
 
-Use it when the difficulty is *structural*: which piece owns what, what talks to what, what is one-to-many, where a boundary sits. Prose describes those relationships one at a time and forces the reader to hold the whole graph in their head; a drawing shows them at once. If the difficulty is a *sequence* rather than a structure, use the diagrammed walkthrough (Mermaid in a `.md`) instead — it is cheaper and reads fine for ordered steps.
+Use it when the difficulty is *structural*: which piece owns what, what talks to what, what is one-to-many, where a boundary sits. Prose describes those relationships one at a time and forces the reader to hold the whole graph in their head; a drawing shows them at once. If the difficulty is a *sequence* rather than a structure, use the other architectural shape instead — Mermaid inside the `.md` — it is cheaper and reads fine for ordered steps.
 
 ## Hard requirement: one self-contained local file
 
