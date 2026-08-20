@@ -160,6 +160,8 @@ Default is no. `--with-design-pairing` / `--no-design-pairing` skip the prompt f
 
 **A snapshot, not a live query.** There is no public consumer API for NotebookLM. Every command reads Comprehension from one local file, and only `/mentor-sync` writes it. Verdicts stay deterministic, the skill works offline, and when the transport breaks there is exactly one thing to fix.
 
+**The ledger comes from real evidence, not memory.** NotebookLM persists full per-question quiz and flashcard results natively — confirmed live, not just from docs. There is no cross-quiz aggregation built in, so `/mentor-sync`'s default move is handing you a prompt for the notebook's own chat: point it at your node ids, it rereads its own Studio results, and returns the ledger grounded in what you actually got right or wrong. Plain self-report is still there as a fallback for a node no quiz has touched yet.
+
 **Application is a property of the concept, not of you.** `practical` means *there exists an artifact whose production would demonstrate this* — config, a query, a command, a diagram. It is derived once, on creation, and pinned. Two runs on unchanged inputs must produce identical verdicts, and they can't if a classification is regenerated on each read.
 
 **Self-declaration wins, contradiction stays visible.** You said `mastered`, your notebook says `no`? The verdict follows you — you know your own level better than one test does. But it is listed as **contested**, and reconciling it is never done on your behalf.

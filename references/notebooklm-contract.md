@@ -48,7 +48,7 @@ This indirection is deliberate and load-bearing:
 | `nodes[].node` | canonical taxonomy id, depth 2–4. Must match the regex in `references/knowledge-model.md`. |
 | `nodes[].comprehension` | `yes` or `no`. Never `unknown` — absence *is* `unknown`. |
 | `nodes[].asserted_at` | ISO date the assertion was made inside NotebookLM. |
-| `nodes[].basis` | `quiz`, `flashcard`, `note`, or `self-report-in-nlm`. What backs the assertion. |
+| `nodes[].basis` | `quiz` or `flashcard` (from real Studio results — preferred), `note`, or `self-report-in-nlm` (the fallback for a node no quiz has touched yet). What backs the assertion. |
 | `nodes[].excerpt` | optional, one or two lines. Feeds Application derivation and is shown when explaining a verdict. |
 
 Rules:
@@ -62,9 +62,44 @@ Rules:
 
 `/mentor-sync` resolves its transport from `profile.md`'s `notebooklm_transport`.
 
+### What the Fase 0 spike found
+
+Confirmed live, not just from documentation: **NotebookLM does persist quiz and flashcard results natively**, at per-question granularity — which option was picked, the correct one, the explanation, the score — and it survives closing and reopening the notebook. This is richer than the contract originally assumed, and it means Comprehension does not have to rest on the user's unaided self-report.
+
+What does **not** exist is any native aggregation across quizzes. Each "Resultado do Quiz N" is a separate entry in Studio; there is no built-in view that sums or compares them, and none that maps a quiz to a taxonomy node — NotebookLM has no idea this skill's taxonomy exists.
+
+That gap is exactly what `/mentor-sync` is for. The mechanism that closes it turned out to be sitting inside NotebookLM already: **its own chat can read its own Studio artifacts.** Point it at the quiz/flashcard results and a list of node ids, and it produces the ledger directly from real per-question evidence — no export feature, no MCP, no API, and a stronger `basis` than self-report.
+
 ### `manual` — the default, and the one that always works
 
-The user maintains a **ledger document as a source inside the notebook**:
+Two variants, in order of preference:
+
+**(a) Chat-extracted ledger — the recommended pattern.** Give the notebook's own chat the node ids you need checked (from `nodes.md`, or the gaps listed by the last `/mentor-map`) and ask it to read the Studio quiz/test results and produce the ledger table. A working prompt:
+
+```
+Aqui está uma lista de tópicos (identificados por um id hierárquico). Para cada um,
+releia os resultados de quiz e teste salvos no Studio deste notebook e responda,
+com base nas perguntas respondidas de verdade — não pelo que você acha que eu sei:
+
+- yes, se as perguntas sobre esse tópico foram respondidas corretamente
+- no, se alguma foi respondida errado
+- não incluir o tópico se nenhum quiz/teste cobriu ele ainda
+
+Tópicos:
+<node ids, one per line>
+
+Responda como uma tabela markdown:
+| node | comprehension | date | basis | excerpt |
+onde date é a data do quiz mais recente que cobriu o tópico, basis é "quiz" ou
+"flashcard", e excerpt é uma linha explicando o porquê (pode citar a explicação
+que já apareceu no resultado do quiz).
+```
+
+This grounds every row in a real, dated, per-question result instead of a memory-based guess — a strictly stronger `basis` than plain self-report. It costs nothing extra: the evidence was already sitting in Studio, gathered as a side effect of studying, and this just reads it back.
+
+One thing worth doing on the studying side to keep this clean: **scope each generated quiz to one node, or a small tight cluster**, rather than a broad multi-topic one. Per-question results only map cleanly onto a taxonomy node when the questions were already organised that way.
+
+**(b) Direct self-report — the fallback**, for a node no quiz has touched yet, or when the user just wants to assert something without waiting on a quiz:
 
 ```markdown
 | node | comprehension | date | basis |
@@ -72,15 +107,13 @@ The user maintains a **ledger document as a source inside the notebook**:
 | SistemasDistribuidos.ApacheKafka.ReplicacaoDeParticoes.InSyncReplicasMinimas | yes | 2026-08-19 | quiz |
 ```
 
-They keep it current as they study and test, and `/mentor-sync` reads it — pasted in, or exported to a file the command is pointed at.
-
-This looks low-tech and it is the strongest option available. It is deterministic, it needs no API, it cannot break when a UI changes, and it keeps the assertion authored by the person who did the testing.
+Either way, the user brings the resulting table back — pasted in, or exported to a file the command is pointed at — and `/mentor-sync` validates it exactly the same. This is deterministic, needs no API, and cannot break when NotebookLM's UI changes, because the only interface it depends on is the chat panel every notebook already has.
 
 ### `mcp:<server>` — optional
 
 If an MCP server for NotebookLM is configured, `/mentor-sync` may query it for the ledger's content instead of asking for a paste. The result must be validated against the schema above exactly as a manual paste is.
 
-This is an ergonomic improvement, **never a dependency**. Every unofficial NotebookLM MCP works by browser automation and breaks when Google changes the interface. The skill must remain fully usable with `manual` forever.
+This is an ergonomic improvement, **never a dependency**. Every unofficial NotebookLM MCP works by browser automation and breaks when Google changes the interface. The skill must remain fully usable with `manual` forever — and the spike's finding means `manual` is no longer the compromise it looked like at design time.
 
 ## Staleness
 

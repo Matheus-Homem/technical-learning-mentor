@@ -109,6 +109,8 @@ Depois pergunta o Domínio dos nós de **nível 2** novos. Nível 2 porque é on
 
 Id inválido é **reportado e descartado**, nunca consertado. Chute de qual nó era o certo é como o nó errado acaba marcado como entendido.
 
+**O ledger não é você digitando de memória.** O NotebookLM guarda o resultado de cada quiz/flashcard por pergunta — o que você marcou, o que era certo, a explicação — e isso sobrevive fechar e reabrir o notebook. O jeito certo de trazer isso pro `/mentor-sync` é pedir pro **chat do próprio notebook** ler esses resultados salvos no Studio e montar a tabela, em vez de você julgar de cabeça se entendeu ou não. O comando te dá o texto pronto pra colar no notebook quando há nós pra checar; ver `references/notebooklm-contract.md` pro prompt exato. Autodeclaração direta ainda existe, mas é o plano B — pra um nó que nenhum quiz ainda cobriu.
+
 ### `/mentor-map [feature-slug] [--rederive <node>]`
 **Quando**: logo depois que a skill de spec-driven produz as tasks, antes de escrever código. 5–10 min.
 

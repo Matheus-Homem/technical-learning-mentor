@@ -33,7 +33,7 @@ If `.mentor/knowledge.md` or `.mentor/features/*/evidence.jsonl` exists, this re
 
 From `profile.md`'s `notebooklm_transport`:
 
-- **`manual`** — ask the user for the ledger. Either they paste it, or they give a path to an export. The ledger's shape is in `references/notebooklm-contract.md`.
+- **`manual`** — the ledger comes from the notebook's own chat reading its own Studio quiz/flashcard results, not from the user typing an assessment from memory. If there are nodes worth checking — anything in `nodes.md` with no entry in the current snapshot, or a feature's `## Gaps` — **hand the user the ready-to-paste prompt from `references/notebooklm-contract.md`, with those node ids already filled in.** They run it in the notebook's chat and bring back the table it produces. A node no quiz has touched yet, or one the user wants to assert without waiting on a quiz, uses the plain self-report table instead — same reference, the fallback variant.
 - **`mcp:<server>`** — query the configured MCP server for the ledger's content. If it fails for any reason, **fall back to `manual` and say so**. Never let a broken transport end the command — the manual path always works, and that is the point of having it.
 
 **3. Validate every id** against the regex in `references/knowledge-model.md`.
