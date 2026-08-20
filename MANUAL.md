@@ -4,7 +4,9 @@ Manual de uso. Escrito em português porque é lido por você, pela mesma razão
 
 ## O que essa skill faz
 
-Ela impede a IA de desenvolver o seu código e, no lugar disso, te ajuda a aprender o que é necessário para você mesmo desenvolver — registrando, de forma auditável, o que você domina, o que está frágil e o que precisa voltar.
+Ela impede a IA de desenvolver o código **que ainda carrega algo que você está aprendendo** e, no lugar disso, te ajuda a aprender o que é necessário para você mesmo desenvolver — registrando, de forma auditável, o que você domina, o que está frágil e o que precisa voltar.
+
+O que ela não faz é te cobrar preço manual eterno. Task cujos objetivos já chegaram no alvo é entregue pela IA: escrever à mão o que não carrega objetivo aberto não protege o aprendizado, só gasta as horas de que os objetivos abertos precisavam.
 
 O problema que ela resolve não é "a IA escolhe mal os tópicos". É **falta de visibilidade**: você responde, é corrigido, e não sobra nada que diga o que evoluiu.
 
@@ -24,6 +26,23 @@ O critério: **se o parâmetro codifica um trade-off que você precisa saber nav
 
 O paralelismo de um job não é boilerplate — é uma decisão. A ordem em que os containers sobem geralmente é. Delegar o segundo é o que compra tempo para o primeiro.
 
+## Os três níveis de autoria
+
+Quem escreve cada task não é decidido na hora — é decidido no `/mentor-map`, junto com os baldes, quando o trabalho ainda parece abstrato em vez de tedioso.
+
+| Nível | Quando | Quem escreve |
+|---|---|---|
+| `own` | a task **é** a decisão que um objetivo aberto precisa | você, código e testes |
+| `paired` | a task carrega objetivo aberto, mas o corpo é mecânico | você toma e defende a decisão; a IA escreve o scaffold em volta |
+| `deliver` | nenhum objetivo, ou todos no alvo e não vencidos | a IA escreve, você revisa |
+
+O nível sai do estado do conhecimento, não da tag: objetivo com alvo `explicar` que já chegou em `decide` está **pronto**, e as tasks que dependem só dele viram `deliver` sozinhas. O portão fecha conforme você avança.
+
+Duas regras que sustentam isso:
+
+- **Subir é de graça, descer fica registrado.** Promover uma task a qualquer momento não custa nada. Rebaixar no meio da feature exige uma linha datada no `map.md` dizendo qual task e por quê. Delegação decidida antes é estratégia; delegação decidida às 22h numa task que ficou chata é o caminho de menor resistência fantasiado de estratégia.
+- **Código que a IA escreveu nunca vira evidência.** Revisar, aprovar ou até achar um bug nele não entra no `evidence.jsonl` e não promove nada. Sem isso, delegar inflaria o seu próprio registro de domínio.
+
 ## Os comandos
 
 ### `/mentor-map`
@@ -32,9 +51,13 @@ O paralelismo de um job não é boilerplate — é uma decisão. A ordem em que 
 
 Lê suas specs, deriva os conhecimentos exigidos, classifica cada um nos três baldes e marca **o objetivo limitante** — o conceito transversal que trava mais coisas nessa feature.
 
+Depois muda de eixo e classifica **cada task** em um dos três níveis de autoria (ver abaixo). Os baldes ordenam conhecimento; os níveis ordenam trabalho.
+
 Na primeira execução no repositório, cria `.mentor/` (incluindo o `.gitignore` interno), pede o caminho dos artefatos da spec-driven e guarda. Também faz o questionário de triagem, só para tags novas.
 
-Você sai daqui sabendo o que essa atividade exige, onde já está, e o que vai delegar.
+Você sai daqui sabendo o que essa atividade exige, onde já está, o que vai delegar, e quem escreve cada task.
+
+Rodar de novo no meio da feature é esperado, não erro: se a lista de tasks mudou, os níveis antigos descrevem um plano que não existe mais. O remap preserva ids, estados e evidências — só os níveis são recalculados.
 
 ### `/mentor-class <tópico>`
 **Quando**: quando alguma coisa está te travando — algo que caiu no balde delegar, conteúdo genuinamente novo, ou um tópico que você está prestes a começar.
@@ -89,6 +112,18 @@ Múltipla escolha vive aqui, e só aqui. Barata, serve para checar o que já foi
 Objetivo que a Parte A já exercitou **não é perguntado de novo** na Parte B — a revisão já foi feita, no formato mais forte que existe.
 
 Se não houver diff pendente, ele pula direto para a Parte B. Se não houver diff **nem** nada vencido, ele diz isso e para — não inventa pergunta para ter o que perguntar.
+
+### `/mentor-next [feature-slug] [--all]`
+**Quando**: a qualquer momento em que você quiser o panorama completo do que falta, especialmente logo depois de terminar algo. Não faz perguntas, não mexe em `study_hours_total`.
+
+Não é instrumento de avaliação — nunca julga se você entendeu algo, só se o código está de fato pronto. Não escreve em `knowledge.md`/`evidence.jsonl`; isso continua sendo função do `/mentor-review`.
+
+Faz duas coisas numa chamada só:
+
+1. **Sincroniza** — para cada checkbox aberto no arquivo de tasks da feature (localizado via `spec_artifacts`, sem assumir `tasks.md` nem o formato de nenhuma skill de spec específica), verifica de forma independente contra o código/testes reais se aquilo já está pronto, e só então marca como concluído. Nunca confia no que o próprio arquivo diz sem checar.
+2. **Mostra** — lista tudo que ainda está aberto, agrupado do jeito que o próprio arquivo já agrupa (fases, seções), com o status real de cada item — não só o próximo passo isolado.
+
+Se alguma coisa foi verificada como pronta e parece nunca ter passado por `/mentor-review`, ele avisa numa linha só, uma vez, sem bloquear.
 
 ### `/mentor-close`
 **Quando**: ao concluir a atividade, antes da próxima spec.
@@ -153,7 +188,9 @@ Referência aproximada (julgamento, não regra fixa — confiança alta com erro
 - **Você anuncia que vai rodar algo** → pergunta uma vez o que você espera. Se ignorar, não insiste.
 - **Você começa uma task nova** → ele olha no `knowledge.md` se os objetivos que essa task exige estão em aberto (não avaliados, com equívoco, ou bem abaixo do alvo). Se estiverem, oferece **uma vez** uma aula sobre o tópico antes de você começar. É oferta de material, não sondagem — não te testa, não te bloqueia, e some se você ignorar.
 - **Você pede algo do balde delegar** → é encaminhado para `/mentor-class`, não entregue direto.
-- **Você pede o código pronto de algo que é sua task** → ele não entrega, dá a estrutura e a dica.
+- **Você pede o código pronto de uma task `own`** → ele não entrega, dá a estrutura e a dica.
+- **Você pede uma task `paired`** → primeiro ele te faz tomar e defender a decisão que ela carrega; depois escreve o corpo mecânico em volta.
+- **Você pede uma task `deliver`** → ele escreve, e diz quais objetivos tornaram aquilo entregável. Não vira evidência nenhuma.
 
 ## Os arquivos
 

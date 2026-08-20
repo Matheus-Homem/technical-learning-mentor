@@ -29,6 +29,24 @@
 | item | why it's delegate |
 |---|---|
 
+## Task authorship levels
+
+<!-- Written by /mentor-map step 4b, recomputed on every remap.
+     Level derivation and the own/paired/deliver definitions live in
+     references/code-policy.md — do not restate the rules here, just the result.
+
+     `task` uses the first identifier the task file actually offers:
+     explicit id -> heading text -> truncated checkbox line. Record which
+     below so a later remap can reconcile against a changed file.
+
+     Promotion by the user is free and needs no note. Demotion mid-feature
+     gets a dated line under "Notes during the feature", naming the task. -->
+
+- **task key used**: <explicit id | heading text | checkbox line>
+
+| task | level | objectives | why |
+|---|---|---|---|
+
 ## Limiting objective
 
 <!-- The transversal concept most of this feature's `decide` objectives depend

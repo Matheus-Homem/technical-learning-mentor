@@ -34,6 +34,17 @@ The test for delegate vs. objective: **if the parameter encodes a trade-off the 
 
 A Flink job's parallelism is a decision — it becomes an objective. The startup order between two containers in a compose file is usually plumbing — it goes to delegate. Delegating the second is what buys time for the first; see `classes.md` for how delegation is done without it becoming silent code delivery.
 
+### Buckets sort knowledge; levels sort tasks
+
+These are two different axes, decided in the same command and easy to confuse:
+
+- the **bucket** (🎯 / 📖 / 📦) answers *is this worth learning?* — it is about a piece of knowledge, and only 🎯/📖 become rows in `knowledge.md`
+- the **authorship level** (`own` / `paired` / `deliver`) answers *who writes this task?* — it is about a unit of work, and it is derived from the state of whichever objectives that task exercises
+
+A task is not "a delegate item". A task may rest on three objectives, one of them shaky; a single 📦 item may be spread across six tasks. The link runs task → objectives → states → level, and it is recomputed whenever either side moves. An item sorted 📦 showing up as the substance of a task is a strong signal for `deliver`, but it is a signal, not the rule — the rule lives in `references/code-policy.md`.
+
+The bucket sort is permanent for the feature. Levels are not: an objective reaching its target flips its tasks to `deliver` on the next map, by design.
+
 This distinction exists because of a real constraint highlighted under time pressure (a study sprint, a deadline): learning everything a project touches, at `decide` level, is not achievable and produces shallow coverage of everything instead of real depth where it matters. The buckets make that trade-off explicit and chosen once, rather than accidental.
 
 ## Fields

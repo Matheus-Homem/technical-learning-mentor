@@ -42,7 +42,7 @@ MCQ is the cheap instrument for checking material already learned through a stro
 
 If there is nothing new, say so in one line and go to step 8.
 
-**4. Map it to objectives.** Which 🎯/📖 objectives from `map.md` does this code exercise? Note also objectives the code *should* have exercised and does not — that gap is worth raising.
+**4. Map it to objectives.** First drop anything the user did not author — check each changed path against `map.md`'s task authorship levels and exclude `deliver` work (see step 6). Then: which 🎯/📖 objectives from `map.md` does the remaining code exercise? Note also objectives the code *should* have exercised and does not — that gap is worth raising.
 
 **5. Ask, do not tell.** Pick 2–4 decisions visible in the code and ask why. Good shapes:
 
@@ -62,8 +62,11 @@ Ask one at a time. Wait for each answer. Ask for confidence before responding.
 | decided deliberately and can justify it | `correct`, strong | supports `decides` |
 | it works but the reason given is wrong or absent | `partial` | open a misconception; do not promote |
 | copied from a doc, tutorial or example without a model | `n/a` for mastery | log with `consulted: true`; treat as `unassessed`, not as evidence |
+| Claude wrote it — the task was `deliver` | not evidence at all | **log nothing**; skip it in Part A |
 
 The third case is the one that silently inflates every tracking system. Ask directly where something came from when the code looks more confident than the user's understanding of it.
+
+The fourth is the one this skill would otherwise inflate itself. Code from a `deliver` task is Claude's authorship, and reviewing it — even catching a real bug in it — says nothing about what the user can produce unaided. Exclude those hunks from Part A's diff before picking items, and never write an `evidence.jsonl` line for them. A `paired` task splits: its decision round was already logged as `scenario` evidence when the decision was made, and the mechanical body Claude wrote afterwards is excluded exactly like `deliver` code.
 
 **7. If the diff fixes a real bug**, treat it as `kind: "debug"` evidence: ask what the user believed before the fix and what the failure revealed was wrong about that belief. This is typically the strongest evidence the skill produces — log it even if the rest of the review is brief.
 

@@ -10,6 +10,7 @@
 - `default_review_budget`: 15
 - `active_feature`: <slug>
 - `study_hours_total`: 0
+- `authorship_levels`: true
 - `prune_closed_features_on_close`: false
 
 <!-- default_review_budget is the time budget, in minutes, for the due-review
@@ -21,6 +22,12 @@
      have you studied since last time?" and adds it here before computing
      anything. This is what drives the exposure clock in
      references/retention.md — it is read, not estimated.
+
+     authorship_levels: true by default — this is the skill's purpose, so a new
+     project gets it switched on. When true, /mentor-map assigns own/paired/deliver
+     to every task and that level decides who writes it (references/code-policy.md).
+     Set to false to fall back to the older behaviour where the user authors
+     everything regardless of what they already know.
 
      prune_closed_features_on_close: false by default. When true, /mentor-close
      untracks a closed feature's scratch files from git. Requires a workflow
