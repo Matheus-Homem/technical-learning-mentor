@@ -30,14 +30,14 @@ Nodes shallower than depth 4 never enter the matrix — they have no Application
 
 `mastered` is self-declared; Comprehension is proven. When they disagree, the disagreement is surfaced and the verdict still follows the declaration:
 
-- **`contested`** — the user declared `mastered`, NotebookLM says `no`. A real contradiction. The verdict stays `paired` because the user knows their own level better than one test does, but the contradiction is listed in its own block in the output, and resolving it — lowering the Domain, or retesting in NotebookLM — is the user's call. The skill never reconciles it on its own.
-- **`unverified`** — the user declared `mastered` and NotebookLM has never seen the node. Not a contradiction, just an absence. Worth showing, not worth acting on.
+- **`contested`** — the user declared `mastered`, Gemini Notebook says `no`. A real contradiction. The verdict stays `paired` because the user knows their own level better than one test does, but the contradiction is listed in its own block in the output, and resolving it — lowering the Domain, or retesting in Gemini Notebook — is the user's call. The skill never reconciles it on its own.
+- **`unverified`** — the user declared `mastered` and Gemini Notebook has never seen the node. Not a contradiction, just an absence. Worth showing, not worth acting on.
 
 ### Optional refinement: `class-first`
 
 `developing` + `practical` + Comprehension `no`/`unknown` is still `own` — but the user is about to write an artifact for something whose theory is not yet proven. Flag it `class-first` and offer a `/mentor-class` before they start.
 
-This changes no verdict. It exists because without it Comprehension only has leverage on the `mastered` branch, which underuses the one dimension NotebookLM exists to feed.
+This changes no verdict. It exists because without it Comprehension only has leverage on the `mastered` branch, which underuses the one dimension Gemini Notebook exists to feed.
 
 ## Step 2 — aggregate to the task
 
@@ -65,7 +65,7 @@ Every verdict carries the node that decided it and the full resolution behind it
 T7  own
     ← SistemasDistribuidos.ApacheKafka.Retencao.TombstoneDelay
         domain        = developing  (default — no declaration on any prefix)
-        comprehension = no          (NotebookLM, 2026-08-19)
+        comprehension = no          (Gemini Notebook, 2026-08-19)
         application   = practical   (derived: becomes delete.retention.ms in the topic config)
     other nodes: 1 waived (inherited from …ApacheKafka), 1 paired
 ```

@@ -62,7 +62,7 @@ A class that cannot name a node is a signal, not an error: either the topic need
 | **Domain** | It may *propose* a declaration, by asking. Never write one silently. |
 | **Comprehension** | **Never, by any path.** |
 
-The last row is absolute. A class going well is not proof of anything — the user has just been shown the answer, which is the worst possible moment to measure whether they knew it. Comprehension is proven in NotebookLM and arrives through `/mentor-sync`.
+The last row is absolute. A class going well is not proof of anything — the user has just been shown the answer, which is the worst possible moment to measure whether they knew it. Comprehension is proven in Gemini Notebook and arrives through `/mentor-sync`.
 
 So a class ends by pointing at the loop rather than closing it: *take this to your notebook, test it there, and it will come back on the next sync.*
 

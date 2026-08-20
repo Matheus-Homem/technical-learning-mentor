@@ -1,6 +1,6 @@
 # /mentor-sync
 
-**Pulls the current knowledge state from NotebookLM into the local snapshot.** This is the only command that talks to NotebookLM. Read `references/notebooklm-contract.md` before running it.
+**Pulls the current knowledge state from Gemini Notebook into the local snapshot.** This is the only command that talks to Gemini Notebook. Read `references/gemini-notebook-contract.md` before running it.
 
 `/mentor-sync [--full] [--dry-run]`
 
@@ -10,7 +10,7 @@ Target time: 2–5 minutes.
 
 | | |
 |---|---|
-| **Reads** | `profile.md` (`notebooklm_*`), the current `snapshot.json`, `nodes.md` |
+| **Reads** | `profile.md` (`gemini_notebook_*`), the current `snapshot.json`, `nodes.md` |
 | **Writes** | `snapshot.json` (replaced whole), `sync-log.md` (append), new declarations in `domain.md` |
 | **Never** | infers Comprehension; writes a Domain declaration without asking; is called by another command |
 
@@ -18,10 +18,10 @@ Target time: 2–5 minutes.
 
 **1. Bootstrap the repo if needed.**
 
-If `.mentor/` does not exist, create it from `templates/` — `profile.md`, `domain.md`, `nodes.md`, `notebooklm/snapshot.json`, `notebooklm/sync-log.md`, and `templates/mentor-gitignore` → `.mentor/.gitignore`. Ask for:
+If `.mentor/` does not exist, create it from `templates/` — `profile.md`, `domain.md`, `nodes.md`, `gemini-notebook/snapshot.json`, `gemini-notebook/sync-log.md`, and `templates/mentor-gitignore` → `.mentor/.gitignore`. Ask for:
 
 - the path or glob to the spec artifacts → `spec_artifacts`
-- which notebook holds the knowledge ledger → `notebooklm_notebook`
+- which notebook holds the knowledge ledger → `gemini_notebook_id`
 
 Never hardcode a filename for the spec artifacts. Accept whatever path or glob the user gives.
 
@@ -31,9 +31,9 @@ If `.mentor/knowledge.md` or `.mentor/features/*/evidence.jsonl` exists, this re
 
 **2. Resolve the transport.**
 
-From `profile.md`'s `notebooklm_transport`:
+From `profile.md`'s `gemini_notebook_transport`:
 
-- **`manual`** — the ledger comes from the notebook's own chat reading its own Studio quiz/flashcard results, not from the user typing an assessment from memory. If there are nodes worth checking — anything in `nodes.md` with no entry in the current snapshot, or a feature's `## Gaps` — **hand the user the ready-to-paste prompt from `references/notebooklm-contract.md`, with those node ids already filled in.** They run it in the notebook's chat and bring back the table it produces. A node no quiz has touched yet, or one the user wants to assert without waiting on a quiz, uses the plain self-report table instead — same reference, the fallback variant.
+- **`manual`** — the ledger comes from the notebook's own chat reading its own Studio quiz/flashcard results, not from the user typing an assessment from memory. If there are nodes worth checking — anything in `nodes.md` with no entry in the current snapshot, or a feature's `## Gaps` — **hand the user the ready-to-paste prompt from `references/gemini-notebook-contract.md`, with those node ids already filled in.** They run it in the notebook's chat and bring back the table it produces. A node no quiz has touched yet, or one the user wants to assert without waiting on a quiz, uses the plain self-report table instead — same reference, the fallback variant.
 - **`mcp:<server>`** — query the configured MCP server for the ledger's content. If it fails for any reason, **fall back to `manual` and say so**. Never let a broken transport end the command — the manual path always works, and that is the point of having it.
 
 **3. Validate every id** against the regex in `references/knowledge-model.md`.

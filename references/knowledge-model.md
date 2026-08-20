@@ -29,7 +29,7 @@ Level 4 is where the skill does its real work. It is the only level granular eno
 - Segments are `PascalCase`, ASCII only. No accents, no spaces, no hyphens, no underscores. `Replicação` → `Replicacao`.
 - Validation: `^[A-Z][A-Za-z0-9]*(\.[A-Z][A-Za-z0-9]*){0,3}$`
 - **Depth 4 is required** for: anything a task requires, anything carrying an Application classification, and any node a `/mentor-class` names.
-- **Depth 1–3 is allowed only** for Domain declarations (that is what makes inheritance work) and for Comprehension coming from NotebookLM.
+- **Depth 1–3 is allowed only** for Domain declarations (that is what makes inheritance work) and for Comprehension coming from Gemini Notebook.
 - A node at depth *n* is a strict prefix of its descendants. **The tree is implicit in the set of ids** — there is no tree file, and there is nothing to keep in sync.
 
 Human input is normalised, never rejected. The user types `kafka replicação ISR`; the skill proposes the canonical id and **confirms before writing it**. A wrong id contaminates everything beneath it, so this confirmation is not optional. Accepted spellings go in the `aliases` column of `nodes.md`.
@@ -47,15 +47,15 @@ Two things limit the damage:
 
 ## Three independent dimensions
 
-The three questions this skill used to answer with one field are now three separate dimensions, with three separate owners and three separate files. **No field is ever written by two parties.** That is the whole mechanism preventing divergence between the skill and NotebookLM.
+The three questions this skill used to answer with one field are now three separate dimensions, with three separate owners and three separate files. **No field is ever written by two parties.** That is the whole mechanism preventing divergence between the skill and Gemini Notebook.
 
 | Dimension | Question | Levels | Owner | File |
 |---|---|---|---|---|
 | **Domain** | do I want to develop this? | 1–4 | the user, self-declared | `.mentor/domain.md` |
-| **Comprehension** | is the basic theory proven? | 2–4 | NotebookLM, proven | `.mentor/notebooklm/snapshot.json` |
+| **Comprehension** | is the basic theory proven? | 2–4 | Gemini Notebook, proven | `.mentor/gemini-notebook/snapshot.json` |
 | **Application** | does this materialise into an artifact? | 4 | the AI, derived | `.mentor/nodes.md` |
 
-The skill **never** writes Comprehension. NotebookLM **never** sees Domain or Application.
+The skill **never** writes Comprehension. Gemini Notebook **never** sees Domain or Application.
 
 ---
 
@@ -110,11 +110,11 @@ developing (default — no declaration on any prefix)
 
 ---
 
-## Comprehension — proven, from NotebookLM
+## Comprehension — proven, from Gemini Notebook
 
 Values: `yes`, `no`. A node **absent from the snapshot** is `unknown`.
 
-Comprehension answers one question: **does the user command the basic theory of this concept**, even with no practical experience of it in a real scenario? It is a *proven* classification, not a declared one — which is why the skill does not produce it. NotebookLM holds the sources, runs the testing, and owns this dimension end to end. The contract is in `references/notebooklm-contract.md`.
+Comprehension answers one question: **does the user command the basic theory of this concept**, even with no practical experience of it in a real scenario? It is a *proven* classification, not a declared one — which is why the skill does not produce it. Gemini Notebook holds the sources, runs the testing, and owns this dimension end to end. The contract is in `references/gemini-notebook-contract.md`.
 
 It exists at levels 2, 3 and 4. Not at level 1: "does the user understand SistemasDistribuidos" is not a question with an answer.
 
@@ -131,7 +131,7 @@ For the matrix, `unknown` is treated as `no` — the conservative reading.
 For everything the user sees, they are kept apart, because the action each one implies is different:
 
 - `no` — it was tested and it did not hold. Study it.
-- `unknown` — it was never tested. Take it to NotebookLM.
+- `unknown` — it was never tested. Take it to Gemini Notebook.
 
 Collapsing the two would hide the second, which is the more common case and the more actionable one.
 
@@ -169,7 +169,7 @@ The reason is determinism. AI derivation is not stable across runs, and Applicat
 
 ### What the derivation may look at
 
-The node's own id, the `excerpt` from the NotebookLM snapshot if the node has one, and the text of the task that required the node. The justification is recorded in one line in the `why` column of `nodes.md`, and it is written at the same moment as the value.
+The node's own id, the `excerpt` from the Gemini Notebook snapshot if the node has one, and the text of the task that required the node. The justification is recorded in one line in the `why` column of `nodes.md`, and it is written at the same moment as the value.
 
 ---
 
@@ -180,8 +180,8 @@ The node's own id, the `excerpt` from the NotebookLM snapshot if the node has on
   profile.md                   config: spec artifacts, active feature, notebook, staleness budget
   domain.md                    Domain declarations — sparse, user-owned
   nodes.md                     node registry + Application — skill-owned
-  notebooklm/
-    snapshot.json              Comprehension — NotebookLM-owned, replaced whole each sync
+  gemini-notebook/
+    snapshot.json              Comprehension — Gemini Notebook-owned, replaced whole each sync
     sync-log.md                append-only record of what each sync changed
   features/<slug>/
     map.md                     Task → Knowledge → verdict, with the trace
@@ -195,6 +195,6 @@ Everything in `.mentor/` is written in English. The values stored on disk are th
 
 ## What this model does not do
 
-**Nothing in this skill tracks retention or reminds the user to review anything.** There is no review queue, no spacing clock, no decay model. Earlier versions had one; it was removed together with the assessment machinery, because retention belongs to whoever owns the testing, and that is now NotebookLM.
+**Nothing in this skill tracks retention or reminds the user to review anything.** There is no review queue, no spacing clock, no decay model. Earlier versions had one; it was removed together with the assessment machinery, because retention belongs to whoever owns the testing, and that is now Gemini Notebook.
 
 This is stated explicitly so it does not read as an oversight. If the user expects the skill to resurface a concept they have not touched in six weeks, it will not.

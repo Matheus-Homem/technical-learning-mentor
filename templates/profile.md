@@ -7,12 +7,12 @@
 
 - `spec_artifacts`: <path or glob to the plan/design/task files produced by the planning skill>
 - `active_feature`: <slug>
-- `notebooklm_notebook`: <notebook id or share link — which notebook holds the knowledge ledger>
-- `notebooklm_transport`: manual
+- `gemini_notebook_id`: <notebook id or share link — which notebook holds the knowledge ledger>
+- `gemini_notebook_transport`: manual
 - `snapshot_max_age_days`: 14
 
-<!-- notebooklm_transport: `manual` (paste or point at an exported ledger) or `mcp:<server>`.
-     `manual` always works and is the default; see references/notebooklm-contract.md.
+<!-- gemini_notebook_transport: `manual` (paste or point at an exported ledger) or `mcp:<server>`.
+     `manual` always works and is the default; see references/gemini-notebook-contract.md.
      snapshot_max_age_days: after this, /mentor-map warns that the snapshot is stale.
      It warns and continues — it never blocks. -->
 

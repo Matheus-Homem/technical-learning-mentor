@@ -57,6 +57,6 @@ For the practical category, this is where they hand back the completed piece and
 
 **7. Close the loop.**
 
-End by pointing at NotebookLM: this topic is now ready to be tested there, and the result comes back on the next `/mentor-sync`. That is the only path by which anything the user did here becomes proven.
+End by pointing at Gemini Notebook: this topic is now ready to be tested there, and the result comes back on the next `/mentor-sync`. That is the only path by which anything the user did here becomes proven.
 
 If step 5 revealed the node was misclassified — the Application derivation looks wrong, or the topic was really three topics — say so and offer the fix.

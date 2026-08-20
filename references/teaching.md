@@ -11,7 +11,7 @@ Explanation style is not a preference and not a rotation. It follows from what i
 | does not see why it exists | present the problem first, let them feel it, then reveal the mechanism as the answer |
 | confuses two concepts | contrast pair — the same situation handled by both, and where they diverge |
 | understands but cannot apply | worked example, then the same shape with the decision left blank |
-| knows it but slowly / with lookup | not an explanation problem. This is retrieval, and it belongs in NotebookLM. |
+| knows it but slowly / with lookup | not an explanation problem. This is retrieval, and it belongs in Gemini Notebook. |
 
 The last row matters: re-explaining something the user already understands but has not consolidated feels productive and does nothing. The fix is retrieval practice, not more exposition — and retrieval is not this skill's job. Say so and point at the notebook.
 
@@ -52,4 +52,4 @@ Respect the code policy: illustrate with structure and pseudocode, not with the 
 
 Asking the user to explain a mechanism in their own words is the cheapest high-value thing available in conversation, and it remains useful — a fluent explanation with no hedging is a good signal, and a stall reveals exactly where the model is thin.
 
-**It produces no record.** It is not logged, it does not move Comprehension, and it never marks anything as understood. This skill has no assessment instrument any more; what it has is a way to notice, in the moment, that a topic is worth taking to NotebookLM. Say that, and move on.
+**It produces no record.** It is not logged, it does not move Comprehension, and it never marks anything as understood. This skill has no assessment instrument any more; what it has is a way to notice, in the moment, that a topic is worth taking to Gemini Notebook. Say that, and move on.

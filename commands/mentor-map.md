@@ -12,7 +12,7 @@ Run right after the spec skill produces its task list, before any code. Target t
 |---|---|
 | **Reads** | spec artifacts (via `profile.spec_artifacts`), `snapshot.json`, `domain.md`, `nodes.md`, the repo |
 | **Writes** | `.mentor/features/<slug>/map.md`, new rows in `nodes.md`, `profile.active_feature` |
-| **Never** | writes to the planning skill's own files; contacts NotebookLM; writes Comprehension; re-derives Application without `--rederive` |
+| **Never** | writes to the planning skill's own files; contacts Gemini Notebook; writes Comprehension; re-derives Application without `--rederive` |
 
 ## Steps
 
@@ -59,7 +59,7 @@ For each required node resolve Domain (longest declared prefix, else `developing
 ## Output to the user
 
 - the split — `4 own, 3 paired, 2 delegated`
-- **the gaps**: required nodes absent from the snapshot or sitting at `no`. This is the study list, and it is the most actionable thing the command produces — it is what to take to NotebookLM.
+- **the gaps**: required nodes absent from the snapshot or sitting at `no`. This is the study list, and it is the most actionable thing the command produces — it is what to take to Gemini Notebook.
 - `contested` nodes, in their own block: declared `mastered`, proven `no`. Naming the contradiction is the whole job; resolving it is the user's call.
 - `class-first` tasks: `own` work whose theory is not proven yet. One-line offer of `/mentor-class` before they start.
 - which nodes resolved `waived` by inheritance, and from which declaration — the mechanism paying out should be visible

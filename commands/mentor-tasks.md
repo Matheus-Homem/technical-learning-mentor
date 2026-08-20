@@ -1,6 +1,6 @@
 # /mentor-tasks
 
-`/mentor-tasks [feature-slug] [--all]` — read-only status util. Sync checkboxes to reality, then show the full remaining scope grouped by who writes it. Never: writes to `.mentor/`, classifies nodes, contacts NotebookLM.
+`/mentor-tasks [feature-slug] [--all]` — read-only status util. Sync checkboxes to reality, then show the full remaining scope grouped by who writes it. Never: writes to `.mentor/`, classifies nodes, contacts Gemini Notebook.
 
 Renamed from `/mentor-next`. Step 1 is unchanged; step 2 groups by the matrix verdict.
 
@@ -48,4 +48,4 @@ This is the one write to `.mentor/` this command may make, and only on the user'
 - Runnable checks: scope to the item (`pytest -k <name>`), not the full suite; extract only the pass/fail signal, don't carry the full log into the response.
 
 ## Boundary
-This = project state, never knowledge state. A checkbox flip is not evidence of anything, and it never moves Comprehension — that lives in NotebookLM and arrives through `/mentor-sync`.
+This = project state, never knowledge state. A checkbox flip is not evidence of anything, and it never moves Comprehension — that lives in Gemini Notebook and arrives through `/mentor-sync`.

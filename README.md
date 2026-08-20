@@ -17,10 +17,10 @@ The fix is not "never let the AI write code" — hand-writing boilerplate you've
 ## How it works
 
 ```
-   NotebookLM                          your repo
+   Gemini Notebook                          your repo
   ┌──────────┐
   │ sources  │
-  │ quizzes  │──/mentor-sync──►  .mentor/notebooklm/snapshot.json
+  │ quizzes  │──/mentor-sync──►  .mentor/gemini-notebook/snapshot.json
   │ ledger   │                            │
   └──────────┘                            │       .mentor/domain.md   (you)
         ▲                                 │       .mentor/nodes.md    (derived)
@@ -38,7 +38,7 @@ The fix is not "never let the AI write code" — hand-writing boilerplate you've
         └─────────────── you study, you test ─────────┘
 ```
 
-**NotebookLM is the source of truth for knowledge.** It holds your sources and it owns whether you understand something. This skill does not test you, grade you, or track your retention — it reads that state and decides what to do with it.
+**Gemini Notebook is the source of truth for knowledge.** It holds your sources and it owns whether you understand something. This skill does not test you, grade you, or track your retention — it reads that state and decides what to do with it.
 
 ## Three dimensions, three owners
 
@@ -47,7 +47,7 @@ The thing this skill gets right is refusing to answer three different questions 
 | | Question | Levels | Owner |
 |---|---|---|---|
 | **Domain** | do I want to develop this? | 1–4 | **you** — self-declared |
-| **Comprehension** | is the basic theory proven? | 2–4 | **NotebookLM** — proven |
+| **Comprehension** | is the basic theory proven? | 2–4 | **Gemini Notebook** — proven |
 | **Application** | does this materialise into an artifact? | 4 | **derived** — a property of the concept |
 
 Each has exactly one owner and one file, and no field is ever written by two parties. That is what makes divergence between the skill and your notebook structurally impossible rather than merely discouraged.
@@ -99,7 +99,7 @@ Every verdict ships with its trace:
 T7  own
     ← SistemasDistribuidos.ApacheKafka.Retencao.TombstoneDelay
         domain        = developing  (default — no declaration on any prefix)
-        comprehension = no          (NotebookLM, 2026-08-19)
+        comprehension = no          (Gemini Notebook, 2026-08-19)
         application   = practical   (derived: becomes delete.retention.ms in the topic config)
     other nodes: 1 waived (inherited from …ApacheKafka), 1 paired
 ```
@@ -110,7 +110,7 @@ A verdict you can't audit is one you'll stop trusting — including the ones tha
 
 | Command | When | What it does |
 |---|---|---|
-| `/mentor-sync` | before mapping, after study | pulls Comprehension from NotebookLM; asks for Domain on new level-2 nodes. The only command that talks to NotebookLM. |
+| `/mentor-sync` | before mapping, after study | pulls Comprehension from Gemini Notebook; asks for Domain on new level-2 nodes. The only command that talks to Gemini Notebook. |
 | `/mentor-map` | right after the spec skill produces tasks | derives required nodes, resolves all three dimensions, applies the matrix, writes the map |
 | `/mentor-tasks` | any time | verifies open checkboxes against real code, then shows what's left grouped by verdict |
 | `/mentor-class <topic>` | stuck, or before a `class-first` task | teaching material in the format that fits the kind of not-knowing |
@@ -158,9 +158,9 @@ Default is no. `--with-design-pairing` / `--no-design-pairing` skip the prompt f
 
 ## Design decisions
 
-**A snapshot, not a live query.** There is no public consumer API for NotebookLM. Every command reads Comprehension from one local file, and only `/mentor-sync` writes it. Verdicts stay deterministic, the skill works offline, and when the transport breaks there is exactly one thing to fix.
+**A snapshot, not a live query.** There is no public consumer API for Gemini Notebook. Every command reads Comprehension from one local file, and only `/mentor-sync` writes it. Verdicts stay deterministic, the skill works offline, and when the transport breaks there is exactly one thing to fix.
 
-**The ledger comes from real evidence, not memory.** NotebookLM persists full per-question quiz and flashcard results natively — confirmed live, not just from docs. There is no cross-quiz aggregation built in, so `/mentor-sync`'s default move is handing you a prompt for the notebook's own chat: point it at your node ids, it rereads its own Studio results, and returns the ledger grounded in what you actually got right or wrong. Plain self-report is still there as a fallback for a node no quiz has touched yet.
+**The ledger comes from real evidence, not memory.** Gemini Notebook persists full per-question quiz and flashcard results natively — confirmed live, not just from docs. There is no cross-quiz aggregation built in, so `/mentor-sync`'s default move is handing you a prompt for the notebook's own chat: point it at your node ids, it rereads its own Studio results, and returns the ledger grounded in what you actually got right or wrong. Plain self-report is still there as a fallback for a node no quiz has touched yet.
 
 **Application is a property of the concept, not of you.** `practical` means *there exists an artifact whose production would demonstrate this* — config, a query, a command, a diagram. It is derived once, on creation, and pinned. Two runs on unchanged inputs must produce identical verdicts, and they can't if a classification is regenerated on each read.
 
@@ -168,7 +168,7 @@ Default is no. `--with-design-pairing` / `--no-design-pairing` skip the prompt f
 
 **Delegation with a toll, not a ban.** Raising a verdict is free. Lowering one costs a dated line saying which task and why. Delegation decided in advance is a strategy; delegation decided at 22:00 on a task that turned out to be boring is the path of least resistance wearing a strategy's clothes.
 
-**No retention clock.** Deliberately removed with the assessment machinery. Retention belongs to whoever owns the testing, and that is NotebookLM. Stated here so it doesn't read as an oversight.
+**No retention clock.** Deliberately removed with the assessment machinery. Retention belongs to whoever owns the testing, and that is Gemini Notebook. Stated here so it doesn't read as an oversight.
 
 **The tree costs something.** A hierarchy forces each node into one branch, and the best concepts sit on seams. That is accepted in exchange for inheritance — a task can require nodes from any number of subtrees, and `nodes.md` carries cross-tree links for navigation, which the matrix deliberately never reads.
 
@@ -183,7 +183,7 @@ technical-learning-mentor/
 ├── references/              doctrine, read on demand
 │   ├── knowledge-model.md     the taxonomy and the three dimensions
 │   ├── task-matrix.md         the deterministic verdict rules
-│   ├── notebooklm-contract.md the snapshot schema and transports
+│   ├── gemini-notebook-contract.md the snapshot schema and transports
 │   ├── classes.md             the three class categories
 │   ├── code-policy.md         what may be written at each verdict
 │   ├── teaching.md · audio.md · class-diagrams.md

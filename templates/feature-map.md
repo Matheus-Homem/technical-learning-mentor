@@ -37,8 +37,8 @@
 
 ## Gaps
 
-<!-- Required nodes absent from the NotebookLM snapshot, or present with
-     comprehension `no`. This is the study list — what to take to NotebookLM. -->
+<!-- Required nodes absent from the Gemini Notebook snapshot, or present with
+     comprehension `no`. This is the study list — what to take to Gemini Notebook. -->
 
 | node | why it is required | tasks affected |
 |---|---|---|
@@ -51,7 +51,7 @@
 T7  own
     <- SistemasDistribuidos.ApacheKafka.Retencao.TombstoneDelay
         domain        = developing  (default - no declaration on any prefix)
-        comprehension = no          (NotebookLM, 2026-08-19)
+        comprehension = no          (Gemini Notebook, 2026-08-19)
         application   = practical   (derived: becomes delete.retention.ms in the topic config)
     other nodes: 1 waived (inherited from ...ApacheKafka), 1 paired
 -->
