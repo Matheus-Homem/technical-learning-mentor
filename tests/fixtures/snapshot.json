@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "fetched_at": "2026-08-19T10:00:00Z",
+  "source": "manual",
+  "notebook_id": "test-notebook",
+  "nodes": [
+    {
+      "node": "SistemasDistribuidos.ApacheKafka.ReplicacaoDeParticoes.InSyncReplicasMinimas",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-19",
+      "basis": "quiz"
+    },
+    {
+      "node": "SistemasDistribuidos.ApacheKafka.ExactlyOnceSemantics.IdempotentProducer",
+      "comprehension": "no",
+      "asserted_at": "2026-08-18",
+      "basis": "quiz"
+    },
+    {
+      "node": "SistemasDistribuidos.ApacheKafka.ExactlyOnceSemantics.TransactionalId",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-18",
+      "basis": "flashcard"
+    },
+    {
+      "node": "SistemasDistribuidos.ApacheKafka.Retencao",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-10",
+      "basis": "note"
+    },
+    {
+      "node": "ArquiteturaDeSoftware.DomainDrivenDesign.AgregadosEInvariantes.ConsistenciaTransacional",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-16",
+      "basis": "quiz"
+    },
+    {
+      "node": "ArquiteturaDeSoftware.DomainDrivenDesign.AgregadosEInvariantes.RaizDeAgregado",
+      "comprehension": "no",
+      "asserted_at": "2026-08-16",
+      "basis": "quiz"
+    },
+    {
+      "node": "ArquiteturaDeSoftware.DomainDrivenDesign.ContextoDelimitado.MapaDeContextos",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-05",
+      "basis": "note"
+    },
+    {
+      "node": "SistemasDistribuidos.TeoremaCAP.TradeoffLatenciaConsistencia.LimiteTeorico",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-04",
+      "basis": "quiz"
+    },
+    {
+      "node": "SistemasDistribuidos.TeoremaCAP.TradeoffLatenciaConsistencia.ParticaoDeRede",
+      "comprehension": "no",
+      "asserted_at": "2026-08-04",
+      "basis": "quiz"
+    },
+    {
+      "node": "Observabilidade.OpenTelemetry.Tracing.SpanContext",
+      "comprehension": "yes",
+      "asserted_at": "2026-08-12",
+      "basis": "quiz"
+    },
+    {
+      "node": "ArquiteturaDeSoftware.DomainDrivenDesign.ContextoDelimitado.LinguagemUbiqua",
+      "comprehension": "no",
+      "asserted_at": "2026-08-06",
+      "basis": "quiz"
+    }
+  ]
+}

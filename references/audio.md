@@ -1,10 +1,10 @@
 # Narrated classes: the md-to-audio pipeline
 
-The scripts live at `scripts/md-to-audio/` in this skill. They are the narration half of the **written + narrated** format in `references/classes.md` — the one chosen when a concept or a piece of theory has not landed and the user wants to be able to review it away from a screen.
+The scripts live at `scripts/md-to-audio/` in this skill. They are the narration half of the **conceptual** category in `references/classes.md` — the one chosen when a concept or a piece of theory has not landed and the user wants to be able to review it away from a screen.
 
 This pipeline does **not** write teaching content. It narrates content that already exists: `/mentor-class` writes the `<slug>.md`, and this turns that file into `<slug>.mp3`.
 
-Run it only for the written format. A Mermaid walkthrough, a scratch notebook, and a component map have nothing useful to narrate.
+Run it only for a conceptual class. Practical-application material and architectural diagrams have nothing useful to narrate.
 
 ## Prerequisites
 

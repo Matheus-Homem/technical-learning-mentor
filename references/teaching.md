@@ -2,61 +2,54 @@
 
 ## Choose the strategy from the diagnosed gap
 
-Explanation style is not a preference and not a rotation. It follows from what is actually missing. Check `knowledge.md` for an open `misconception` on the objective before explaining — if there is one, the explanation must attack it, not restate the concept.
+Explanation style is not a preference and not a rotation. It follows from what is actually missing.
 
 | Diagnosed gap | Strategy |
 |---|---|
 | missing vocabulary | definition plus the smallest possible example |
-| wrong mental model (open misconception) | a counterexample that breaks the model, then the correct model |
+| wrong mental model | a counterexample that breaks the model, then the correct model |
 | does not see why it exists | present the problem first, let them feel it, then reveal the mechanism as the answer |
 | confuses two concepts | contrast pair — the same situation handled by both, and where they diverge |
 | understands but cannot apply | worked example, then the same shape with the decision left blank |
-| knows it but slowly / with lookup | not an explanation problem. Schedule retrieval, do not re-explain. |
+| knows it but slowly / with lookup | not an explanation problem. This is retrieval, and it belongs in Gemini Notebook. |
 
-The last row matters: re-explaining something the user already understands but has not consolidated feels productive and does nothing. The fix is retrieval practice, not more exposition.
+The last row matters: re-explaining something the user already understands but has not consolidated feels productive and does nothing. The fix is retrieval practice, not more exposition — and retrieval is not this skill's job. Say so and point at the notebook.
 
-## Then choose the artifact format from the same diagnosis
+## Then choose the format from the same diagnosis
 
-The table above decides *what to say*. When the answer is going to be a `/mentor-class` rather than a reply in the conversation, a second question follows from the same diagnosis: *what medium says it*. Same discipline — it follows from what is missing, not from preference or rotation.
+The table above decides *what to say*. When the answer is going to be a `/mentor-class` rather than a reply in conversation, the same diagnosis decides *what medium says it*.
 
-| Diagnosed gap | Shape of the difficulty | Format |
+The three categories are in `references/classes.md`. This table maps the gap onto them:
+
+| Diagnosed gap | Category | Format |
 |---|---|---|
-| missing vocabulary · does not see why it exists | conceptual — the idea itself has not landed | **written + narrated** (`.md` + `.mp3`) |
-| wrong mental model · confuses two concepts | conceptual, needs a counterexample or a contrast pair | **written + narrated**, or a **component map** when the two things being confused are components rather than ideas |
-| understands the parts, loses the order | procedural — what happens when | **diagrammed walkthrough** (`.md` with Mermaid) |
-| understands but cannot apply — cannot get started against an unfamiliar tool | practical — the first line of code is the wall | **scratch notebook** (`.ipynb`) |
-| understands each piece, not how they fit | structural — the relationships are the gap | **component map** (`.html`) |
-| knows it but slowly / with lookup | **not a class at all** | schedule retrieval; generate nothing |
+| missing vocabulary · does not see why it exists | **conceptual** | written, optionally narrated (`.md` + `.mp3`) |
+| wrong mental model · confuses two concepts | **conceptual** — needs a counterexample or a contrast pair; **architectural** instead when the two things being confused are components rather than ideas | `.md`, or a component map |
+| understands the parts, loses the order | **architectural** — sequence is a relationship | `.md` with Mermaid |
+| understands each piece, not how they fit | **architectural** | component map (`.html`/`.svg`) |
+| understands but cannot apply — cannot get started against an unfamiliar tool | **practical application** | notebook or incomplete code — **always incomplete** |
+| knows it but slowly / with lookup | **no class at all** | generate nothing; it is retrieval |
 
-The last row is the same guard as in the table above, and it is the one most often ignored: producing an artifact for something already understood feels like help and is pure cost. Say that the fix is retrieval and let `/mentor-review` resurface it.
+Pick **one** format. Two only when the difficulty genuinely has two faces — no vocabulary *and* no sense of how the pieces connect. Never three.
 
-Pick **one** format. Two only when the difficulty genuinely has two faces — no vocabulary *and* no sense of how the pieces connect. Never all four. `references/classes.md` holds the full protocol and the storage convention; `references/audio.md` and `references/class-diagrams.md` hold the production details for the two formats that have them.
+If the diagnosis is unclear, one question settles it, and only one: *what part is unclear — what it is, how to use it, or where it fits?*
 
-If the diagnosis is unclear, one question settles it: *what part is unclear — what it is, the order things happen in, how the pieces fit, or getting the first line of code to run?*
+`references/classes.md` holds the full protocol; `references/audio.md` and `references/class-diagrams.md` hold the production details for the two formats that have them.
 
 ## Analogies
 
-Analogies are a first-contact tool and a consolidation liability. Any analogy used must be delivered with the point where it breaks, in the same message. An analogy without its boundary is how durable misconceptions get installed.
+Analogies are a first-contact tool and a consolidation liability. Any analogy used must be delivered with the point where it breaks, **in the same message**. An analogy without its boundary is how durable misconceptions get installed.
 
-Do not use analogies for an objective already at `explains` or above — at that point they blur a model that is already correct.
+Do not reach for one when the node's Comprehension is already `yes` — at that point an analogy blurs a model that is already correct.
 
 ## Project examples
 
-Prefer examples drawn from the user's actual repo and current feature over generic ones. They are more concrete, they transfer directly, and they cost nothing. Respect the code policy: illustrate with structure and pseudocode, not with the implementation the user owes.
+Prefer examples drawn from the user's actual repo and current feature over generic ones. They are more concrete, they transfer directly, and they cost nothing.
 
-## User overrides
+Respect the code policy: illustrate with structure and pseudocode, not with the implementation the user owes. For a `practical application` class, the example is the thing they complete — see the incompleteness rule in `references/classes.md`.
 
-If the user explicitly asks for a format — "explain it like I'm five", "just give me the analogy", "compare it to the other one" — their request wins over this table, immediately and without negotiation. These heuristics decide what Claude does *unprompted*.
+## Explaining back
 
-## Feynman protocol
+Asking the user to explain a mechanism in their own words is the cheapest high-value thing available in conversation, and it remains useful — a fluent explanation with no hedging is a good signal, and a stall reveals exactly where the model is thin.
 
-Used in `/mentor-close`, and available on request.
-
-1. Name the scope: "explain what you built in this feature and why, as if teaching someone who knows the language but not this tool."
-2. **Do not interrupt.** Let the whole explanation land. Interrupting turns it into a dialogue, and dialogue lets Claude supply the connective tissue the user is missing — which is exactly what is being measured.
-3. While listening, note: terms used without mechanism; circular definitions ("it's for partitioning, so it partitions"); jumps where a *why* is missing; correct statements with no visible reason underneath; and anything they avoided.
-4. Then report the gaps, in order of importance, one at a time. For each, ask the follow-up that would close it rather than closing it yourself.
-5. **Rejected-alternative pass.** For one or two of the decisions covered, ask why a plausible alternative approach was *not* taken. Log this as `feynman_rejection`. A shallow-but-correct understanding can usually defend the choice made; it much less often can attack the option it did not take, which makes this the higher-value half of the exercise.
-6. Log one evidence line per objective the explanation covered — including objectives that were expected in the scope and never came up. An objective the user forgot to mention while explaining their own feature is meaningful evidence.
-
-A clean Feynman explanation is strong evidence for `explains` and cheap to run. A clean rejected-alternative answer supports `decides`. Neither is a substitute for a real decision under stated conditions — pair with a scenario when the objective's target is `decide`.
+**It produces no record.** It is not logged, it does not move Comprehension, and it never marks anything as understood. This skill has no assessment instrument any more; what it has is a way to notice, in the moment, that a topic is worth taking to Gemini Notebook. Say that, and move on.

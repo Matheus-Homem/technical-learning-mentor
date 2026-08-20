@@ -1,14 +1,12 @@
-# Placed at .mentor/.gitignore during first-run bootstrap by /mentor-map.
-# Everything else in .mentor/ is intentionally version-controlled — it's
-# the durable record this skill exists to keep. Excluded: the derived panel,
-# session-only /mentor-class output, and the narration glossary
-# (see references/audio.md).
+# Written by /mentor-sync into .mentor/.gitignore on bootstrap.
 #
-# If `prune_closed_features_on_close` is enabled in profile.md, /mentor-close
-# appends one `features/<slug>/` line below per closed feature — never a
-# blanket `features/**`, which would block normal tracking of the next open
-# feature. See commands/mentor-close.md.
+# Everything in .mentor/ is version-controlled except session-derived output.
+# The state that matters — domain declarations, the node registry, the
+# Gemini Notebook snapshot, and the feature maps — is small, diffable, and is the
+# audit trail for every verdict the skill produced. It belongs in git.
 
-progress.html
-features/*/classes/
-narration_glossary.json
+# /mentor-class artifacts: regenerable session output, sometimes large
+# (audio, HTML). The index.md beside them IS tracked — it is the record
+# that a class happened; the artifact is not.
+features/*/classes/*
+!features/*/classes/index.md
