@@ -222,7 +222,10 @@ install_design_pairing() {
   # itself, not the terminal. Reading from /dev/tty is what makes the prompt
   # actually reach the user. With no tty there is nobody to ask, and silence is
   # never taken as consent.
-  if [ ! -r /dev/tty ]; then
+  # `[ -r /dev/tty ]` is not the test to use here: /dev/tty always exists as a
+  # 0666 device node, so -r succeeds even with no controlling terminal. The only
+  # reliable check is to actually open it.
+  if ! (exec 3</dev/tty) 2>/dev/null; then
     echo "design pairing rule: skipped — no terminal available to ask."
     echo "  re-run with --with-design-pairing to install it non-interactively."
     return
@@ -234,6 +237,8 @@ install_design_pairing() {
 
   local answer=""
   printf '  Install the DESIGN pairing rule? [y/N] '
+  # A failed read (EOF, closed tty) leaves answer empty, which falls through to
+  # the default below. Silence is never consent.
   read -r answer < /dev/tty || answer=""
   echo
 
