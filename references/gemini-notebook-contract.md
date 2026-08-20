@@ -55,7 +55,7 @@ Rules:
 
 - The file is **derived**. It is replaced whole on every sync and is never hand-edited. Editing it directly puts a claim about the user's knowledge into the skill's mouth, which is the one thing this design exists to prevent.
 - It **is** version-controlled. It is small, it is the audit trail for every verdict the skill produced, and a diff of it is the most legible record of learning the project has.
-- An id failing validation is **reported and dropped**, never silently repaired. A malformed id usually means a typo in the ledger, and guessing the intended node is how the wrong node gets marked as understood.
+- An id failing validation is **canonicalized with the user's confirmation first, then dropped if that fails**. Never silently repaired. `/mentor-sync` step 3 owns this — it is common on a first sync, before `/mentor-map` has ever run and there is no `nodes.md` to copy ids from.
 - A node present with `comprehension` missing or unrecognised is treated as absent, and reported.
 
 ## Where the state comes from
@@ -77,16 +77,16 @@ Two variants, in order of preference:
 **(a) Chat-extracted ledger — the recommended pattern.** Give the notebook's own chat the node ids you need checked (from `nodes.md`, or the gaps listed by the last `/mentor-map`) and ask it to read the Studio quiz/test results and produce the ledger table. A working prompt:
 
 ```
-Here is a list of topics, each identified by a hierarchical id. For each one,
-reread the quiz and test results saved in this notebook's Studio and answer
-based on the questions actually answered — not on what you think I know:
+Here is a list of topics. For each one, reread the quiz and test results
+saved in this notebook's Studio and answer based on the questions actually
+answered — not on what you think I know:
 
 - yes, if the questions on that topic were answered correctly
 - no, if any of them were answered wrong
 - leave the topic out if no quiz/test has covered it yet
 
 Topics:
-<node ids, one per line>
+<node ids if you have them; plain words are fine if you don't yet>
 
 Reply as a markdown table:
 | node | comprehension | date | basis | excerpt |
@@ -94,6 +94,8 @@ where date is the date of the most recent quiz that covered the topic, basis
 is "quiz" or "flashcard", and excerpt is one line explaining why (you may
 quote the explanation that already appeared in the quiz result).
 ```
+
+**Have real ids on hand where you can** (from `nodes.md` or a `## Gaps` list) — the chat has no idea this skill's taxonomy exists, so it can't produce a canonical id on its own. On a first sync, before `/mentor-map` has run, there usually are no ids yet; plain topic words are the expected input then, and `/mentor-sync` canonicalizes what comes back — proposing an id from the label and the excerpt, and confirming it with you before writing anything.
 
 This grounds every row in a real, dated, per-question result instead of a memory-based guess — a strictly stronger `basis` than plain self-report. It costs nothing extra: the evidence was already sitting in Studio, gathered as a side effect of studying, and this just reads it back.
 

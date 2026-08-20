@@ -36,23 +36,36 @@ From `profile.md`'s `gemini_notebook_transport`:
 - **`manual`** — the ledger comes from the notebook's own chat reading its own Studio quiz/flashcard results, not from the user typing an assessment from memory. If there are nodes worth checking — anything in `nodes.md` with no entry in the current snapshot, or a feature's `## Gaps` — **hand the user the ready-to-paste prompt from `references/gemini-notebook-contract.md`, with those node ids already filled in.** They run it in the notebook's chat and bring back the table it produces. A node no quiz has touched yet, or one the user wants to assert without waiting on a quiz, uses the plain self-report table instead — same reference, the fallback variant.
 - **`mcp:<server>`** — query the configured MCP server for the ledger's content. If it fails for any reason, **fall back to `manual` and say so**. Never let a broken transport end the command — the manual path always works, and that is the point of having it.
 
-**3. Validate every id** against the regex in `references/knowledge-model.md`.
+**3. Canonicalize loose entries, then validate.**
 
-An invalid id is **reported and dropped**, never repaired. A malformed id is usually a typo, and guessing the intended node is how the wrong node gets marked as understood. Same for an entry whose `comprehension` is missing or is not `yes`/`no` — treat it as absent and report it.
+A row's `node` will not always be a proper id — most often on the **first sync of a project**, before any `/mentor-map` has run and `nodes.md` has nothing to copy from. The user, or the notebook's chat, will reasonably use plain words instead (`broker`, `kafka`) rather than invent a taxonomy id nobody told them.
+
+Before rejecting anything, try to canonicalize:
+
+- Check `nodes.md` and the current snapshot first — reuse an existing id (or its alias) if one plainly matches.
+- Otherwise, propose a canonical id from the label plus its `excerpt`, exactly as `/mentor-map` does for a new node (`references/knowledge-model.md`). A quiz excerpt about "recommended broker technology" and "decoupling" is enough context to propose something like `SistemasDistribuidos.ApacheKafka.Broker.EscolhaDeTecnologia` — but propose it, never assume it silently.
+- **Show the proposals together and confirm before writing anything.** One batch confirmation for a short list is fine; let the user edit any single one.
+- A row whose excerpt is too thin to propose anything responsible, or that the user declines to canonicalize, is **reported and dropped** — same as an unrecoverable typo.
+
+This step never writes to `nodes.md` — that stays `/mentor-map`'s and `/mentor-class`'s job. It only decides which id a Comprehension entry is filed under in `snapshot.json`. If that node doesn't exist in `nodes.md` yet, the entry simply waits there until a later `/mentor-map` derives the same node from a task and finds the Comprehension already sitting for it.
+
+**4. Validate every id** against the regex in `references/knowledge-model.md`.
+
+Anything still malformed after canonicalization is **reported and dropped**, never guessed. Same for an entry whose `comprehension` is missing or is not `yes`/`no` — treat it as absent and report it.
 
 Report rejections as a group at the end, with the reason for each.
 
-**4. Show the diff before writing.**
+**5. Show the diff before writing.**
 
-Against the current snapshot: added, changed (`no` → `yes` and the reverse), removed, rejected. Removals matter — a node that left the ledger stops being proven, and any verdict resting on it moves.
+Against the current snapshot: added, changed (`no` → `yes` and the reverse), removed, rejected, and any canonicalized from step 3 (old label → proposed id). Removals matter — a node that left the ledger stops being proven, and any verdict resting on it moves.
 
 With `--dry-run`, stop here. Write nothing.
 
-**5. Write.**
+**6. Write.**
 
 Replace `snapshot.json` whole. Append one block to `sync-log.md` per the template's format.
 
-**6. Ask for Domain on new level-2 nodes.**
+**7. Ask for Domain on new level-2 nodes.**
 
 For every level-2 node in the snapshot with no declaration on any prefix in `domain.md`, ask once:
 
