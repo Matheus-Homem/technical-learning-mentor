@@ -1,69 +1,63 @@
-# Feature map — <slug>
+# Feature: <slug>
 
-<!-- Written in English. Created by /mentor-map, one per feature.
-     Scope of learning for this activity. Not rewritten after close. -->
+<!-- Written by /mentor-map. Rewritten on every remap.
+     The Task x Knowledge crossing for this feature, and the verdict for each task.
+     See references/task-matrix.md. -->
 
-- **Opened**: <date>
-- **Closed**: <date or "open">
-- **Spec source**: <path to the artifacts this was derived from>
-- **Last review point**: <git ref or commit sha — where the next /mentor-review diff pass starts from>
-- **study_hours_total at open**: <value copied from profile.md>
+- Opened: <YYYY-MM-DD>
+- Closed: <YYYY-MM-DD or empty>
+- Spec source: <path the tasks were read from>
+- Snapshot: <fetched_at of the snapshot used> <!-- flag here if it was stale -->
+- Task key used: <explicit id | heading text | checkbox line>
 
-## Bucket sort
+<!-- "Task key used" records how tasks were identified, so a later remap can
+     reconcile. Identify each task by the first of these the task file actually
+     offers: an explicit id (T14, TASK-3); else the heading its checkbox sits
+     under; else the checkbox line, truncated. Never require the task file to
+     carry a field of ours — this skill does not own that file. -->
 
-<!-- Every candidate piece of required knowledge, sorted once at open.
-     See references/knowledge-model.md for the test. -->
+## Tasks
 
-### 🎯 Decide — becomes objectives, target `decide`
+<!-- verdict: own | paired | delegated
+     deciding node: the node that produced the verdict, per the aggregation rule
+     active nodes: how many survived the `waived` filter, out of how many required
+     flags: contested | unverified | class-first | manual-override | empty -->
 
-| id | statement |
-|---|---|
+| task | verdict | deciding node | active nodes | flags |
+|---|---|---|---|---|
 
-### 📖 Explain — becomes objectives, target `explain`
+## Knowledge
 
-| id | statement |
-|---|---|
+<!-- Every node this feature requires, with its resolved triple.
+     Each resolution names its origin — a declaration, a date, a derivation.
+     A value without its origin is not written. -->
 
-### 📦 Delegate — routed to /mentor-class, no objective created
+| node | domain (origin) | comprehension (date) | application (source) | tasks |
+|---|---|---|---|---|
 
-| item | why it's delegate |
-|---|---|
+## Gaps
 
-## Task authorship levels
+<!-- Required nodes absent from the NotebookLM snapshot, or present with
+     comprehension `no`. This is the study list — what to take to NotebookLM. -->
 
-<!-- Written by /mentor-map step 4b, recomputed on every remap.
-     Level derivation and the own/paired/deliver definitions live in
-     references/code-policy.md — do not restate the rules here, just the result.
+| node | why it is required | tasks affected |
+|---|---|---|
 
-     `task` uses the first identifier the task file actually offers:
-     explicit id -> heading text -> truncated checkbox line. Record which
-     below so a later remap can reconcile against a changed file.
+## Trace
 
-     Promotion by the user is free and needs no note. Demotion mid-feature
-     gets a dated line under "Notes during the feature", naming the task. -->
+<!-- The full resolution behind every verdict. Required — a verdict without its
+     trace is not written. One block per task:
 
-- **task key used**: <explicit id | heading text | checkbox line>
+T7  own
+    <- SistemasDistribuidos.ApacheKafka.Retencao.TombstoneDelay
+        domain        = developing  (default - no declaration on any prefix)
+        comprehension = no          (NotebookLM, 2026-08-19)
+        application   = practical   (derived: becomes delete.retention.ms in the topic config)
+    other nodes: 1 waived (inherited from ...ApacheKafka), 1 paired
+-->
 
-| task | level | objectives | why |
-|---|---|---|---|
+## Notes
 
-## Limiting objective
-
-<!-- The transversal concept most of this feature's `decide` objectives depend
-     on, if one is visible. Gets deliberate drill in the due-review pass of
-     /mentor-review instead of the normal rotation. Leave empty if none is
-     clear — do not force it. -->
-
-- **id**: <K-xx or empty>
-- **why**: <one or two lines>
-
-## Carried in
-
-<!-- Objectives arriving already fragile or with an open misconception, and what
-     that misconception is. These get priority in the first assessment round. -->
-
-## Notes during the feature
-
-<!-- Anything worth remembering that is not an evidence line: a decision the user
-     made and deferred understanding, a tool they leaned on heavily, a topic
-     they asked to postpone. -->
+<!-- Dated lines. Required for: lowering a task's verdict by hand
+     (own -> paired -> delegated), and what moved on each remap.
+     Raising a verdict is free but note it so the recompute does not undo it. -->

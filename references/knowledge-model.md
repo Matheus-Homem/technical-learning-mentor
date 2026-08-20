@@ -1,125 +1,200 @@
 # Knowledge model
 
-## The unit is a learning objective, not a topic
+## The unit is a taxonomy node
 
-A topic ("partitioning", "dependency injection", "indexes") is a noun. Nouns cannot be assessed — there is no fact of the matter about whether someone "knows partitioning".
+Every piece of knowledge in this skill is a node in a four-level hierarchy:
 
-A **learning objective** is a claim or a decision rule that can be right or wrong. It is written as a full sentence.
+```
+{Subject}.{Technology/CoreConcept}.{Component/Mechanism}.{BusinessRule/Property}
+```
 
-Bad (topic): `consumer offsets`
-Good (objective): `An offset commit records the next message to read, not the last one processed`
+```
+SistemasDistribuidos.ApacheKafka.ReplicacaoDeParticoes.InSyncReplicasMinimas
+ArquiteturaDeSoftware.DomainDrivenDesign.AgregadosEInvariantes.ConsistenciaTransacional
+```
 
-Bad (topic): `hexagonal architecture`
-Good (objective): `A port is owned by the domain; an adapter depends on the port, never the reverse`
-Good (objective): `Given a new external dependency, decide whether it needs a new port or reuses an existing one`
+The four levels are a progression of granularity, and each one answers a different question:
 
-Two shapes are allowed:
-
-- **Proposition** — a claim about how something works. Target level is usually `explain`.
-- **Decision rule** — a judgement to make under stated conditions. Target level is always `decide`. Phrase it as `Given X, decide Y`.
-
-If an objective cannot be phrased as one of these two, it is not an objective — it is a tag, or it belongs in the delegate bucket (see `classes.md`).
-
-## Not everything becomes an objective: the three buckets
-
-At `/mentor-map`, before anything is written to `knowledge.md`, every candidate piece of required knowledge is sorted into one of three buckets. This sorting happens once, deliberately, at the start of the feature — not item by item while tired at 22:00.
-
-| Bucket | What it is | What happens to it |
+| Level | Name | What it holds |
 |---|---|---|
-| 🎯 **decide** | a trade-off the user will meet again in their career; transferable | becomes an objective, target `decide`, gets scenarios |
-| 📖 **explain** | needs to be understood and justified, not optimised | becomes an objective, target `explain`, lighter assessment |
-| 📦 **delegate** | mechanical coupling between tools, lookup-able configuration | does **not** become an objective; routed to `/mentor-class` |
+| 1 | Subject | the field — `SistemasDistribuidos`, `ArquiteturaDeSoftware` |
+| 2 | Technology / Core concept | the thing being studied — `ApacheKafka`, `DomainDrivenDesign` |
+| 3 | Component / Mechanism | the part of it — `ReplicacaoDeParticoes`, `AgregadosEInvariantes` |
+| 4 | Business rule / Property | the specific claim or property — `InSyncReplicasMinimas` |
 
-The test for delegate vs. objective: **if the parameter encodes a trade-off the user needs to be able to navigate, it is knowledge. If it is plumbing between services, it is lookup.**
+Level 4 is where the skill does its real work. It is the only level granular enough to correspond to something a person actually produces: a line of configuration, a command, a query, a diagram, a decision in a concrete scenario.
 
-A Flink job's parallelism is a decision — it becomes an objective. The startup order between two containers in a compose file is usually plumbing — it goes to delegate. Delegating the second is what buys time for the first; see `classes.md` for how delegation is done without it becoming silent code delivery.
+## Form rules
 
-### Buckets sort knowledge; levels sort tasks
+- Segments are `PascalCase`, ASCII only. No accents, no spaces, no hyphens, no underscores. `Replicação` → `Replicacao`.
+- Validation: `^[A-Z][A-Za-z0-9]*(\.[A-Z][A-Za-z0-9]*){0,3}$`
+- **Depth 4 is required** for: anything a task requires, anything carrying an Application classification, and any node a `/mentor-class` names.
+- **Depth 1–3 is allowed only** for Domain declarations (that is what makes inheritance work) and for Comprehension coming from NotebookLM.
+- A node at depth *n* is a strict prefix of its descendants. **The tree is implicit in the set of ids** — there is no tree file, and there is nothing to keep in sync.
 
-These are two different axes, decided in the same command and easy to confuse:
+Human input is normalised, never rejected. The user types `kafka replicação ISR`; the skill proposes the canonical id and **confirms before writing it**. A wrong id contaminates everything beneath it, so this confirmation is not optional. Accepted spellings go in the `aliases` column of `nodes.md`.
 
-- the **bucket** (🎯 / 📖 / 📦) answers *is this worth learning?* — it is about a piece of knowledge, and only 🎯/📖 become rows in `knowledge.md`
-- the **authorship level** (`own` / `paired` / `deliver`) answers *who writes this task?* — it is about a unit of work, and it is derived from the state of whichever objectives that task exercises
+### What the tree costs, and what pays for it
 
-A task is not "a delegate item". A task may rest on three objectives, one of them shaky; a single 📦 item may be spread across six tasks. The link runs task → objectives → states → level, and it is recomputed whenever either side moves. An item sorted 📦 showing up as the substance of a task is a strong signal for `deliver`, but it is a signal, not the rule — the rule lives in `references/code-policy.md`.
+A hierarchy forces each node into exactly one branch, and the most valuable knowledge in a real project often sits on the seam between two areas. That cost is real and it is accepted deliberately, because the hierarchy is what makes inheritance possible — declaring `SistemasDistribuidos.ApacheKafka` as `waived` and having every descendant follow is worth more than the seams it hides.
 
-The bucket sort is permanent for the feature. Levels are not: an objective reaching its target flips its tasks to `deliver` on the next map, by design.
+Two things limit the damage:
 
-This distinction exists because of a real constraint highlighted under time pressure (a study sprint, a deadline): learning everything a project touches, at `decide` level, is not achievable and produces shallow coverage of everything instead of real depth where it matters. The buckets make that trade-off explicit and chosen once, rather than accidental.
+- a task may require any number of nodes, from any number of subtrees;
+- `nodes.md` carries a `related` column for cross-tree links, used by `/mentor-class` and shown in `/mentor-map` output.
 
-## Fields
+`related` is presentation and navigation only. **The task matrix never reads it.** A cross-link that could change a verdict would reintroduce, through the back door, exactly the ambiguity the hierarchy exists to remove.
 
-Each objective is one row in `.mentor/knowledge.md`:
+## Three independent dimensions
 
-| Field | Meaning |
+The three questions this skill used to answer with one field are now three separate dimensions, with three separate owners and three separate files. **No field is ever written by two parties.** That is the whole mechanism preventing divergence between the skill and NotebookLM.
+
+| Dimension | Question | Levels | Owner | File |
+|---|---|---|---|---|
+| **Domain** | do I want to develop this? | 1–4 | the user, self-declared | `.mentor/domain.md` |
+| **Comprehension** | is the basic theory proven? | 2–4 | NotebookLM, proven | `.mentor/notebooklm/snapshot.json` |
+| **Application** | does this materialise into an artifact? | 4 | the AI, derived | `.mentor/nodes.md` |
+
+The skill **never** writes Comprehension. NotebookLM **never** sees Domain or Application.
+
+---
+
+## Domain — self-declared, inherited
+
+Values: `waived`, `mastered`, `developing`.
+
+| Value | Meaning |
 |---|---|
-| `id` | stable, short, unique in the project (`K-07`). Never reused, never renumbered. |
-| `statement` | the proposition or decision rule, in English, one sentence |
-| `tags` | free-form, lowercase, hyphenated. Multiple allowed and encouraged. |
-| `target` | `explain` or `decide` |
-| `origin` | where the requirement came from: a task id, a design section, a file path, or `emergent` |
-| `state` | ladder position (below) |
-| `evidence` | comma-separated evidence ids, most recent last |
-| `misconception` | one line describing the currently open wrong model, or empty |
-| `last_seen` | ISO date of the most recent evidence touching this objective |
-| `last_seen_hours` | cumulative study hours (from `profile.md`) at that moment |
+| `waived` | not to be developed now — may be delegated to the AI |
+| `mastered` | the user declares they already have this |
+| `developing` | actively being built |
 
-There is no scheduled review date anywhere in this model. See `references/retention.md` for why, and for how `last_seen` / `last_seen_hours` replace it.
+Declarations live in `.mentor/domain.md` and are **sparse**: there is a row only for what was declared explicitly. Most nodes have no row at all, and that is the normal state.
 
-## Tags, not a tree
+### Resolution
 
-Do not organise objectives into a subject → topic tree. The most valuable objectives in a real project sit on the seams between areas, and a tree forces them into one branch and hides them from the others.
+The **effective Domain** of node `N` is the declaration on the **longest prefix of `N` that has one**.
 
-Tag freely: an objective about a container reaching a broker gets the tags of both. The panel groups by tag, so the same objective legitimately appears under several headings.
+With no declaration on any prefix, the effective Domain is **`developing`** — the default errs toward learning, which is the safe direction for a skill whose purpose is learning.
 
-## Target level
+There is never a tie: the prefixes of a single id are totally ordered, so "longest prefix with a declaration" always identifies exactly one row.
 
-Only two targets exist:
+### Inheritance and override
 
-- **`explain`** — the user can say what it is, why it exists, what problem it solves, and how it works, without looking it up.
-- **`decide`** — the user can choose correctly between options under stated conditions and justify the choice, and can say what breaks under the wrong choice.
-
-`decide` implies `explain`. Recall-only ("can name it") is never a target. Diagnosis is out of scope as a formal target, though a diagnosis the user performs spontaneously — resolving a real bug — is excellent evidence and should be logged (see `references/evidence-log.md`).
-
-## The limiting objective
-
-At `/mentor-map`, in addition to sorting into buckets, name **one limiting objective** for the feature when one is visible: the transversal concept that most other `decide`-bucket objectives depend on. It is usually not a tool-specific item — it is the cross-cutting idea (e.g. "time and ordering in a distributed system") that quietly determines whether the rest of the feature's decisions can be made correctly.
-
-The limiting objective is marked in `map.md` and gets deliberate drill in the due-review pass of `/mentor-review` (repeated scenarios, varying conditions) rather than the normal rotation with everything else. Not every feature has a clear one; do not force it.
-
-## The mastery ladder
+Inheritance is just the resolution rule seen from above. Declaring:
 
 ```
-unassessed → declared → fragile → explains → decides → fluent
-                ↑                     ↓         ↓
-                └──── (demotion on failed review) ──┘
+SistemasDistribuidos.ApacheKafka = waived
 ```
 
-| State | Meaning | Minimum to enter |
-|---|---|---|
-| `unassessed` | in the map, no evidence at all | — |
-| `declared` | the user claimed experience in the triage questionnaire | self-report only; explicitly weak |
-| `fragile` | there is evidence of a gap or an open misconception | one failed or partial response |
-| `explains` | met the `explain` bar | one strong-enough evidence (see evidence ordering) |
-| `decides` | met the `decide` bar | a justified decision, not a recognised answer |
-| `fluent` | reliable without consulting anything | **two independent evidences at target level, at least 14 days apart, with no lookup** |
+makes every node beneath it resolve to `waived` — no per-descendant declaration needed, and no descendant rows are created.
 
-`fluent` is the only state that requires elapsed time. This holds under any pace, including a study sprint: massed practice produces fast apparent gains and fast decay. Nothing learned inside a two-week sprint can be marked `fluent` within it — that is by design, not a gap to close. The panel must make this visible rather than silent (see `templates/progress.html`), or the sprint ends feeling like effort with no legible outcome.
+Override is just the resolution rule seen from below. Adding:
 
-Demotion is normal and not a punishment: a failed due review sends an objective back to `fragile` and restarts its position on the ladder in `retention.md`.
+```
+SistemasDistribuidos.ApacheKafka.ExactlyOnceSemantics = developing
+```
 
-## Archiving
+makes that subtree resolve to `developing` while its siblings stay `waived`. **Precedence is always specificity.** An explicit declaration on a node always beats anything it would inherit, because it is a longer prefix of itself.
 
-When the project pivots and an objective is no longer required, set its state prefix to `archived:` (`archived:explains`). Archived objectives keep their evidence and their history, disappear from the panel and from the review queue, and are restored with their history intact if a later feature requires them again. Never delete a row.
+### Inheritance is never written to disk
 
-## How objectives are derived
+Resolution happens at read time, every time. Materialising inherited values into rows would create a second copy of a fact that already exists, and second copies go stale — which is the exact failure mode this model was restructured to eliminate.
 
-At `/mentor-map`, read the spec artifacts and the current repo state, and ask: *what would someone have to be able to explain or decide in order to write this themselves?* Sort each candidate into a bucket before writing anything to `knowledge.md`.
+Every resolved value carries its origin, and the origin is shown wherever the value is:
 
-Rules:
+```
+waived    (inherited from SistemasDistribuidos.ApacheKafka, declared 2026-07-02)
+developing (default — no declaration on any prefix)
+```
 
-- Every objective must trace to something in the artifacts or in the existing code. Record it in `origin`.
-- Do not enumerate a technology. If the task list touches three features of a tool, three areas appear — not the tool's full surface.
-- Prefer fewer, sharper objectives. A feature that produces more than roughly 15 new `decide`+`explain` objectives is over-decomposed, or the delegate bucket is being under-used; reconsider both.
-- Reuse ids: check `knowledge.md` first. An objective that returns in a later feature keeps its id, its history, and its state.
-- Configuration trivia is not knowledge, even when it looks technical. If it does not encode a trade-off, it goes to `delegate`.
+---
+
+## Comprehension — proven, from NotebookLM
+
+Values: `yes`, `no`. A node **absent from the snapshot** is `unknown`.
+
+Comprehension answers one question: **does the user command the basic theory of this concept**, even with no practical experience of it in a real scenario? It is a *proven* classification, not a declared one — which is why the skill does not produce it. NotebookLM holds the sources, runs the testing, and owns this dimension end to end. The contract is in `references/notebooklm-contract.md`.
+
+It exists at levels 2, 3 and 4. Not at level 1: "does the user understand SistemasDistribuidos" is not a question with an answer.
+
+### Comprehension does not inherit, in either direction
+
+Knowing level 2 does not prove level 4. Knowing one level-4 node proves nothing about its sibling. Unlike Domain — which is a *decision* and therefore propagates — Comprehension is an *observation*, and an observation about one node is not an observation about another.
+
+Roll-ups exist for display only (`3/7 nodes proven under ApacheKafka`) and never feed the matrix.
+
+### `unknown` is not `no`
+
+For the matrix, `unknown` is treated as `no` — the conservative reading.
+
+For everything the user sees, they are kept apart, because the action each one implies is different:
+
+- `no` — it was tested and it did not hold. Study it.
+- `unknown` — it was never tested. Take it to NotebookLM.
+
+Collapsing the two would hide the second, which is the more common case and the more actionable one.
+
+---
+
+## Application — derived, level 4 only
+
+Values: `practical`, `theoretical`.
+
+Application classifies **the nature of the node**, not the user's history with it. The question is:
+
+> Is there a class of artifact — code, a terminal command, a configuration file, a query, a technical diagram, the analysis of a specific scenario, the resolution of a concrete problem — whose production would directly demonstrate this node?
+
+Yes → `practical`. No → `theoretical`.
+
+```
+SistemasDistribuidos.ApacheKafka.ReplicacaoDeParticoes.InSyncReplicasMinimas
+  → practical    becomes min.insync.replicas=2 in the broker config
+
+SistemasDistribuidos.TeoremaCAP.TradeoffLatenciaConsistencia.LimiteTeorico
+  → theoretical  no artifact "is" this
+```
+
+This is why Application exists only at level 4. Levels 1–3 are categories; only level 4 is specific enough for the question to have an answer.
+
+### It is derived once and does not drift
+
+Application is derived when the node is first created — by `/mentor-map` from a task, or by `/mentor-class` from a topic — and then **it does not change on its own**.
+
+- The user may override it. `source: user` is permanent and is never re-derived.
+- A deliberate re-derivation is available as `/mentor-map --rederive <node>`.
+- Nothing else touches it.
+
+The reason is determinism. AI derivation is not stable across runs, and Application feeds the task matrix directly. A task whose verdict silently changes between two `/mentor-map` runs, with no input having changed, destroys the user's ability to trust any verdict — including the correct ones.
+
+### What the derivation may look at
+
+The node's own id, the `excerpt` from the NotebookLM snapshot if the node has one, and the text of the task that required the node. The justification is recorded in one line in the `why` column of `nodes.md`, and it is written at the same moment as the value.
+
+---
+
+## Files
+
+```
+.mentor/
+  profile.md                   config: spec artifacts, active feature, notebook, staleness budget
+  domain.md                    Domain declarations — sparse, user-owned
+  nodes.md                     node registry + Application — skill-owned
+  notebooklm/
+    snapshot.json              Comprehension — NotebookLM-owned, replaced whole each sync
+    sync-log.md                append-only record of what each sync changed
+  features/<slug>/
+    map.md                     Task → Knowledge → verdict, with the trace
+    classes/                   /mentor-class output — NOT version-controlled
+      index.md                 ledger of classes produced — version-controlled
+```
+
+Templates for each are in `templates/`. Read the template before creating a file for the first time.
+
+Everything in `.mentor/` is written in English. The values stored on disk are the English ones (`waived`/`mastered`/`developing`, `yes`/`no`/`unknown`, `practical`/`theoretical`, `own`/`paired`/`delegated`); what the user is shown uses the Portuguese terms (`Waived`/`Mastered`/`Developing`, `Sim`/`Não`/`Desconhecido`, `Teórico`/`Prático`).
+
+## What this model does not do
+
+**Nothing in this skill tracks retention or reminds the user to review anything.** There is no review queue, no spacing clock, no decay model. Earlier versions had one; it was removed together with the assessment machinery, because retention belongs to whoever owns the testing, and that is now NotebookLM.
+
+This is stated explicitly so it does not read as an oversight. If the user expects the skill to resurface a concept they have not touched in six weeks, it will not.
