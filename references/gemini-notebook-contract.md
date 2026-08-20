@@ -117,6 +117,26 @@ If an MCP server for Gemini Notebook is configured, `/mentor-sync` may query it 
 
 This is an ergonomic improvement, **never a dependency**. Every unofficial Gemini Notebook MCP works by browser automation and breaks when Google changes the interface. The skill must remain fully usable with `manual` forever — and the spike's finding means `manual` is no longer the compromise it looked like at design time.
 
+**The required tool surface is deliberately small.** Every unofficial Gemini Notebook MCP is unofficial browser automation, and the manual pattern above already reduces the whole integration to one thing: send a chat message to a specific notebook, get the text reply back. That is the only tool `/mentor-sync` needs — the same extraction prompt from the manual pattern, just sent by the MCP instead of pasted by the user. No Studio-scraping, no structured quiz API, nothing beyond what the notebook's own chat panel already exposes to a human.
+
+`<server>` names the MCP server providing that tool — not the notebook, not a transport family. `profile.md` stores it as e.g. `mcp:gemini-notebook-cli`, and that value is what `snapshot.json`'s `source` field records, so a diff of the snapshot always shows which mechanism produced each row.
+
+**How a server gets used**, and why detection asks first:
+
+1. `/mentor-sync` probes for a known MCP **once** — right after bootstrap, or on demand with `--detect-mcp` — never on an ordinary run. Detail in `commands/mentor-sync.md` step 1c.
+2. Anything found is confirmed with the user before it is ever called, and before `gemini_notebook_transport` is written. A tool that drives a browser session tied to the user's own Google account is not something this skill turns on by finding a process running.
+3. Once confirmed, the choice is written to `profile.md` and stays until the user changes it — not re-decided every run.
+4. Any call failure falls back to `manual` **for that run only**. The configured transport is never silently downgraded — a broken connection today does not mean the user wants to go back to pasting forever.
+
+**Candidates found by research, none confirmed working:**
+
+| Server | Repo | Status |
+|---|---|---|
+| `notebooklm-mcp-cli` | `jacob-bd/notebooklm-mcp-cli` | unverified — not tested against a real notebook, unconfirmed whether it survived the July 2026 rename to Gemini Notebook |
+| `notebooklm-py` | `teng-lin/notebooklm-py` | unverified — same caveats |
+
+Treat this table as a starting point, not a recommendation. Before relying on either: confirm it exposes a chat-send-and-read tool (not just content-generation actions like podcasts or quizzes), confirm it still works post-rename, and check it's actively maintained. Update this table with what's actually confirmed once someone has — an entry that has been verified should say so explicitly, and say against what.
+
 ## Staleness
 
 `profile.md` carries `snapshot_max_age_days` (default 14).

@@ -13,6 +13,10 @@
 
 <!-- gemini_notebook_transport: `manual` (paste or point at an exported ledger) or `mcp:<server>`.
      `manual` always works and is the default; see references/gemini-notebook-contract.md.
+     /mentor-sync probes for a known MCP once, right after this file is created —
+     never on an ordinary run. Confirmed with you before it's ever written here.
+     Changed your mind, or set one up later? `/mentor-sync --detect-mcp` re-checks
+     on demand. Editing this line by hand works too.
      snapshot_max_age_days: after this, /mentor-map warns that the snapshot is stale.
      It warns and continues — it never blocks. -->
 
