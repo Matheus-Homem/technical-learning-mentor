@@ -1,187 +1,202 @@
 # technical-learning-mentor
 
-A skill that **stops the AI from writing your code** and instead helps you learn what you need in order to build it yourself — while keeping an auditable record of what you've mastered, what's shaky, and what needs to come back.
+A Claude Code / Cursor skill for **learning through a real project** instead of receiving one.
 
-Technology-agnostic. The curriculum is derived from your own specs and your own code, never from generic knowledge of a tool. Works with Claude Code, Cursor, and Codex CLI.
+It answers a single question, per task, before any code is written:
 
----
+> **Do I write this, do I steer while the AI writes it, or do I hand it over?**
+
+The answer comes from what you actually know — not from how hard the task looks, and not from how tired you are at 22:00.
 
 ## The problem
 
-Using AI to build produces finished projects and no learning. The obvious fix — "don't write my code, teach me" — only solves half of it: you learn during the conversation and nothing survives it. You answer, you get corrected, and a week later you can't say what stuck, what's still missing, or what you should revisit.
+Working with an AI agent on a project you took on in order to *learn something* has a failure mode that is invisible while it is happening: the project finishes, and you didn't. The code is right, the tests pass, and six weeks later you cannot explain why any of it is shaped the way it is.
 
-This skill treats **visibility of progress as the primary deliverable**. Assessments exist to feed the record. If a session produces judgement but doesn't update the state on disk, the session failed.
+The fix is not "never let the AI write code" — hand-writing boilerplate you've written a hundred times buys nothing and costs hours that the things you *are* learning needed. The fix is deciding, deliberately and in advance, which is which.
 
-## The loop
-
-Built to sit alongside a spec-driven development skill, but tied to none in particular — the path to your planning artifacts is configurable.
+## How it works
 
 ```
-spec-driven produces plan → design → tasks
-        ↓
-/mentor-map          before writing any code — sorts knowledge into
-                      decide / explain / delegate, then assigns each task
-                      own / paired / deliver, ~5-10 min
-        ↓
-you develop           /mentor-class when something is blocking you, ~15 min each
-                       /mentor-review after each block of code, and at session
-                       start — your diff, then whatever is due, ~5-15 min
-                       /mentor-next any time you want the full remaining
-                       picture instead of chasing it turn by turn
-        ↓
-/mentor-close          when the activity is done, ~10-20 min
-        ↓
-next feature
+   NotebookLM                          your repo
+  ┌──────────┐
+  │ sources  │
+  │ quizzes  │──/mentor-sync──►  .mentor/notebooklm/snapshot.json
+  │ ledger   │                            │
+  └──────────┘                            │       .mentor/domain.md   (you)
+        ▲                                 │       .mentor/nodes.md    (derived)
+        │                                 ▼
+        │      spec skill ──tasks──►  /mentor-map
+        │                                 │
+        │                                 ▼
+        │                   Task → Knowledge → own | paired | delegated
+        │                                 │
+        │                   ┌─────────────┴─────────────┐
+        │                   ▼                           ▼
+        │             /mentor-tasks               /mentor-class
+        │           (work the verdicts)        (material for the gaps)
+        │                                             │
+        └─────────────── you study, you test ─────────┘
 ```
 
-The pace this runs at adapts on its own — see "the dual clock" below. A dense study block and a routine of an hour a day produce very different rhythms of these commands without any configuration change.
+**NotebookLM is the source of truth for knowledge.** It holds your sources and it owns whether you understand something. This skill does not test you, grade you, or track your retention — it reads that state and decides what to do with it.
+
+## Three dimensions, three owners
+
+The thing this skill gets right is refusing to answer three different questions with one field.
+
+| | Question | Levels | Owner |
+|---|---|---|---|
+| **Domain** | do I want to develop this? | 1–4 | **you** — self-declared |
+| **Comprehension** | is the basic theory proven? | 2–4 | **NotebookLM** — proven |
+| **Application** | does this materialise into an artifact? | 4 | **derived** — a property of the concept |
+
+Each has exactly one owner and one file, and no field is ever written by two parties. That is what makes divergence between the skill and your notebook structurally impossible rather than merely discouraged.
+
+## The taxonomy
+
+Every piece of knowledge is a node in a four-level hierarchy:
+
+```
+{Subject}.{Technology}.{Component}.{Property}
+
+SistemasDistribuidos.ApacheKafka.ReplicacaoDeParticoes.InSyncReplicasMinimas
+ArquiteturaDeSoftware.DomainDrivenDesign.AgregadosEInvariantes.ConsistenciaTransacional
+```
+
+The hierarchy exists so that **Domain inherits**. Declare it once at the top:
+
+```
+SistemasDistribuidos.ApacheKafka = waived
+```
+
+and every node beneath it follows — no enumeration, no per-node bookkeeping. Override surgically where the sweep is wrong:
+
+```
+SistemasDistribuidos.ApacheKafka.ExactlyOnceSemantics = developing
+```
+
+The longest declared prefix wins. Declarations are sparse and inheritance is resolved at read time, never written to disk — so there is no second copy of a fact to go stale.
+
+## The verdict
+
+Per required node:
+
+| Domain | Comprehension | Application | → |
+|---|---|---|---|
+| `waived` | * | * | *drops out of the calculation* |
+| `mastered` | `yes` | * | `paired` |
+| `mastered` | `no` | * | `paired` + **contested** |
+| `developing` | * | `practical` | `own` |
+| `developing` | * | `theoretical` | `paired` |
+
+Then per task: waived nodes drop out, and the most demanding survivor wins (`own > paired > delegated`). Nothing left → `delegated`.
+
+**A waived node does not delegate a task on its own.** It removes itself, and whatever else the task requires still decides — otherwise one peripheral "I already know Kafka" would erase the learning in everything next to it.
+
+Every verdict ships with its trace:
+
+```
+T7  own
+    ← SistemasDistribuidos.ApacheKafka.Retencao.TombstoneDelay
+        domain        = developing  (default — no declaration on any prefix)
+        comprehension = no          (NotebookLM, 2026-08-19)
+        application   = practical   (derived: becomes delete.retention.ms in the topic config)
+    other nodes: 1 waived (inherited from …ApacheKafka), 1 paired
+```
+
+A verdict you can't audit is one you'll stop trusting — including the ones that were right.
 
 ## Commands
 
-| Command | When | What for |
+| Command | When | What it does |
 |---|---|---|
-| `/mentor-map` | as soon as the tasks are generated | sort required knowledge into decide/explain/delegate, name the limiting concept, assign each task its authorship level |
-| `/mentor-class <topic>` | when something is blocking you: a delegated item, new material, a topic you're about to start | teaching material in the format that fits the difficulty — explanation, audio, diagram, notebook |
-| `/mentor-review [path] [--time 5\|15\|30]` | after writing code — the default checkpoint — and at session start | your own code as the strongest evidence available, then spaced retrieval of whatever is due |
-| `/mentor-next [feature-slug] [--all]` | any time — especially right after finishing something | syncs the task file's checkboxes against the real code, then shows the full remaining scope, not just the next item |
-| `/mentor-close` | when the activity is finished | Feynman + rejected-alternative + decision scenarios (incl. one outside the project) + close the cycle |
-| `/mentor-progress [--all\|--tag X]` | any time | see where you stand |
+| `/mentor-sync` | before mapping, after study | pulls Comprehension from NotebookLM; asks for Domain on new level-2 nodes. The only command that talks to NotebookLM. |
+| `/mentor-map` | right after the spec skill produces tasks | derives required nodes, resolves all three dimensions, applies the matrix, writes the map |
+| `/mentor-tasks` | any time | verifies open checkboxes against real code, then shows what's left grouped by verdict |
+| `/mentor-class <topic>` | stuck, or before a `class-first` task | teaching material in the format that fits the kind of not-knowing |
 
-Day-to-day usage details are in [`MANUAL.md`](MANUAL.md) (written in Portuguese, like the progress panel — both are read by the user).
+## Classes: three kinds of not-knowing
+
+> If I don't know what a **gear** is, I want to read and hear an explanation.
+>
+> If I know what a gear is but not how to fit one, I want a small assembly exercise before touching a real machine.
+>
+> If I know how to use a gear but not where it sits, I want a map of the machine.
+
+| Category | Sounds like | You get |
+|---|---|---|
+| **conceptual** | "what is this?" | written explanation, optionally narrated to `.mp3` |
+| **practical application** | "how do I use this?" | a notebook or exercise — **always incomplete** |
+| **architectural** | "how does this fit?" | Mermaid, a diagram, a self-contained `.html` |
+
+The incompleteness in the middle row is the rule the whole code policy now rests on. Reading a worked solution produces the *feeling* of understanding without the fact of it.
+
+A class never marks anything as understood. It ends by pointing back at your notebook — which is the only path by which anything becomes proven.
 
 ## Install
 
+Run from the root of the project you want it in:
+
 ```bash
-cd /path/to/your/project
-curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash -s -- claude   # or: cursor
+curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash -s -- claude
+# or: ... | bash -s -- cursor
 ```
 
-What the installer does, and why it differs by tool:
+Re-running updates in place.
 
-- **Claude Code** auto-discovers a skill placed at `.claude/skills/technical-learning-mentor/SKILL.md` from its frontmatter — no extra step. The installer clones the skill there and copies the five `/mentor-*` commands into `.claude/commands/`.
-- **Cursor** has no native skill-folder auto-discovery. The installer clones the same skill content into `.cursor/skills/technical-learning-mentor/`, copies the five commands into `.cursor/commands/`, and adds an `alwaysApply` rule at `.cursor/rules/technical-learning-mentor.md` that points the model at the skill — that rule is what makes Cursor aware it exists.
+### The optional DESIGN pairing rule
 
-The skill content itself — `SKILL.md`, `commands/`, `references/`, `templates/`, `scripts/` — is identical across both. Only where it's placed, and how much the host tool notices it without being told, differs. Re-running the installer updates an existing install in place (`git pull --ff-only`).
+The installer offers one extra thing, and **asks before installing it**, because it is the only part that writes outside the skill's own directory and the only part that changes how *other* skills behave.
 
-On the first `/mentor-map` in a repo, the skill asks for the path to your spec artifacts and stores it in `.mentor/profile.md`. It won't ask again.
+It stops any spec-driven skill from generating the design and the task list fully automatically — you review and approve the structure, then the tasks, before the design file is written.
 
-State (`.mentor/`) lives at the project root, outside any tool-specific folder, and is versioned in git — with two narrow exceptions (see below).
+- creates `.claude/mentor-design-pairing.md`
+- adds three lines between markers at the end of your `CLAUDE.md`
+- applies to **every** skill in the repo, not just this one
 
-## How knowledge is modelled
-
-The unit is not a topic. A topic is a noun and can't be assessed — there's no fact of the matter about whether someone "knows partitioning". The unit is an **assessable claim** or a **decision rule**:
-
-```
-bad   → consumer offsets
-good  → an offset commit records the next message to read, not the last one processed
-good  → given a new external dependency, decide whether it needs a new port
-```
-
-Objectives carry free-form **tags**, not a tree. The most valuable knowledge in a real project lives on the seams between areas, and a hierarchy forces every objective into a single branch, hiding it from the others.
-
-### Not everything becomes an objective
-
-At `/mentor-map`, every candidate is sorted once, deliberately, into one of three buckets:
-
-- 🎯 **decide** — a transferable trade-off you'll meet again in your career. Becomes an objective, gets scenarios.
-- 📖 **explain** — needs to be understood and justified, not optimised. Becomes an objective, lighter assessment.
-- 📦 **delegate** — mechanical coupling, lookup-able configuration. Never becomes an objective — handled by `/mentor-class` instead, which delegates the artifact but still extracts learning from it (annotated → questioned → a completion problem to fill in), rather than just handing it over.
-
-The test: if the parameter encodes a trade-off you need to be able to navigate, it's learning. If it's plumbing between services, it's lookup. Learning everything a real project touches at decision-level depth isn't achievable under any real time budget — this makes that trade-off explicit and chosen once, instead of accidental.
-
-### The mastery ladder
-
-```
-unassessed → declared → fragile → explains → decides → fluent
-```
-
-- **declared** — self-reported in the triage questionnaire. Weak evidence, and the ladder says so.
-- **explains** — can say what it is, why it exists, and how it works, without looking it up.
-- **decides** — can choose under stated conditions, justify the choice, and say what breaks under the wrong one.
-- **fluent** — two independent evidences at target level, without lookup, **at least 14 days apart**.
-
-`fluent` is the only state that requires elapsed time, and that's deliberate — including during a dense study block. Massed practice produces fast apparent gains and fast decay; nothing learned inside a short intensive stretch can be marked `fluent` within it. The panel says this plainly rather than leaving it looking like a gap.
-
-Nothing is ever reported as a percentage. State plus named evidence, always.
-
-### No scheduled review date — the dual clock
-
-There's no predicted "next review" date stored anywhere. Predicting a date bakes in an assumed pace, and the moment that pace changes — an intensive week, then a routine of an hour a day — the stored date is silently wrong.
-
-Instead, each objective stores two observed facts: when it was last touched (`last_seen`) and how many cumulative study hours had passed at that point (`last_seen_hours`). Every command that can trigger a review asks how long you've studied since last time, and computes due-ness fresh from both a calendar delta and a study-hours delta — whichever threshold is crossed first wins. In a dense session the hours clock fires first, correctly resurfacing this morning's material this afternoon. In a routine of an hour a day, the calendar clock fires first, because there forgetting — not dilution — is the risk. Same table, both regimes, no configuration.
-
-### Evidence strength
-
-Not every correct answer is worth the same:
-
-```
-self-report  <  multiple choice  <  short answer
-             <  prediction before running  <  Feynman explanation
-             <  a decision justified in your own code, or why the rejected
-                alternative would have been worse, or a real bug diagnosed
-```
-
-Multiple choice has a ~25% floor from guessing and **never** promotes anything to `decides`. It lives in `/mentor-review`'s due-review pass as a cheap way to check material already learned through a stronger format — never the backbone.
+Default is no. `--with-design-pairing` / `--no-design-pairing` skip the prompt for non-interactive use. To remove it, delete the block between the markers.
 
 ## Design decisions
 
-**Directness first.** Practice should resemble how the knowledge will actually be used. A prepared quiz is the most indirect format available; a decision justified in your own code, or a prediction made right before you run something, is the most direct. `/mentor-review` puts both in one call and orders them accordingly: the diff pass always runs in full, because the code already exists and evaluating it is nearly free; the spaced-retrieval pass takes whatever time is left. An objective your diff already exercised doesn't get re-asked as a quiz item — it was just answered in the strongest format there is.
+**A snapshot, not a live query.** There is no public consumer API for NotebookLM. Every command reads Comprehension from one local file, and only `/mentor-sync` writes it. Verdicts stay deterministic, the skill works offline, and when the transport breaks there is exactly one thing to fix.
 
-**Delegation with a toll, not a ban.** For dense, mostly non-conceptual configuration, studying a worked example beats producing one from scratch — search for the right shape of the answer consumes the attention that would otherwise form the pattern. `/mentor-class` delivers the artifact, but only alongside annotation and targeted questions — and, whenever the artifact carries code, a completion problem you have to fill in. Passive delivery without those steps isn't covered by this exception.
+**Application is a property of the concept, not of you.** `practical` means *there exists an artifact whose production would demonstrate this* — config, a query, a command, a diagram. It is derived once, on creation, and pinned. Two runs on unchanged inputs must produce identical verdicts, and they can't if a classification is regenerated on each read.
 
-**One artifact, chosen — not four, generated.** A class picks its format from the shape of the difficulty: prose plus audio when a concept hasn't landed, a Mermaid walkthrough when it's the order of steps, a scratch notebook when you can't get the first line of code to run, a self-contained HTML diagram when it's how several components relate. Producing all of them "to be safe" buries the one that would have helped. And one diagnosis produces no artifact at all: if you already understand it and are just slow, that's a retention problem, and generating an explanation is pure cost.
+**Self-declaration wins, contradiction stays visible.** You said `mastered`, your notebook says `no`? The verdict follows you — you know your own level better than one test does. But it is listed as **contested**, and reconciling it is never done on your behalf.
 
-**Transfer is checked explicitly.** A project teaches the project, not always the underlying domain. Every close includes at least one decision scenario set outside the user's own project — the only reliable way to tell whether a principle was learned or just its one instance here.
+**Delegation with a toll, not a ban.** Raising a verdict is free. Lowering one costs a dated line saying which task and why. Delegation decided in advance is a strategy; delegation decided at 22:00 on a task that turned out to be boring is the path of least resistance wearing a strategy's clothes.
 
-**Calibration.** Before any correction is revealed, you state your confidence. **High confidence + wrong** is the most valuable signal the system produces: it marks knowledge you don't know you lack.
+**No retention clock.** Deliberately removed with the assessment machinery. Retention belongs to whoever owns the testing, and that is NotebookLM. Stated here so it doesn't read as an oversight.
 
-**Contesting doesn't overwrite state.** Disagreeing with a verdict schedules a fresh probe rather than rewriting the record.
-
-**Judgement is auditable.** Every verdict records the criterion applied. A right conclusion with wrong reasoning is `partial`, not `correct`.
-
-**Append-only log, bounded context.** A feature's evidence log is never rewritten, only appended to. At close it becomes `report.md` and is never read again. Only `knowledge.md` grows across the project, one row per objective.
-
-**Authorship, not exposure — scoped to what you're still learning.** Every task gets one of three levels at `/mentor-map`, derived from where its objectives sit on the ladder: `own` (you write it), `paired` (you make and defend the decision, the model writes the mechanical body around it), `deliver` (the model writes it, you review). A task whose objectives are all at target is `deliver` — the gate closes on its own as you advance, instead of charging you full manual price forever for things you've already proved you know. Hand-writing work that carries no open objective doesn't protect the learning; it just spends the hours the open objectives needed.
-
-Levels are decided once, up front, when the work still looks abstract — not in the moment it starts looking tedious. Raising one is free; lowering one mid-feature costs a dated line in `map.md`. And code the model wrote never enters the evidence log, so delegating can't inflate your record.
-
-Within an `own` or `paired` task the old boundary is unchanged: the model reads and critiques your code, and — narrowly, dependent on where an objective sits on the ladder — produces a class for genuinely new material or delegate-bucket configuration. Of the four class formats only the scratch notebook contains runnable code at all: it exists so you can poke at an unfamiliar library and see what comes back, never so your task arrives in cells.
+**The tree costs something.** A hierarchy forces each node into one branch, and the best concepts sit on seams. That is accepted in exchange for inheritance — a task can require nodes from any number of subtrees, and `nodes.md` carries cross-tree links for navigation, which the matrix deliberately never reads.
 
 ## Layout
 
 ```
 technical-learning-mentor/
-├── SKILL.md              core: rules and routing
-├── MANUAL.md              usage manual (pt-BR)
-├── README.md
-├── commands/              procedure for each command
-├── references/            knowledge-model · evidence-log · judging · teaching
-│                          retention · classes · audio · class-diagrams
-│                          code-policy
-├── templates/             profile · knowledge · feature-map · report
-│                          progress.html · mentor-gitignore
-├── scripts/
-│   └── md-to-audio/        the /mentor-class narration pipeline —
-│                            prepare_narration.py · generate_audio.py
-│                            narration_glossary.json (ships empty)
-└── install.sh             copies the skill + commands for claude/cursor
+├── SKILL.md                 core rules, state layout, routing
+├── install.sh               installer + the consent-gated DESIGN rule
+├── commands/                one procedure per slash command
+│   └── mentor-{sync,map,tasks,class}.md
+├── references/              doctrine, read on demand
+│   ├── knowledge-model.md     the taxonomy and the three dimensions
+│   ├── task-matrix.md         the deterministic verdict rules
+│   ├── notebooklm-contract.md the snapshot schema and transports
+│   ├── classes.md             the three class categories
+│   ├── code-policy.md         what may be written at each verdict
+│   ├── teaching.md · audio.md · class-diagrams.md
+├── templates/               seed files for .mentor/, + design-pairing.md
+├── scripts/md-to-audio/     narration pipeline
+└── tests/                   installer consent suite + resolution oracle
 ```
 
-State generated in your project:
+State lives in `.mentor/` in *your* repo, outside `.claude/`/`.cursor/` so it is client-agnostic. Almost all of it is versioned: it's small, it diffs well, and `git log` on it is a timeline of your own progress for free. The exception is `/mentor-class` artifacts — regenerable session output — though the index beside them is kept.
 
-```
-.mentor/
-├── .gitignore             ignores progress.html, narration_glossary.json,
-│                          and features/*/classes/
-├── profile.md              experience/target per tag, study_hours_total, config — versioned
-├── knowledge.md             every objective, its state, and last_seen / last_seen_hours — versioned
-├── progress.html            the panel — Portuguese content, derived — NOT versioned
-├── narration_glossary.json  TTS pronunciation fixes, per project — NOT versioned
-└── features/<slug>/
-    ├── map.md                bucket sort, limiting objective, requirements — versioned
-    ├── evidence.jsonl          append-only log — versioned
-    ├── classes/<topic-slug>/     /mentor-class output — NOT versioned
-    └── report.md                 written at close — versioned
+## Tests
+
+```bash
+bash tests/test-install-consent.sh    # 24 checks on the installer's consent flow
+bash tests/test-resolution.sh         # resolution + matrix against a hand-written gabarito
 ```
 
-Almost everything is versioned deliberately: `.mentor/` is meant to be a durable, auditable record, and `git log` on `knowledge.md` gives you a timeline of your own progress for free. The exceptions are purely derived or session-scoped output, plus the narration glossary — production trivia for TTS pronunciation, not evidence of learning.
+The second one is an oracle, not an implementation: the prose in `references/` is normative. It exists so "deterministic" is a checkable claim rather than an aspiration.

@@ -59,13 +59,13 @@ One trap: SVG `<marker>` contents do not inherit `currentColor` from the referen
 Beyond the drawing itself, the page should carry the reading of it. A diagram alone is a picture; a diagram with its reading is a class.
 
 ```
-header        eyebrow (mentor · <feature> · <objective ids>), title, one-sentence subtitle
+header        eyebrow (mentor · <feature> · <node ids>), title, one-sentence subtitle
 figure        the SVG, inside a container with overflow-x: auto
 figcaption    what the whole diagram says, in one paragraph
 section       "how to read it" — one bullet per relationship, naming both ends
 ```
 
-- The **eyebrow** ties the file back to the state on disk: which feature it came from, and which objective ids it serves. It is what makes a stray HTML file in `.mentor/` identifiable weeks later.
+- The **eyebrow** ties the file back to the state on disk: which feature it came from, and which taxonomy nodes it serves. It is what makes a stray HTML file in `.mentor/` identifiable weeks later.
 - The **relationship bullets** are the teaching content. One per edge or containment that was unclear, each naming both ends explicitly — `Controller → Broker: the controller holds no partitions, it only elects which broker leads each one`. This is the annotation requirement from `references/classes.md` applied to this format: every non-obvious relationship carries its *why*.
 - Keep the page to one screen-width of content — `max-width` around 900px, centred. Wide SVGs scroll inside their own `overflow-x: auto` container; the page body itself must never scroll sideways.
 - Give the `<svg>` a `role="img"` and an `aria-label` describing the whole diagram in prose. It costs one line, and it is also the best check on whether the diagram actually says something — if the label is hard to write, the drawing is unclear.

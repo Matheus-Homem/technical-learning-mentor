@@ -1,79 +1,80 @@
 # /mentor-map
 
-**Run right after the spec skill produces the plan/design/tasks for a new activity, before writing any code.**
+**Crosses what the user knows against what the feature requires, and decides who writes each task.** This is the core command of the skill. Read `references/task-matrix.md` and `references/knowledge-model.md` before running it.
 
-Purpose: make the required knowledge visible before the work starts, and decide up front what will actually be learned versus delegated. This command is mostly not an assessment — it answers "what do I need to know for this, and where do I already stand?".
+`/mentor-map [feature-slug] [--rederive <node>]`
 
-Target time: about 5–10 minutes.
+Run right after the spec skill produces its task list, before any code. Target time: 5–10 minutes.
+
+## What it owns
+
+| | |
+|---|---|
+| **Reads** | spec artifacts (via `profile.spec_artifacts`), `snapshot.json`, `domain.md`, `nodes.md`, the repo |
+| **Writes** | `.mentor/features/<slug>/map.md`, new rows in `nodes.md`, `profile.active_feature` |
+| **Never** | writes to the planning skill's own files; contacts NotebookLM; writes Comprehension; re-derives Application without `--rederive` |
 
 ## Steps
 
-**1. Bootstrap the repo if needed.**
-If `.mentor/` does not exist, create it from `templates/`, copying `templates/mentor-gitignore` to `.mentor/.gitignore` (see `SKILL.md`), and ask for the path to the spec artifacts (the plan/design/task files produced by the user's planning skill). Store it in `profile.md` as `spec_artifacts`. Never hardcode a filename — accept whatever path or glob the user gives. On later runs, resolve from `profile.md`; if nothing matches, ask again and update it.
+**1. Resolve inputs.**
 
-**2. Ask for study hours since last session** and add to `study_hours_total` in `profile.md`. Needed for the retention clock even this early, since due reviews may surface in step 6.
+Spec artifacts from `profile.md`; if the path no longer matches anything, ask and update it rather than guessing. If `.mentor/` does not exist, run `/mentor-sync` first — there is nothing to cross against until the snapshot has content.
 
-**3. Read the inputs.**
-The spec artifacts, `knowledge.md`, and enough of the repo to know what already exists. Do not read closed features' evidence logs.
+Check the snapshot's `fetched_at` against `snapshot_max_age_days`. If it is stale, **say so and continue**. Note it in `map.md`'s header. A stale snapshot still produces a mostly-correct map; no map produces nothing.
 
-**4. Derive candidates, then sort into the three buckets.**
-Apply `references/knowledge-model.md`. For each candidate, ask what someone would have to be able to explain or decide to write it themselves — then classify:
+**2. Identify the tasks.**
 
-- 🎯 **decide** — a transferable trade-off
-- 📖 **explain** — needs understanding, not optimisation
-- 📦 **delegate** — mechanical coupling / lookup configuration, no trade-off worth learning
+Identify each task by the first of these the task file actually offers, and record which one you used in `map.md` so a later remap can reconcile: an explicit id (`T14`, `TASK-3`); else the text of the heading its checkbox sits under; else the checkbox's own line, truncated.
 
-Only 🎯 and 📖 become rows in `knowledge.md`. 📦 items go straight into `map.md`'s delegate list, to be handled later via `/mentor-class` — do not create objectives for them.
+**Never require the task file to carry a field of ours.** This skill does not own that file, and assuming a format is how it stops being portable.
 
-Trace every objective to its origin. Check `knowledge.md` first and reuse ids for anything that returns — a returning objective keeps its state and history. Aim for sharpness: if the 🎯+📖 total exceeds roughly 15 new objectives, merge some or reconsider whether more belongs in delegate.
+**3. Derive the required nodes, per task.**
 
-**4b. Assign an authorship level to every task.**
-Now switch axes: the bucket sort was about knowledge, this is about work. For each task in the task list, name the objectives it exercises, then derive its level (`own` / `paired` / `deliver`) by the rules in `references/code-policy.md`. Tasks that exercise nothing are `deliver` — that is a normal, healthy outcome, not a failure of the sort.
+For each task ask: *what would someone have to command in order to write this themselves?* Express each answer as a **depth-4 taxonomy id**.
 
-Identify each task by the first of these that the task file actually offers, and record which one you used so a later remap can reconcile: an explicit id (`T14`, `TASK-3`); else the text of the heading the checkbox sits under; else the checkbox's own line, truncated. Never require the task file to carry a field of ours — this skill does not own that file, and assuming a format is how it stops being portable.
+- **Check `nodes.md` first and reuse existing ids.** A node that returns keeps its Application and its history. Check the `aliases` column too.
+- **Confirm every new id with the user before writing it.** Propose the canonical form; a wrong id contaminates every descendant and every verdict that rests on it.
+- A task may require nodes from any number of subtrees. A task may require nothing — that is a normal outcome.
+- Do not enumerate a technology. If the tasks touch three mechanisms of a tool, three nodes appear, not the tool's full surface.
+- Prefer fewer, sharper nodes. More than roughly 15 new nodes in one feature means the decomposition went too fine.
 
-If the whole list comes out `deliver`, say so before writing anything: the feature is a delivery feature. That may be exactly right, but the user should choose it knowingly.
+If a task resolves only to nodes shallower than depth 4, refine them to depth 4 before classifying. Do not guess a verdict from a shallow node — it has no Application, so the matrix has no row for it.
 
-**5. Name the limiting objective, if one is visible.**
-The transversal concept most of this feature's `decide` objectives depend on — usually not a tool-specific item. Not every feature has a clear one; leave it empty rather than forcing it.
+**4. Derive Application for new nodes only.**
 
-**6. Run triage for new tags only.**
-For every tag that has no entry in `profile.md`, ask two questions. Skip tags already answered — the questionnaire must not grow every feature.
+Per `references/knowledge-model.md`: is there a class of artifact whose production would directly demonstrate this node? Write the value, the `source` (`derived`), and the one-line `why`, at the same moment.
 
-> `<tag>` — how much have you worked with this? (never used / used a little / use it regularly)
-> `<tag>` — for this project, do you want to be able to **decide** with it, just **explain** it, or **skip** it for now?
+**Existing nodes are not re-derived.** Only `--rederive <node>` changes an existing value, and a `source: user` value is never re-derived at all. This is what makes two consecutive runs produce identical verdicts.
 
-Write the answers to `profile.md`. Experience sets the initial state of that tag's objectives: *never used* → `unassessed`, *used a little* / *use it regularly* → `declared`. *Skip* archives the tag's objectives for this feature.
+**5. Resolve and classify.**
 
-**7. Write `map.md`** for the feature, using the template — bucket sort, limiting objective, carried-in items, and the task authorship levels from step 4b. Create `evidence.jsonl` empty and a `classes/` folder.
+For each required node resolve Domain (longest declared prefix, else `developing`), Comprehension (snapshot, absence is `unknown`), and Application (`nodes.md`). Apply the matrix, then aggregate per task. Both are in `references/task-matrix.md`.
 
-**8. Update `knowledge.md`** with new rows for 🎯/📖 objectives only; leave existing rows untouched except `origin` if the objective returned.
+**6. Write `map.md`** from the template: the task table, the knowledge table, the gaps, the full trace, and the notes.
 
-**9. Regenerate `progress.html`** and show it.
+**A verdict without its trace is not written.** Every resolved value names its origin — which declaration, which date, which derivation.
+
+**7. Update `nodes.md`** with the new rows only. Leave existing rows untouched.
 
 ## Output to the user
 
-A short message, then the panel:
+- the split — `4 own, 3 paired, 2 delegated`
+- **the gaps**: required nodes absent from the snapshot or sitting at `no`. This is the study list, and it is the most actionable thing the command produces — it is what to take to NotebookLM.
+- `contested` nodes, in their own block: declared `mastered`, proven `no`. Naming the contradiction is the whole job; resolving it is the user's call.
+- `class-first` tasks: `own` work whose theory is not proven yet. One-line offer of `/mentor-class` before they start.
+- which nodes resolved `waived` by inheritance, and from which declaration — the mechanism paying out should be visible
+- how many nodes resolved by `default` rather than by a declaration. A high count means `/mentor-sync --full` is overdue.
+- if the snapshot was stale, its age
 
-- the bucket sort: how many objectives to decide, how many to explain, how many delegated
-- the limiting objective, if any, and why it matters
-- what's already at or above target from earlier features
-- anything `fragile` or carrying an open misconception that this feature needs again
-- any due reviews (per `references/retention.md`) that have piled up
-- a one-line offer of `/mentor-class` for anything delegated, or for an objective arriving unusually weak. An offer, not a queue — do not start generating anything here.
-- the authorship split (`6 deliver, 4 paired, 1 own`), and which tasks came out `deliver` because their objectives are already at target — that is the mechanism paying out, and it should be visible
+Do not teach the content here. This is orientation.
 
-Do not lecture the content here. The point is orientation and a deliberate, one-time trade-off decision — not teaching.
+## Remapping
 
-## Remapping an existing feature
+Re-running on a feature that already has a `map.md` is expected, not an error. A regenerated task list leaves old verdicts stale, and stale verdicts are worse than none because they look authoritative.
 
-Re-running this command on a feature that already has a `map.md` is expected, not an error — a task list that gets regenerated mid-feature (a design change, a scope revision) leaves the old levels stale, and stale levels are worse than none because they look authoritative.
+- **Nodes and declarations are preserved.** Ids, Application values, and Domain rows carry over untouched. A remap never resets anything.
+- **Verdicts are recomputed** — new tasks get rows, dead tasks lose theirs, and any verdict whose inputs moved is re-derived. This is the step where a Domain declared `waived` since the last map drops its tasks to `delegated`, and where Comprehension arriving from a sync clears a `contested` flag.
+- **Manual overrides survive** and are marked `manual-override`, so the recompute never silently reverses a choice the user made.
+- **Write a dated line** in `## Notes` saying what moved and why.
 
-On a re-run:
-
-- **Objectives are preserved.** Ids, states, evidence, misconceptions and `last_seen` carry over untouched — step 4's "reuse ids for anything that returns" already governs this. A remap must never reset progress.
-- **Levels are recomputed**, not merely extended: add rows for new tasks, drop rows for tasks that no longer exist, and **re-derive levels whose objectives changed state since the last map**. This is the step that lets the gate close on its own — an objective that reached its target since the last run flips its tasks to `deliver` here.
-- **Manual overrides survive.** A level the user promoted by hand stays promoted; note it so the recompute does not silently undo their choice.
-- **Write a dated line** in `map.md`'s "Notes during the feature" saying what moved and why.
-
-If the task list changed and nobody remapped, the levels describe a plan that no longer exists. When `/mentor-next` finds tasks with no level row, that is the signal to run this.
+When `/mentor-tasks` finds tasks with no row in `map.md`, that is the signal to run this.

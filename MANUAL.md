@@ -1,243 +1,230 @@
-# Manual — technical-learning-mentor
+# Manual de uso
 
-Manual de uso. Escrito em português porque é lido por você, pela mesma razão do painel. Todo o resto da skill está em inglês.
+Como usar a skill no dia a dia. O `README.md` explica o desenho; este arquivo explica a rotina.
 
-## O que essa skill faz
+---
 
-Ela impede a IA de desenvolver o código **que ainda carrega algo que você está aprendendo** e, no lugar disso, te ajuda a aprender o que é necessário para você mesmo desenvolver — registrando, de forma auditável, o que você domina, o que está frágil e o que precisa voltar.
+## O ciclo
 
-O que ela não faz é te cobrar preço manual eterno. Task cujos objetivos já chegaram no alvo é entregue pela IA: escrever à mão o que não carrega objetivo aberto não protege o aprendizado, só gasta as horas de que os objetivos abertos precisavam.
+```
+1. estudar no NotebookLM        (fora da skill)
+2. /mentor-sync                 traz o que ficou comprovado
+3. spec-driven produz as tasks
+4. /mentor-map                  cruza e decide quem escreve o quê
+5. /mentor-tasks                trabalha os vereditos
+6. /mentor-class                quando travar
+   └─► volta pro NotebookLM, e o ciclo recomeça
+```
 
-O problema que ela resolve não é "a IA escolhe mal os tópicos". É **falta de visibilidade**: você responde, é corrigido, e não sobra nada que diga o que evoluiu.
+A skill **não te avalia**. Quem avalia é o NotebookLM. Ela lê esse estado e decide o que fazer com ele.
 
-É agnóstica de tecnologia e funciona em Claude Code, Cursor e Codex CLI. O que você precisa aprender é derivado das suas specs e do seu código, nunca do conhecimento genérico do modelo sobre uma ferramenta.
+---
 
-## Os três baldes
+## As três dimensões
 
-A decisão mais importante da skill, e acontece uma vez, no início de cada feature, no `/mentor-map`.
+Três perguntas diferentes, três donos diferentes. É o ponto central do desenho.
 
-| Balde | O que é | O que acontece |
-|---|---|---|
-| 🎯 **decidir** | trade-offs que você vai reencontrar na carreira | vira objetivo, recebe cenários, é onde suas horas devem ir |
-| 📖 **explicar** | precisa entender e justificar, não otimizar | vira objetivo, avaliação mais leve |
-| 📦 **delegar** | acoplamento mecânico, valores consultáveis | vai para `/mentor-class`, não vira objetivo |
+### Domínio — você declara
 
-O critério: **se o parâmetro codifica um trade-off que você precisa saber navegar, é aprendizado. Se é encanamento entre serviços, é consulta.**
+`Waived` · `Mastered` · `Developing`. Existe nos 4 níveis.
 
-O paralelismo de um job não é boilerplate — é uma decisão. A ordem em que os containers sobem geralmente é. Delegar o segundo é o que compra tempo para o primeiro.
+- **`Waived`** — não é pra desenvolver agora. Pode delegar pra IA.
+- **`Mastered`** — você já tem isso.
+- **`Developing`** — está construindo.
 
-## Os três níveis de autoria
+**Herda.** Declarar `SistemasDistribuidos.ApacheKafka = Waived` faz tudo abaixo seguir junto. Sem enumerar nada.
 
-Quem escreve cada task não é decidido na hora — é decidido no `/mentor-map`, junto com os baldes, quando o trabalho ainda parece abstrato em vez de tedioso.
+**Sobrescreve.** Declarar `SistemasDistribuidos.ApacheKafka.ExactlyOnceSemantics = Developing` abre só esse ramo. O prefixo mais longo declarado é o que vale.
 
-| Nível | Quando | Quem escreve |
-|---|---|---|
-| `own` | a task **é** a decisão que um objetivo aberto precisa | você, código e testes |
-| `paired` | a task carrega objetivo aberto, mas o corpo é mecânico | você toma e defende a decisão; a IA escreve o scaffold em volta |
-| `deliver` | nenhum objetivo, ou todos no alvo e não vencidos | a IA escreve, você revisa |
+Sem declaração em prefixo nenhum, o padrão é `Developing` — o erro seguro é pro lado de aprender.
 
-O nível sai do estado do conhecimento, não da tag: objetivo com alvo `explicar` que já chegou em `decide` está **pronto**, e as tasks que dependem só dele viram `deliver` sozinhas. O portão fecha conforme você avança.
+### Compreensão — o NotebookLM comprova
 
-Duas regras que sustentam isso:
+`Sim` · `Não` · `Desconhecido`. Existe nos níveis 2, 3 e 4.
 
-- **Subir é de graça, descer fica registrado.** Promover uma task a qualquer momento não custa nada. Rebaixar no meio da feature exige uma linha datada no `map.md` dizendo qual task e por quê. Delegação decidida antes é estratégia; delegação decidida às 22h numa task que ficou chata é o caminho de menor resistência fantasiado de estratégia.
-- **Código que a IA escreveu nunca vira evidência.** Revisar, aprovar ou até achar um bug nele não entra no `evidence.jsonl` e não promove nada. Sem isso, delegar inflaria o seu próprio registro de domínio.
+Responde: **você domina a teoria básica disso**, mesmo sem nunca ter aplicado num cenário real?
+
+A skill **nunca escreve isso**. Nem quando a aula foi bem, nem quando você acertou a pergunta, nem quando você escreveu o código. Vem do NotebookLM pelo `/mentor-sync`, e só.
+
+`Desconhecido` ≠ `Não`. `Não` foi testado e não passou — estude. `Desconhecido` nunca foi testado — leve pro notebook. Ações diferentes, e por isso aparecem separados.
+
+### Aplicação — derivada
+
+`Teórico` · `Prático`. Só no nível 4.
+
+É propriedade **do conceito**, não sua. A pergunta é: *existe uma classe de artefato — código, comando, config, query, diagrama, análise de cenário — cuja produção demonstraria isso diretamente?*
+
+```
+…ReplicacaoDeParticoes.InSyncReplicasMinimas   → Prático     vira min.insync.replicas=2
+…TradeoffLatenciaConsistencia.LimiteTeorico    → Teórico     nenhum artefato "é" isso
+```
+
+Derivada uma vez, na criação, e **fixada**. Não muda sozinha entre execuções — se mudasse, o veredito de uma task mudaria sem nada ter mudado, e aí você para de confiar em todos eles. Pra mudar: `--rederive`, ou você sobrescreve (e aí é permanente).
+
+---
+
+## Os vereditos
+
+| Domínio | Compreensão | Aplicação | Veredito |
+|---|---|---|---|
+| `Waived` | * | * | *sai da conta* |
+| `Mastered` | `Sim` | * | `paired` |
+| `Mastered` | `Não` | * | `paired` + **contested** |
+| `Mastered` | `Desconhecido` | * | `paired` + *unverified* |
+| `Developing` | * | `Prático` | `own` |
+| `Developing` | * | `Teórico` | `paired` |
+
+Por task: os `Waived` saem, e vence o mais exigente dos que sobraram (`own > paired > delegated`). Nada sobrou → `delegated`.
+
+**Um nó `Waived` não delega a task sozinho.** Ele se remove, e o resto continua decidindo — senão um "eu já sei Kafka" periférico apagaria o aprendizado de tudo que estivesse ao lado.
+
+### O que cada um significa na prática
+
+- **`own`** — você escreve. Código e testes. A IA dá estrutura, pseudocódigo e a próxima dica; não entrega implementação.
+- **`paired`** — você decide, a IA escreve. A decisão vem primeiro: ela apresenta o requisito e as restrições, você propõe e justifica, e só então ela escreve o corpo mecânico em volta.
+- **`delegated`** — a IA escreve, você revisa.
+
+### `contested`
+
+Você declarou `Mastered`, o NotebookLM disse `Não`. O veredito segue a **sua** declaração — você conhece seu nível melhor que um teste. Mas a contradição aparece num bloco próprio, e resolver (rebaixar o Domínio, ou refazer o teste) é escolha sua. A skill nunca reconcilia sozinha.
+
+### Mudar um veredito na mão
+
+**Subir** (`delegated → paired → own`) é livre. Curiosidade não leva atrito.
+
+**Descer** (`own → paired → delegated`) custa uma linha datada em `map.md` `## Notes`, dizendo qual task e por quê. A assimetria é o ponto: delegação decidida antes é estratégia; delegação decidida às 22h numa task que ficou chata é o caminho de menor resistência fantasiado de estratégia.
+
+---
 
 ## Os comandos
 
-### `/mentor-map`
-**Quando**: assim que a skill de spec-driven gerar as tasks, antes de escrever código.
-**Duração**: ~5-10 min.
+### `/mentor-sync [--full] [--dry-run]`
+**Quando**: antes de mapear, e depois de qualquer sessão de estudo. 2–5 min.
 
-Lê suas specs, deriva os conhecimentos exigidos, classifica cada um nos três baldes e marca **o objetivo limitante** — o conceito transversal que trava mais coisas nessa feature.
+Traz a Compreensão do NotebookLM pro snapshot local. **É o único comando que fala com o NotebookLM.**
 
-Depois muda de eixo e classifica **cada task** em um dos três níveis de autoria (ver abaixo). Os baldes ordenam conhecimento; os níveis ordenam trabalho.
+Mostra o diff antes de escrever — o que entrou, o que mudou, o que saiu, o que foi rejeitado. Nó que **saiu** do ledger deixa de estar comprovado, e qualquer veredito que dependia dele se move; por isso remoções aparecem em destaque.
 
-Na primeira execução no repositório, cria `.mentor/` (incluindo o `.gitignore` interno), pede o caminho dos artefatos da spec-driven e guarda. Também faz o questionário de triagem, só para tags novas.
+Depois pergunta o Domínio dos nós de **nível 2** novos. Nível 2 porque é onde a herança rende mais: uma resposta resolve uma tecnologia inteira. `--full` pergunta também no nível 3 — use depois de um sync grande, não toda vez.
 
-Você sai daqui sabendo o que essa atividade exige, onde já está, o que vai delegar, e quem escreve cada task.
+Id inválido é **reportado e descartado**, nunca consertado. Chute de qual nó era o certo é como o nó errado acaba marcado como entendido.
 
-Rodar de novo no meio da feature é esperado, não erro: se a lista de tasks mudou, os níveis antigos descrevem um plano que não existe mais. O remap preserva ids, estados e evidências — só os níveis são recalculados.
+### `/mentor-map [feature-slug] [--rederive <node>]`
+**Quando**: logo depois que a skill de spec-driven produz as tasks, antes de escrever código. 5–10 min.
 
-### `/mentor-class <tópico>`
-**Quando**: quando alguma coisa está te travando — algo que caiu no balde delegar, conteúdo genuinamente novo, ou um tópico que você está prestes a começar.
-**Duração**: ~15 min.
+O comando central. Deriva os nós que cada task exige, resolve as três dimensões, aplica a matriz, escreve o `map.md` com o rastro completo.
 
-Ele **não** produz sempre a mesma coisa. Primeiro diagnostica que tipo de dificuldade é a sua, e só então escolhe o formato:
+O que sai:
+- a distribuição (`4 own, 3 paired, 2 delegated`)
+- **os gaps** — nós exigidos que estão ausentes do snapshot ou em `Não`. É a lista de estudo, e é a coisa mais acionável que o comando produz: é o que levar pro NotebookLM.
+- `contested`, num bloco só deles
+- `class-first` — tasks `own` cuja teoria ainda não está comprovada
+- quais nós resolveram `Waived` por herança e de onde (o mecanismo pagando)
+- quantos resolveram por `default` em vez de declaração — muito alto significa `/mentor-sync --full` atrasado
 
-| Sua dificuldade | O que ele gera |
-|---|---|
-| o conceito/a teoria não assentou | `<slug>.md` (explicação) + `<slug>.mp3` (narração, para ouvir longe da tela) |
-| o fluxo/a ordem dos passos está confusa | `<slug>.md` com diagrama(s) Mermaid |
-| travado para começar a codar com uma lib/ferramenta nova | `<slug>.ipynb` — notebook de rascunho, exploratório |
-| são vários componentes e não está claro como se relacionam | `<slug>.html` autocontido, abre em qualquer navegador, offline |
+Snapshot velho não bloqueia: avisa, registra a idade no `map.md`, e continua. Mapa com dado velho é melhor que mapa nenhum.
 
-**Um formato por padrão.** Dois quando a dificuldade tem de fato duas caras (não tem o vocabulário *e* não vê como as peças se ligam). Nunca os quatro — gerar tudo enterra justamente o artefato que ia te ajudar. Ele te diz qual escolheu e por quê antes de gerar, então é barato redirecionar.
+**Remapear é esperado.** Nós e declarações são preservados; vereditos são recalculados; overrides manuais sobrevivem e ficam marcados. É aqui que um `Waived` declarado depois derruba as tasks pra `delegated`, e que uma Compreensão nova limpa um `contested`.
 
-Um diagnóstico não gera artefato nenhum: se você **já entende mas está lento / consultando**, isso é problema de retenção, não de explicação. Ele diz isso e deixa o `/mentor-review` trazer de volta, em vez de reexplicar.
+### `/mentor-tasks [feature-slug] [--all]`
+**Quando**: a qualquer momento em que quiser o panorama do que falta.
 
-Depois de entregar, ele te faz 3-5 perguntas sobre decisões isoladas ("se essa linha sumisse, o que quebraria e quando?"). E quando o artefato tem código — o notebook, ou qualquer coisa do balde delegar — ele ainda te devolve a mesma coisa com 2-3 valores apagados para você preencher. Esse último passo é o que fecha o ciclo, e é onde você descobre que só *achou* que tinha entendido.
+Duas coisas. Primeiro **verifica os checkboxes contra o código de verdade** — roda o check nomeado, ou lê o source/teste; a prosa do arquivo não é prova. Marca o que estiver realmente pronto.
 
-Os artefatos ficam em `.mentor/features/<slug>/classes/<tópico>/` — sempre dentro da feature ativa, não versionados, conveniência de sessão.
+Depois mostra o que resta agrupado por veredito, `own → paired → delegated`. `own` primeiro: só você pode começar essas, então você vê o que está com você antes do que a IA poderia tirar do seu prato.
 
-**Sobre o `.mp3`**: a narração usa `edge-tts` (`pip install edge-tts`) — de graça, sem chave de API, mas **precisa de internet**. Sem internet ele cai para um motor local (`piper-tts`), que soa bem pior — e te avisa que caiu, em vez de entregar como se fosse igual. Ele também te pergunta a preferência de voz em vez de escolher sozinho. Só o formato de explicação escrita ganha áudio; diagrama, notebook e mapa de componentes não têm o que narrar.
+Cada item leva uma linha de rastro com o nó que decidiu. Item sem linha no `map.md` é sinalizado como remap devido — e o veredito **não** é derivado aqui.
 
-### `/mentor-review [path] [--time 5|15|30]`
-**Quando**: depois de cada bloco de trabalho, e no início de uma sessão. Várias vezes por dia num sprint.
-**Duração**: ~5-15 min.
+Nunca escreve conhecimento. Checkbox marcado não é evidência de nada.
 
-O comando mais importante da skill. Faz **duas coisas numa chamada só**:
+### `/mentor-class <topic>`
+**Quando**: travou, ou antes de começar uma task `class-first`. ~15 min.
 
-**Parte A — o seu diff.** A parte mais direta que existe: prática que se parece com o uso real. Lê o que você escreveu desde a última revisão e pergunta **por que** você decidiu daquilo. Não é code review de estilo. Essa parte **não tem limite de tempo e sempre roda inteira** — o código já existe, avaliar custa quase nada.
+Três categorias, uma pra cada tipo de não-saber:
 
-Perguntas que ele tenta sempre incluir:
-- por que aqui e não ali?
-- **por que a alternativa que você descartou é pior?**
-- se `<condição>` mudasse, o que mudaria aqui?
-
-A segunda é a que mais separa entender de reconhecer. Compreensão rasa justifica a escolha feita; raramente ataca a rejeitada.
-
-Também é aqui que **bug resolvido vira evidência**: quando você conserta algo, o modelo registra qual era seu modelo mental antes do conserto e o que ele revelou de errado. É a evidência mais forte que a skill produz.
-
-**Parte B — o que está vencido.** Depois do diff, ele traz de volta o que você não vê há tempo — em dias e em horas de estudo — do projeto inteiro, não só da feature atual. Essa parte **respeita o orçamento** do `--time` (padrão: `default_review_budget` no `profile.md`).
-
-| Orçamento | Itens | Mistura típica |
+| Categoria | Soa como | Você recebe |
 |---|---|---|
-| 5 min | 3-4 | quase só revisões vencidas |
-| 15 min | 6-8 | revisões, 1 cenário, algumas respostas curtas |
-| 30 min | 10-14 | revisões, 2-3 cenários, drill do objetivo limitante se houver |
+| **conceitual** | "o que é isso?" | explicação escrita, opcionalmente narrada em `.mp3` |
+| **aplicação prática** | "como eu uso?" | notebook, código incompleto ou exercício — **sempre incompleto** |
+| **arquitetural** | "onde isso se encaixa?" | Mermaid, diagrama, `.html` autocontido |
 
-Múltipla escolha vive aqui, e só aqui. Barata, serve para checar o que já foi aprendido em outro formato. Nunca promove nada para "decide".
+A analogia:
 
-Objetivo que a Parte A já exercitou **não é perguntado de novo** na Parte B — a revisão já foi feita, no formato mais forte que existe.
+> Se não sei o que é uma **engrenagem**, quero ler e escutar o que ela é.
+> Se sei o que é mas não sei encaixar, quero um exercício de montagem antes da máquina real.
+> Se sei usar mas não sei onde ela entra, quero o mapa da máquina.
 
-Se não houver diff pendente, ele pula direto para a Parte B. Se não houver diff **nem** nada vencido, ele diz isso e para — não inventa pergunta para ter o que perguntar.
+**A categoria prática é sempre incompleta.** O andaime vem pronto; a parte que responde a sua pergunta, não. Ler uma solução pronta produz a *sensação* de entender sem o fato — e essa sensação é exatamente o que a skill existe pra evitar.
 
-### `/mentor-next [feature-slug] [--all]`
-**Quando**: a qualquer momento em que você quiser o panorama completo do que falta, especialmente logo depois de terminar algo. Não faz perguntas, não mexe em `study_hours_total`.
+Um formato por padrão. Dois só quando a dificuldade tem mesmo duas faces. Nunca três.
 
-Não é instrumento de avaliação — nunca julga se você entendeu algo, só se o código está de fato pronto. Não escreve em `knowledge.md`/`evidence.jsonl`; isso continua sendo função do `/mentor-review`.
+Toda aula nomeia um nó de nível 4. E **nenhuma aula marca nada como entendido** — ela termina te mandando testar no NotebookLM, que é o único caminho pra algo virar comprovado.
 
-Faz duas coisas numa chamada só:
-
-1. **Sincroniza** — para cada checkbox aberto no arquivo de tasks da feature (localizado via `spec_artifacts`, sem assumir `tasks.md` nem o formato de nenhuma skill de spec específica), verifica de forma independente contra o código/testes reais se aquilo já está pronto, e só então marca como concluído. Nunca confia no que o próprio arquivo diz sem checar.
-2. **Mostra** — lista tudo que ainda está aberto, agrupado do jeito que o próprio arquivo já agrupa (fases, seções), com o status real de cada item — não só o próximo passo isolado.
-
-Se alguma coisa foi verificada como pronta e parece nunca ter passado por `/mentor-review`, ele avisa numa linha só, uma vez, sem bloquear.
-
-### `/mentor-close`
-**Quando**: ao concluir a atividade, antes da próxima spec.
-**Duração**: ~10-20 min.
-
-1. **Feynman** — você explica o que construiu, sem interrupção.
-2. **Por que não do outro jeito** — para uma ou duas decisões, por que a alternativa plausível seria pior.
-3. **Cenários de decisão**, incluindo **pelo menos um fora do seu projeto** — "num sistema com requisito oposto, o que você faria diferente?". É o único teste real de transferência: mostra se você aprendeu o princípio ou só a sua instância aqui.
-4. Fecha a feature, escreve o relatório, atualiza o painel.
-
-Se faltar tempo, corte cenários. **Nunca corte o fechamento.**
-
-**Opcional — `prune_closed_features_on_close: true` em `profile.md`**: se o seu fluxo é nunca mergear na `main` durante o desenvolvimento e só mergear depois do close, o `/mentor-close` pode, como último passo, commitar o estado final da feature e depois destrackear `map.md`/`evidence.jsonl`/`report.md` do git — ficam no disco, saem de circulação, `main` só carrega `profile.md` e `knowledge.md` daquela feature em diante. O conteúdo continua recuperável pelo histórico do git (`git log`), desde que o merge pra `main` seja merge de verdade, nunca squash. Desligado por padrão — é uma escolha de workflow, não um comportamento universal.
-
-### `/mentor-progress [--all|--tag X]`
-**Quando**: a qualquer momento. Não faz perguntas.
-
-Gera `.mentor/progress.html` e te avisa para abrir. Não é versionado — pode apagar a qualquer momento, ele regenera. Se apagar, você só perde a comparação "o que mudou" na próxima vez que rodar (o Claude avisa e mostra o estado atual mesmo assim).
-
-## Como ler os estados
-
-```
-não avaliado → declarado → frágil → explica → decide → fluente
-```
-
-- **declarado** — você disse que tem experiência. Evidência fraca de propósito.
-- **frágil** — há lacuna ou um equívoco em aberto.
-- **explica** — sabe o que é, por que existe, como funciona. Sem consultar.
-- **decide** — escolhe sob condições, justifica, sabe o que quebra na escolha errada.
-- **fluente** — duas evidências no alvo, sem consulta, **separadas por pelo menos 14 dias**.
-
-`fluente` é o único estado que exige tempo passado, e isso não muda nem num sprint intenso. Prática concentrada produz ganho aparente rápido e decaimento rápido: você vai terminar duas semanas de estudo *sentindo* que domina, e não vai — só o reencontro depois de um intervalo prova o contrário. O painel tem uma seção **⏳ aguardando confirmação de fluência**, com a data em que cada coisa fica elegível, exatamente para isso não parecer um buraco.
-
-Cair de nível é normal. Revisão errada volta para frágil.
-
-## Como a revisão funciona
-
-Não existe data agendada em lugar nenhum. Cada objetivo guarda dois fatos observados: quando foi visto pela última vez (`last_seen`) e quantas horas de estudo acumuladas você tinha naquele momento (`last_seen_hours`).
-
-No início de qualquer comando que possa revisar algo, ele pergunta quanto tempo você estudou desde a última vez. Uma pergunta, dois segundos. Com isso ele calcula dois deltas — em dias e em horas — e o que vencer primeiro dispara a revisão.
-
-Por que dois relógios:
-
-- **Num sprint intenso**, 3 dias são 24 horas de trabalho. O relógio de horas dispara primeiro, e você revisa de manhã o que viu na véspera.
-- **Numa rotina de 1h/dia**, 3 dias são 3 horas. O relógio de calendário dispara primeiro, porque aí o risco é esquecer, não diluir.
-
-A mesma tabela se comporta certo nos dois regimes, e na transição entre eles, sem você configurar nada.
-
-Referência aproximada (julgamento, não regra fixa — confiança alta com erro encurta; acerto tranquilo alonga):
-
-| Posição na escada | Horas de estudo | Ou calendário |
-|---|---|---|
-| 1ª revisão | ~3h | ~3 dias |
-| 2ª revisão | ~10h | ~7 dias |
-| 3ª revisão | ~30h | ~21 dias |
-| 4ª+ revisão | ~80h | ~60 dias |
+---
 
 ## Fora dos comandos
 
-- **Dúvida sobre um conceito** → o modelo responde. Não devolve pergunta, não vira quiz. Registra que você perguntou.
-- **Você trava** → a ajuda escala com quantas vezes você já tentou. Diga o número; ele não adivinha.
-- **Você anuncia que vai rodar algo** → pergunta uma vez o que você espera. Se ignorar, não insiste.
-- **Você começa uma task nova** → ele olha no `knowledge.md` se os objetivos que essa task exige estão em aberto (não avaliados, com equívoco, ou bem abaixo do alvo). Se estiverem, oferece **uma vez** uma aula sobre o tópico antes de você começar. É oferta de material, não sondagem — não te testa, não te bloqueia, e some se você ignorar.
-- **Você pede algo do balde delegar** → é encaminhado para `/mentor-class`, não entregue direto.
-- **Você pede o código pronto de uma task `own`** → ele não entrega, dá a estrutura e a dica.
-- **Você pede uma task `paired`** → primeiro ele te faz tomar e defender a decisão que ela carrega; depois escreve o corpo mecânico em volta.
-- **Você pede uma task `deliver`** → ele escreve, e diz quais objetivos tornaram aquilo entregável. Não vira evidência nenhuma.
+- **Pergunta conceitual** → ele responde. Não vira quiz, não vira registro.
+- **"escreve isso pra mim"** → ele resolve o veredito no `map.md` **antes** de decidir como responder — nunca pela impressão de quão difícil ou chato parece. Sem linha no `map.md`, ele avisa que o remap está devido em vez de chutar.
+- **Você começa uma task `class-first`** → oferece uma aula **uma vez**, dizendo qual formato e por quê. Oferta de material, não sondagem. Se você ignorar, some.
+- **Skill de spec-driven vai gerar a lista de tasks** → ele intercepta antes de escrever, pra cada task sair com veredito. Se a lista inteira sair `delegated`, ele diz isso na cara: a mudança é de entrega, não de aprendizado, e você decide sabendo.
+
+---
 
 ## Os arquivos
 
-Tudo em `.mentor/`, na raiz do projeto — fora de qualquer pasta específica de ferramenta (`.claude/`, `.cursor/`, `.codex/`), para funcionar igual em qualquer cliente.
+Tudo em `.mentor/`, na raiz do seu repo.
 
-| Arquivo | O que é | Versionado? | Você lê? |
-|---|---|---|---|
-| `.gitignore` | ignora `progress.html`, `narration_glossary.json` e `features/*/classes/` | — | nunca |
-| `profile.md` | experiência, alvo por tag, horas acumuladas, config | sim | raramente |
-| `knowledge.md` | todos os objetivos, estados, quando cada um foi visto | sim | ao auditar |
-| `progress.html` | **o painel** — conteúdo em português, derivado | não | sempre |
-| `narration_glossary.json` | pronúncias de termos técnicos para o TTS | não | ao ajustar áudio |
-| `features/<slug>/map.md` | o que a feature exige, os três baldes, o limitante | sim | no início |
-| `features/<slug>/evidence.jsonl` | log append-only | sim | quase nunca |
-| `features/<slug>/classes/<tópico>/` | artefatos do `/mentor-class` | não | ao consultar depois |
-| `features/<slug>/report.md` | o que aconteceu na feature | sim | ao fechar |
+| Arquivo | O que é | Dono | Versionado? | Você lê? |
+|---|---|---|---|---|
+| `profile.md` | config: spec artifacts, notebook, feature ativa | skill | sim | raramente |
+| `domain.md` | suas declarações de Domínio | **você** | sim | sim |
+| `nodes.md` | registro de nós + Aplicação | skill | sim | ao auditar |
+| `notebooklm/snapshot.json` | Compreensão | **NotebookLM** | sim | nunca |
+| `notebooklm/sync-log.md` | o que cada sync mudou | skill | sim | ao investigar |
+| `features/<slug>/map.md` | Task × Knowledge × veredito + rastro | skill | sim | sempre |
+| `features/<slug>/classes/` | artefatos das aulas | skill | **não** | sim |
+| `features/<slug>/classes/index.md` | registro de quais aulas houve | skill | sim | raramente |
 
-Regras que valem conhecer:
+Regras que importam:
 
-- **`evidence.jsonl` só cresce.** Correção é linha nova, nunca edição.
-- **Log de feature fechada nunca mais é lido.** O relatório carrega adiante.
-- **`progress.html` nunca é fonte de verdade** e nunca é versionado. Apagar é seguro.
-- **`classes/` também não é versionado.** É saída de sessão, regenerável — se quiser guardar alguma aula, copie ou commite manualmente.
-- **Nada em `knowledge.md`/`evidence.jsonl`/`report.md` é deletado.** Objetivo que deixou de ser necessário vira `archived:` e mantém histórico.
-- Você pode editar tudo à mão. Se discordar de um estado, o caminho melhor é contestar na conversa — o modelo agenda uma nova sondagem em vez de reescrever.
+- **`domain.md` é esparso.** Linha só pro que foi declarado explicitamente. Nunca adicione linha pra descendente que herdaria o mesmo valor — isso é duplicata, e duplicata envelhece.
+- **`snapshot.json` nunca é editado à mão.** Editar ele é colocar na boca da skill uma afirmação sobre o seu conhecimento.
+- **`sync-log.md` só cresce.** É a trilha de auditoria de todo veredito que mudou porque a Compreensão mudou.
+- **A herança nunca é gravada em disco.** É resolvida na leitura, sempre. Por isso não há segunda cópia pra sair de sincronia.
 
-## Instalação
+---
 
-```bash
-cd /caminho/do/seu/projeto
-curl -fsSL https://raw.githubusercontent.com/Matheus-Homem/technical-learning-mentor/main/install.sh | bash -s -- claude   # ou: cursor
-```
+## A regra de DESIGN (opcional)
 
-No Claude Code a skill é reconhecida automaticamente pelo frontmatter do `SKILL.md`. No Cursor, o instalador acrescenta um apontador em `.cursor/rules/` porque ele não tem descoberta automática de skill — sem isso, o modelo não saberia que ela existe.
+Na instalação, o instalador **pergunta** se você quer a regra de pareamento de DESIGN. É a única parte que escreve fora do diretório da skill e a única que muda o comportamento de **outras** skills — por isso pergunta, e o padrão é não instalar.
 
-Rodar o instalador de novo atualiza uma instalação existente no lugar (`git pull --ff-only`).
+Instalada, ela impede que qualquer skill de spec-driven gere o design e as tasks de forma totalmente automática:
 
-## Orçamento de tempo
+1. analisa → 2. propõe a estrutura → 3. propõe as tasks →
+4. **você revisa** → 5. **você aprova/altera a estrutura** → 6. **você aprova as tasks** →
+7. só então o arquivo de design é escrito
 
-Proporcional, não fixo — cerca de **10-20% do tempo de estudo** em mentoria, mais alto num sprint denso (o `/mentor-review` acontece várias vezes ao dia) e mais baixo numa rotina de 1h/dia (predominam revisões curtas de 5 min).
+Silêncio não é aprovação. "Parece bom" inferido do contexto não é aprovação. Aprovar a estrutura não aprova as tasks.
 
-Se precisar cortar: o orçamento da Parte B do `/mentor-review` (`--time 5`) → cenários do close → frequência do review. **Nunca corte a Parte A enquanto houver diff** (o código já está escrito, avaliar é quase de graça) **e nunca corte o fechamento.**
+Passa direto sem gate: escolha de biblioteca, formato de config, layout já convencionado no projeto, contrato de integração que outros componentes já consomem.
 
-## Se algo der errado
+Pra remover: apague o trecho entre os marcadores no `CLAUDE.md`.
 
-- **Painel estranho** → `/mentor-progress` regenera do zero.
-- **Estado que você acha errado** → conteste na conversa; ele agenda nova sondagem.
-- **Caminho das specs mudou** → rode `/mentor-map`, ele pergunta de novo.
-- **Não quer ser testado numa tag** → responda `skip` na triagem ou anote em `profile.md` → Notes.
-- **Está avaliando demais** → diga. O orçamento é ajustável a qualquer momento.
+---
+
+## O que essa skill não faz
+
+- **Não te avalia.** Sem teste, sem nota, sem escada de maestria.
+- **Não lembra de revisar.** Não existe relógio de retenção. Saiu junto com a avaliação, de propósito — retenção é de quem faz o teste, e isso é o NotebookLM. Se você espera que a skill traga de volta um conceito que você não toca há seis semanas, ela não vai.
+- **Não escreve Compreensão.** Por caminho nenhum, por motivo nenhum.
+
+---
+
+## Problemas comuns
+
+- **"Tudo está `own`"** → provavelmente falta declarar Domínio. Rode `/mentor-sync --full`, ou declare `Waived`/`Mastered` nos níveis 2 que você já domina. Olhe quantos nós resolveram por `default` no output do `/mentor-map`.
+- **"Tudo está `delegated`"** → ou a feature é mesmo de entrega (e é bom saber disso), ou você declarou `Waived` alto demais. Confira de onde veio a herança no `map.md`.
+- **"O veredito mudou e eu não mexi em nada"** → olhe o `sync-log.md`. Um nó que saiu do ledger ou regrediu pra `Não` move os vereditos que dependiam dele. Se não houver nada lá, é bug — Aplicação não deveria mudar sozinha.
+- **"Ele quer que eu escreva algo que eu já sei"** → declare `Mastered` no nó (ou num prefixo dele) e remapeie. Se já estava `Mastered`, veja se saiu `contested`.
+- **Snapshot velho** → `/mentor-sync`. Nunca bloqueia nada, só avisa.
